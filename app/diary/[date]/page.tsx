@@ -12,14 +12,154 @@ const DiaryPage = () => {
   const [mealNote, setMealNote] = useState("");
   const [symptomImage, setSymptomImage] = useState<string | null>(null);
   const [mealImage, setMealImage] = useState(null);
+  const [diaryID, setDiaryID] = useState(null);
 
   useEffect(() => {
-    const dateFromPath = pathname.split("/").pop(); // ดึงวันที่จาก path
+    const fetchDiary = async () => {
+      let path = process.env.BACK_END;
+      
+      if (!path) {
+        // throw new Error("BACK_END environment variable is not defined");
+        path = "http://localhost:1234";
+      }
+
+      try {  
+        console.log("Fetching data from:", path);
+        
+        const response = await fetch(`${path}/diaries/2/${dateFromPath}`, {
+          method: 'GET', // Explicitly specify the GET method
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("Data fetched:", result);
+        
+        const { id, symptom, painScore, breakfast } = result;
+        setDiaryID(id);
+        setSymptom(symptom);
+        setPainLevel(painScore);
+        setMealNote(breakfast);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    // Demo POST patient
+    const postPatient = async () => {
+      let path = process.env.BACK_END;
+      
+      if (!path) {
+        // throw new Error("BACK_END environment variable is not defined");
+        path = "http://localhost:1234";
+      }
+
+      try {  
+        console.log("Posting patient to:", path);
+        const response = await fetch(path+"/patients", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: 2,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("Data posted:", result);
+        
+      } catch (error) {
+        console.error('Error posting data:', error);
+      }
+    };
+    
+    postPatient();
+    fetchDiary();
+  }, []);
+
+
+  const dateFromPath = pathname.split("/").pop(); // ดึงวันที่จาก path
+
+  useEffect(() => {
     if (dateFromPath) {
       setCurrentDate(new Date(dateFromPath)); // แปลงวันที่จาก string เป็น Date object
     }
-  }, [pathname]);
+  }, []);
 
+  const createDiary = async () => {
+    let path = process.env.BACK_END;
+    
+    if (!path) {
+      // throw new Error("BACK_END environment variable is not defined");
+      path = "http://localhost:1234";
+    }
+
+    try {  
+      console.log("Posting data to:", path);
+      
+      const response = await fetch(path+"/diaries", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patient: 2,
+          date: dateFromPath,
+          symptom: symptom,
+          painScore: painLevel,
+          breakfast: mealNote,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      console.log("Data posted:", result);
+
+      const { id } = result;
+      setDiaryID(id);
+      
+    } catch (error) {
+      console.error('Error posting data:', error);
+    }
+  };
+
+  const updateDiary = async () => { // accept id as a parameter
+    let path = process.env.BACK_END;
+    
+    if (!path) {
+      path = "http://localhost:1234";
+    }
+  
+    const response = await fetch(`${path}/diaries/${diaryID}`, { // Include id in the URL
+      method: "PATCH", // Use PATCH instead of PUT
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        patient: 2,
+        date: dateFromPath,
+        symptom: symptom,
+        painScore: painLevel,
+        breakfast: mealNote,
+      }),
+    });
+    
+    if (response.ok) {
+      alert("Diary updated successfully!");
+    } else {
+      alert("Failed to update diary!");
+    }
+  }
+  
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>,setImage: React.Dispatch<React.SetStateAction<string | null>> ) => {
     const file = event.target.files?.[0]; // Optional chaining เพื่อหลีกเลี่ยง null
@@ -32,6 +172,11 @@ const DiaryPage = () => {
     console.log("Symptom:", symptom);
     console.log("Pain Level:", painLevel);
     console.log("Meal Note:", mealNote);
+    if (diaryID) {
+      updateDiary();
+    } else {
+      createDiary();
+    }
     alert("Diary saved successfully!");
   };
 
