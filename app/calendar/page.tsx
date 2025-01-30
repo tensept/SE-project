@@ -2,7 +2,12 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { formatDate, EventClickArg, EventApi , EventInput } from "@fullcalendar/core";
+import {
+  formatDate,
+  EventClickArg,
+  EventApi,
+  EventInput,
+} from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -16,11 +21,10 @@ import {
 } from "@/app/calendar/ui/dialog";
 
 const Calendar: React.FC = () => {
-  const calendarRef = useRef<FullCalendar | null>(null); // Ref for FullCalendar instance
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [newEventTitle, setNewEventTitle] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<DateSelectArg | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -38,12 +42,10 @@ const Calendar: React.FC = () => {
     }
   }, [currentEvents]);
 
-  const handleDateSelect = (selectInfo: DateSelectArg) => {
-    const selectedDate = selectInfo.start; // Access the selected date
-    setSelectedDate(selectedDate); // Save the selected date in state
-    setIsDialogOpen(true); // Open the dialog for adding events
+  const handleDateClick = (selected: DateSelectArg) => {
+    setSelectedDate(selected);
+    setIsDialogOpen(true);
   };
-  
 
   const handleEventClick = (selected: EventClickArg) => {
     if (
@@ -55,61 +57,66 @@ const Calendar: React.FC = () => {
     }
   };
 
-  const handleAddEvent = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (newEventTitle && selectedDate) {
-      const calendarApi = calendarRef.current?.getApi(); // Access FullCalendar instance
-      if (calendarApi) {
-        calendarApi.addEvent({
-          id: `${selectedDate.toISOString()}-${newEventTitle}`,
-          title: newEventTitle,
-          start: selectedDate,
-          allDay: true,
-        });
-      }
-
-      setIsDialogOpen(false); // Close dialog
-      setNewEventTitle(""); // Reset input
-    }
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setNewEventTitle("");
   };
 
+  const handleAddEvent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newEventTitle && selectedDate) {
+      const calendarApi = selectedDate.view.calendar;
+      calendarApi.unselect();
+
+      const newEvent = {
+        id: `${selectedDate.start.toISOString()}-${newEventTitle}`,
+        title: newEventTitle,
+        start: selectedDate.start,
+        end: selectedDate.end,
+        allDay: selectedDate.allDay,
+      };
+
+      calendarApi.addEvent(newEvent);
+      handleCloseDialog();
+    }
+  };
   const navigateToDiary = () => {
     if (selectedDate) {
-        const formattedDate = selectedDate.toLocaleDateString("en-CA"); // Format เป็น YYYY-MM-DD
-        router.push(`/diary/${formattedDate}`);
+      const formattedDate = selectedDate.start.toLocaleDateString("en-CA"); // Format เป็น YYYY-MM-DD
+      router.push(`/diary/${formattedDate}`);
     }
   };
 
   return (
-    <div style={{ backgroundColor: "#fff4f5", minHeight: "100vh" }}>
-      <div className="flex w-full px-10 justify-start items-start gap-8">
+    <div style={{ backgroundColor: "#F9F9F9", minHeight: "100vh" }}>
+      <div className="flex w-full px-10 justify-start items-start gap-8 ">
         <div className="w-3/12">
-          <div className="py-10 text-2xl text-black font-extrabold px-7">
+          <div className="py-10 text-2xl font-extrabold px-7">
             Calendar Events
           </div>
           <ul className="space-y-4">
-            {currentEvents.length === 0 && (
-              <div className="italic text-center text-black">
+            {currentEvents.length <= 0 && (
+              <div className="italic text-center text-gray-400">
                 No Events Present
               </div>
             )}
-            {currentEvents.map((event) => (
-              <li
-                key={event.id}
-                className="border border-pink-200 shadow px-4 py-2 rounded-md text-pink-800"
-              >
-                {event.title}
-                <br />
-                <span className="text-pink-600">
-                  {formatDate(event.start!, {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </span>
-              </li>
-            ))}
+            {currentEvents.length > 0 &&
+              currentEvents.map((event: EventApi) => (
+                <li
+                  className="border border-pink-200 shadow px-4 py-2 rounded-md text-pink-800"
+                  key={event.id}
+                >
+                  {event.title}
+                  <br />
+                  <label className="text-slate-950">
+                    {formatDate(event.start!, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </label>
+                </li>
+              ))}
           </ul>
         </div>
 
@@ -125,21 +132,29 @@ const Calendar: React.FC = () => {
             initialView="dayGridMonth"
             editable={true}
             selectable={true}
-            select={handleDateSelect}
+            selectMirror={true}
+            dayMaxEvents={true}
+            select={handleDateClick}
             dayHeaderContent={(headerInfo) => (
-                <span className="text-black font-bold border-b border-black">
-                  {headerInfo.text}
-                </span>
-              )}
+              <span className="text-black font-bold border-b border-black">
+                {headerInfo.text}
+              </span>
+            )}
             dayCellContent={(cellInfo) => (
-                <span className="text-black">{cellInfo.dayNumberText}</span>
+              <span className="text-black">{cellInfo.dayNumberText}</span>
             )}
             eventClick={handleEventClick}
-            eventsSet={(events) => setCurrentEvents(events)} // Synchronize state
+            eventsSet={(events) => setCurrentEvents(events)}
+            initialEvents={
+              typeof window !== "undefined"
+                ? JSON.parse(localStorage.getItem("events") || "[]")
+                : []
+            }
           />
         </div>
       </div>
 
+      {/* Dialog for adding new events */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
