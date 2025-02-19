@@ -1,101 +1,189 @@
-import Image from "next/image";
+"use client";
+import React from 'react';
 
-export default function Home() {
+const HealthDiaryLandingPage = () => {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-pink-40">
+      {/* Navigation Bar
+      <nav className="flex items-center justify-between p-4 bg-white">
+        <div className="flex items-center">
+          <div className="w-20 h-20  rounded-full flex items-center justify-center mr-2">
+            <img src="/logo.png" alt="Logo" className="w-15 h-15" />
+          </div>
+          <div>
+            <span className="font-bold text-lg">Health</span>
+            <span className="font-bold text-lg text-pink-500">Care</span>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="flex space-x-6">
+          <a href="#" className="text-gray-700 hover:text-pink-500">Home</a>
+          <a href="#" className="text-gray-700 hover:text-pink-500 font-medium">Diary</a>
+          <a href="#" className="text-gray-700 hover:text-pink-500">History</a>
+          <a href="#" className="text-gray-700 hover:text-pink-500">Consult</a>
+          <a href="#" className="text-gray-700 hover:text-pink-500">How to use</a>
+        </div>
+      </nav> */}
+
+      {/* Hero Section */}
+<div className="relative flex justify-center">
+  <img 
+    src="/12.png" 
+    alt="Health Diary" 
+    className="object-cover"
+  />
+  <div className="absolute left-12 top-1/2 transform -translate-y-1/2 p-6">
+  <h1 className="text-7xl md:text-7xl font-bold text-black leading-relaxed">
+  Welcome to Diary
+  <span className="block mb-4"></span> {/* ใช้ span เพื่อเพิ่มระยะห่าง */}
+  for Better Health
+</h1>
+    <br />
+    <p className="text-black text-lg md:text-2xl mt-2 leading-loose">
+      Experience life's momentum with<span className="block mb-4"></span>health at your command.
+    </p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+      {/* Features Section */}
+      <div className="container mx-auto px-4 py-10">
+        <h2 className="text-xl font-bold text-gray-800 mb-8 tracking-wider">FEATURES WE PROVIDE</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-pink-100 rounded-3xl p-6 flex items-center justify-between">
+            <img src="/4.png" alt="Medical notebook" className="w-32 h-32" />
+          </div>
+          
+          <div className="grid grid-cols-1 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-800">✓</span>
+              </div>
+              <span className="font-medium">Make your diary</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-800">✓</span>
+              </div>
+              <span className="font-medium">Food Warning</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-800">✓</span>
+              </div>
+              <span className="font-medium">Interactive Doctor</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-800">✓</span>
+              </div>
+              <span className="font-medium">Pain Status</span>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-800">✓</span>
+              </div>
+              <span className="font-medium">Record Symptoms</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-800">✓</span>
+              </div>
+              <span className="font-medium">History</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-800">✓</span>
+              </div>
+              <span className="font-medium">Add Event</span>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-800">✓</span>
+              </div>
+              <span className="font-medium">Notification</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* How to Use Section */}
+      <div className="container mx-auto px-4 py-8">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">How to use</h2>
+        <div className="border-t border-gray-300 mb-6"></div></div>
+        
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-2xl p-6 flex items-center gap-4">
+            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+              <span className="font-medium">1</span>
+            </div>
+            <p className="text-sm">Click on "Diary" if you want to record your meals.</p>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-6 flex items-center gap-4">
+            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+              <span className="font-medium">2</span>
+            </div>
+            <p className="text-sm">You can watch "History" about your diary.</p>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-6 flex items-center gap-4">
+            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+              <span className="font-medium">3</span>
+            </div>
+            <p className="text-sm">Click on "Consult" when you need to ask the doctor a question.</p>
+          </div>
+        </div>
+      </div> */}
+
+
+<div className="flex justify-center md:justify">
+      <img 
+        src="/8.png" 
+        alt="Health Diary" 
+        className="w-full max-w-lg md:max-w-6xl"
+      />
+    </div>          
+
+      {/* Footer
+      <footer className="container mx-auto p-6 flex flex-col md:flex-row justify-between items-center">
+        <div className="flex items-center mb-4 md:mb-0">
+          <div className="w-8 h-8 bg-pink-200 rounded-full flex items-center justify-center mr-2">
+            <img src="/api/placeholder/32/32" alt="Logo" className="w-6 h-6" />
+          </div>
+          <div>
+            <span className="font-bold">Health</span>
+            <span className="font-bold text-pink-500">Care</span>
+          </div>
+        </div>
+        
+        <div className="flex space-x-6 text-sm">
+          <a href="#" className="text-gray-600 hover:text-pink-500">Home</a>
+          <a href="#" className="text-gray-600 hover:text-pink-500">Diary</a>
+          <a href="#" className="text-gray-600 hover:text-pink-500">History</a>
+          <a href="#" className="text-gray-600 hover:text-pink-500">Consult</a>
+        </div>
+      </footer> */}
+      <br />
     </div>
+    
+    
   );
-}
+};
+
+export default HealthDiaryLandingPage;
