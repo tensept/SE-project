@@ -191,7 +191,18 @@ const DiaryPage = () => {
     setCurrentDate(nextDay);
   };
 
-  const painEmojis = ["😄", "🙂", "🙂", "🙂", "😐", "😐", "😐", "🙁", "🙁"];
+  const painEmojis = [
+    "😁",
+    "😄",
+    "😊",
+    "🙂",
+    "😐",
+    "🙁",
+    "😥",
+    "🥲",
+    "😰",
+    "😭",
+  ];
   const painColors = [
     "#76c7c0",
     "#99d9ea",
@@ -301,7 +312,9 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>Symptom</h2>
+        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>
+          ลักษณะอาการหรือบาดแผล
+        </h2>
         <textarea
           value={symptom}
           onChange={(e) => setSymptom(e.target.value)}
@@ -321,7 +334,8 @@ const DiaryPage = () => {
         </div>
         <div style={{ marginTop: "10px" }}>
           <label style={{ color: "#ff80ab", cursor: "pointer" }}>
-            Attach Image
+            แนบรูปบาดแผล
+            *กรณีผู้ป่วยที่มีบาดแผล*
             <input
               type="file"
               accept="image/*"
@@ -344,12 +358,45 @@ const DiaryPage = () => {
             </div>
           )}
         </div>
-        <div>
+        <div style={{ marginTop: "10px" }}>
+          <button
+            onClick={() => document.getElementById("meal-upload").click()} // กดแล้วเปิด input file
+            style={{
+              backgroundColor: "#ff80ab",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              padding: "10px",
+              marginRight: "10px",
+              cursor: "pointer",
+            }}
+          >
+            📸 Attach File
+          </button>
+
+          {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
           <input
+            id="meal-upload"
             type="file"
             accept="image/*"
-            onChange={(e) => handleImageUpload(e, setSymptomImage)}
+            onChange={(e) => handleImageUpload(e, setMealImage)}
+            style={{ display: "none" }} // ซ่อน input
           />
+
+          {mealImage && (
+            <div style={{ marginTop: "10px" }}>
+              <img
+                src={mealImage}
+                alt="Meal Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "200px",
+                  objectFit: "cover",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+          )}
         </div>
       </section>
 
@@ -364,7 +411,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>Pain Status</h2>
+        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>ระดับความเจ็บปวด</h2>
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >
@@ -401,12 +448,13 @@ const DiaryPage = () => {
             >
               {i + 1}
               <br />
-              {painEmojis[Math.min(Math.ceil(i / 3), painEmojis.length - 1)]}
+              {painEmojis[i]}
             </div>
           ))}
         </div>
       </section>
-      {/* Meals SecƟon */}
+
+      {/* Meals SecƟon เช้า */}
       <section
         style={{
           backgroundColor: "white",
@@ -416,7 +464,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>Meals</h2>
+        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อเช้า</h2>
         <textarea
           value={mealNote}
           onChange={(e) => setMealNote(e.target.value)}
@@ -434,9 +482,10 @@ const DiaryPage = () => {
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
           {mealNote.length}/250
         </div>
+
         <div style={{ marginTop: "10px" }}>
           <label style={{ color: "#ff80ab", cursor: "pointer" }}>
-            Attach Image
+            แนบรูปอาหารมื้อเช้า
             <input
               type="file"
               accept="image/*"
@@ -459,12 +508,240 @@ const DiaryPage = () => {
             </div>
           )}
         </div>
-        <div>
+        
+        <div style={{ marginTop: "10px" }}>
+          <button
+            onClick={() => document.getElementById("meal-upload").click()} // กดแล้วเปิด input file
+            style={{
+              backgroundColor: "#ff80ab",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              padding: "10px",
+              marginRight: "10px",
+              cursor: "pointer",
+            }}
+          >
+            📸 Attach File
+          </button>
+
+          {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
           <input
+            id="meal-upload"
             type="file"
             accept="image/*"
             onChange={(e) => handleImageUpload(e, setMealImage)}
+            style={{ display: "none" }} // ซ่อน input
           />
+
+          {mealImage && (
+            <div style={{ marginTop: "10px" }}>
+              <img
+                src={mealImage}
+                alt="Meal Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "200px",
+                  objectFit: "cover",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Meals SecƟon กลางวัน */}
+      <section
+        style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "20px",
+          marginBottom: "20px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อกลางวัน</h2>
+        <textarea
+          value={mealNote}
+          onChange={(e) => setMealNote(e.target.value)}
+          placeholder="Describe your meals here..."
+          maxLength={250}
+          style={{
+            width: "100%",
+            height: "100px",
+            padding: "10px",
+            marginTop: "10px",
+            border: "1px solid #ff80ab",
+            borderRadius: "5px",
+          }}
+        />
+        <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
+          {mealNote.length}/250
+        </div>
+
+        <div style={{ marginTop: "10px" }}>
+          <label style={{ color: "#ff80ab", cursor: "pointer" }}>
+            แนบรูปอาหารมื้อกลางวัน
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e, setSymptomImage)}
+              style={{ display: "none" }}
+            />
+          </label>
+          {mealImage && (
+            <div style={{ marginTop: "10px" }}>
+              <img
+                src={mealImage}
+                alt="Meal Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "200px",
+                  objectFit: "cover",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+          )}
+        </div>
+        
+        <div style={{ marginTop: "10px" }}>
+          <button
+            onClick={() => document.getElementById("meal-upload").click()} // กดแล้วเปิด input file
+            style={{
+              backgroundColor: "#ff80ab",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              padding: "10px",
+              marginRight: "10px",
+              cursor: "pointer",
+            }}
+          >
+            📸 Attach File
+          </button>
+
+          {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
+          <input
+            id="meal-upload"
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, setMealImage)}
+            style={{ display: "none" }} // ซ่อน input
+          />
+
+          {mealImage && (
+            <div style={{ marginTop: "10px" }}>
+              <img
+                src={mealImage}
+                alt="Meal Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "200px",
+                  objectFit: "cover",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Meals SecƟon เย็น */}
+      <section
+        style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "20px",
+          marginBottom: "20px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อเย็น</h2>
+        <textarea
+          value={mealNote}
+          onChange={(e) => setMealNote(e.target.value)}
+          placeholder="Describe your meals here..."
+          maxLength={250}
+          style={{
+            width: "100%",
+            height: "100px",
+            padding: "10px",
+            marginTop: "10px",
+            border: "1px solid #ff80ab",
+            borderRadius: "5px",
+          }}
+        />
+        <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
+          {mealNote.length}/250
+        </div>
+
+        <div style={{ marginTop: "10px" }}>
+          <label style={{ color: "#ff80ab", cursor: "pointer" }}>
+            แนบรูปอาหารมื้อเย็น
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e, setSymptomImage)}
+              style={{ display: "none" }}
+            />
+          </label>
+          {mealImage && (
+            <div style={{ marginTop: "10px" }}>
+              <img
+                src={mealImage}
+                alt="Meal Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "200px",
+                  objectFit: "cover",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+          )}
+        </div>
+        
+        <div style={{ marginTop: "10px" }}>
+          <button
+            onClick={() => document.getElementById("meal-upload").click()} // กดแล้วเปิด input file
+            style={{
+              backgroundColor: "#ff80ab",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              padding: "10px",
+              marginRight: "10px",
+              cursor: "pointer",
+            }}
+          >
+            📸 Attach File
+          </button>
+
+          {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
+          <input
+            id="meal-upload"
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, setMealImage)}
+            style={{ display: "none" }} // ซ่อน input
+          />
+
+          {mealImage && (
+            <div style={{ marginTop: "10px" }}>
+              <img
+                src={mealImage}
+                alt="Meal Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "200px",
+                  objectFit: "cover",
+                  borderRadius: "5px",
+                }}
+              />
+            </div>
+          )}
         </div>
       </section>
 
