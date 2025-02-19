@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-
 const DiaryPage = () => {
   const router = useRouter();
+  const [popUp, setPopUp] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const pathname = usePathname(); // ดึง path ปัจจุบัน เช่น "/diary/2025-01-06"
   const [symptom, setSymptom] = useState("");
@@ -17,7 +17,7 @@ const DiaryPage = () => {
   const [lunchImage, setLunchImage] = useState(null);
   const [dinnerImage, setDinnerImage] = useState(null);
   const [diaryID, setDiaryID] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
+  const [checkedFoods, setCheckedFoods] = useState(false);
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -196,6 +196,73 @@ const DiaryPage = () => {
     setCurrentDate(nextDay);
   };
 
+  const foods = [
+    "ชา",
+    "กาแฟ",
+    "น้ำเย็น",
+    "บุหรี่",
+    "เหล้า",
+    "เบียร์",
+    "ข้าวเหนียว",
+    "อาหารหมักดอง",
+    "ไข่ไก่",
+    "ปลาเค็ม",
+    "ปลาร้า",
+    "ไก่",
+    "หมู",
+    "วัว",
+    "ปลาไม่มีเกล็ด",
+    "เครื่องในสัตว์",
+    "อาหารทะเล",
+    "เส้นก๋วยเตี๋ยว",
+    "อาหารแปรรูป",
+    "มาม่า",
+    "ปลากระป๋อง",
+  ];
+
+  const checkedBoxFoods = () => {
+    if (!checkedFoods) {
+      setCheckedFoods(Array(foods.length).fill(false));
+    } else {
+      const columns = 3;
+      const rows = Math.ceil(foods.length / columns);
+      const foodGrid = Array.from({ length: rows }, (_, rowIndex) =>
+        foods.slice(rowIndex * columns, rowIndex * columns + columns)
+      );
+
+      return (
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {foodGrid.map((row, rowIndex) => (
+            <div key={rowIndex} style={{ flex: 1, minWidth: "200px" }}>
+              {row.map((food, index) => {
+                const foodIndex = rowIndex * columns + index;
+                return (
+                  <div key={foodIndex} style={{ marginBottom: "10px" }}>
+                    <label style={{ color: "#d81b60" }}>
+                      <input
+                        type="checkbox"
+                        checked={checkedFoods ? checkedFoods[foodIndex] : false}
+                        onChange={() => {
+                          const newCheckedFoods = [...checkedFoods];
+                          newCheckedFoods[foodIndex] =
+                            !newCheckedFoods[foodIndex];
+                          setCheckedFoods(newCheckedFoods);
+                          console.log(newCheckedFoods);
+                        }}
+                        style={{ marginRight: "10px" }}
+                      />
+                      {food}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      );
+    }
+  };
+
   const painEmojis = [
     "😁",
     "😄",
@@ -235,6 +302,7 @@ const DiaryPage = () => {
         padding: "20px",
       }}
     >
+      <div></div>
       {/* Header */}
       <header
         style={{
@@ -339,8 +407,7 @@ const DiaryPage = () => {
         </div>
         <div style={{ marginTop: "10px" }}>
           <label style={{ color: "#ff80ab", cursor: "pointer" }}>
-            แนบรูปบาดแผล
-            *กรณีผู้ป่วยที่มีบาดแผล*
+            แนบรูปบาดแผล *กรณีผู้ป่วยที่มีบาดแผล*
             <input
               type="file"
               accept="image/*"
@@ -348,20 +415,6 @@ const DiaryPage = () => {
               style={{ display: "none" }}
             />
           </label>
-          {symptomImage && (
-            <div style={{ marginTop: "10px" }}>
-              <img
-                src={symptomImage}
-                alt="Symptom Preview"
-                style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-          )}
         </div>
         <div style={{ marginTop: "10px" }}>
           <button
@@ -459,6 +512,13 @@ const DiaryPage = () => {
         </div>
       </section>
 
+      <section>
+        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>
+          รายการอาหารที่รับประทานได้ : ปลามีเกล็ด ข้าว ลูกเดือย กล้วยน้ำว้า
+          มะละกอสุก ผักปลอดสารพิษ น้ำนมจากพืช น้ำไม่เย็น
+        </h2>
+      </section>
+
       {/* Meals SecƟon เช้า */}
       <section
         style={{
@@ -498,25 +558,11 @@ const DiaryPage = () => {
               style={{ display: "none" }}
             />
           </label>
-          {breakfastImage && (
-            <div style={{ marginTop: "10px" }}>
-              <img
-                src={breakfastImage}
-                alt="Meal Preview"
-                style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-          )}
         </div>
-        
+
         <div style={{ marginTop: "10px" }}>
           <button
-            onClick={() => document.getElementById("meal-upload").click()} // กดแล้วเปิด input file
+            onClick={() => document.getElementById("breakfast-upload").click()} // กดแล้วเปิด input file
             style={{
               backgroundColor: "#ff80ab",
               color: "white",
@@ -530,9 +576,8 @@ const DiaryPage = () => {
             📸 Attach File
           </button>
 
-          {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
           <input
-            id="meal-upload"
+            id="breakfast-upload"
             type="file"
             accept="image/*"
             onChange={(e) => handleImageUpload(e, setBreakfastImage)}
@@ -543,7 +588,7 @@ const DiaryPage = () => {
             <div style={{ marginTop: "10px" }}>
               <img
                 src={breakfastImage}
-                alt="Meal Preview"
+                alt="Breakfast Preview"
                 style={{
                   width: "100%",
                   maxHeight: "200px",
@@ -595,25 +640,11 @@ const DiaryPage = () => {
               style={{ display: "none" }}
             />
           </label>
-          {lunchImage && (
-            <div style={{ marginTop: "10px" }}>
-              <img
-                src={lunchImage}
-                alt="Meal Preview"
-                style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-          )}
         </div>
-        
+
         <div style={{ marginTop: "10px" }}>
           <button
-            onClick={() => document.getElementById("meal-upload").click()} // กดแล้วเปิด input file
+            onClick={() => document.getElementById("lunch-upload").click()} // กดแล้วเปิด input file
             style={{
               backgroundColor: "#ff80ab",
               color: "white",
@@ -629,7 +660,7 @@ const DiaryPage = () => {
 
           {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
           <input
-            id="meal-upload"
+            id="lunch-upload"
             type="file"
             accept="image/*"
             onChange={(e) => handleImageUpload(e, setLunchImage)}
@@ -640,7 +671,7 @@ const DiaryPage = () => {
             <div style={{ marginTop: "10px" }}>
               <img
                 src={lunchImage}
-                alt="Meal Preview"
+                alt="Lunch Preview"
                 style={{
                   width: "100%",
                   maxHeight: "200px",
@@ -692,25 +723,11 @@ const DiaryPage = () => {
               style={{ display: "none" }}
             />
           </label>
-          {dinnerImage && (
-            <div style={{ marginTop: "10px" }}>
-              <img
-                src={dinnerImage}
-                alt="Meal Preview"
-                style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
-                  borderRadius: "5px",
-                }}
-              />
-            </div>
-          )}
         </div>
-        
+
         <div style={{ marginTop: "10px" }}>
           <button
-            onClick={() => document.getElementById("meal-upload").click()} // กดแล้วเปิด input file
+            onClick={() => document.getElementById("dinner-upload").click()} // กดแล้วเปิด input file
             style={{
               backgroundColor: "#ff80ab",
               color: "white",
@@ -726,7 +743,7 @@ const DiaryPage = () => {
 
           {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
           <input
-            id="meal-upload"
+            id="dinner-upload"
             type="file"
             accept="image/*"
             onChange={(e) => handleImageUpload(e, setDinnerImage)}
@@ -737,7 +754,7 @@ const DiaryPage = () => {
             <div style={{ marginTop: "10px" }}>
               <img
                 src={dinnerImage}
-                alt="Meal Preview"
+                alt="Dinner Preview"
                 style={{
                   width: "100%",
                   maxHeight: "200px",
@@ -748,6 +765,23 @@ const DiaryPage = () => {
             </div>
           )}
         </div>
+      </section>
+
+      {/* check junkfood*/}
+      <section
+        style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "20px",
+          marginBottom: "20px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>
+          หากรับประทานอาหารที่แพทย์สั่งกห้ามให้ติ้กถูกที่หน้าข้อความ
+        </h2>
+        {/* check box */}
+        {checkedBoxFoods()}
       </section>
 
       <button

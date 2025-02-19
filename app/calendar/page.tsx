@@ -158,18 +158,40 @@ const Calendar: React.FC = () => {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New Event</DialogTitle>
+            <DialogTitle className="flex justify-center">Add New Event</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleAddEvent}>
+            <form onSubmit={handleAddEvent} className="flex flex-col items-center">
             <input
               type="text"
               placeholder="Event Title"
               value={newEventTitle}
               onChange={(e) => setNewEventTitle(e.target.value)}
               required
-              className="border border-pink-200 p-3 rounded-md text-lg"
+              className="border border-pink-200 p-3 rounded-md text-lg text-center"
             />
-            <div className="flex space-x-4 mt-4">
+            <p className="mt-2 text-sm text-black font-bold text-center">
+              📌 ข้อควรปฏิบัติ
+            </p>
+
+            <p className="mt-2 text-sm text-black-500 font-bold">
+              ✔️อาหารที่ทานได้ : ปลามีเกล็ด ข้าว ลูกเดือย กล้วยน้ำว้า มะละกอสุก
+              ผักปลอดสารพิษ น้ำนมจากพืช น้ำไม่เย็น
+            </p>
+            <p className="mt-5 text-sm text-black-500 font-bold">
+              ❌อาหารแสลง : ชา กาแฟ น้ำเย็น น้ำแข็ง บุหรี่ เหล้า เบียร์
+              ข้าวเหนียว ไข่ไก่ ไก่ หมู วัว ปลาไม่มีเกล็ด อาหารหมักดอง ปลาเต็ม
+              ปลาร้า มาม่า อาหารทะเล เครื่องในสัตว์ เส้นก๋วยเตียว อาหารแปรรูป
+              ปลากระป๋อง
+            </p>
+            <p className="mt-5 text-sm text-black-100 font-bold">
+              🧘ไหว้พระ สวดมนต์ ทำสมาธิ กรวดน้ำให้เจ้ากรรมนายเวร
+              ใส่บาตรทุกวันพระ ข้าว 1 ถ้วย กล้วย 1 ทวี และเงินตามกำลังวังวันเกิด
+              จันทร์ 15 บาท, อังคาร 8 บาท, วันพุธ(กลางวัน) 17 บาท, วันพุธ
+              (กลางคืน) 12 บาท, พฤหัสบดี 19 บาท, ศุกร์ 21 บาท, เสาร์ 10 บาท,
+              อาทิตย์ 6 บาท
+            </p>
+
+            <div className="flex justify-center space-x-4 mt-4">
               <button
                 type="submit"
                 className="bg-pink-500 text-white px-4 py-2 rounded-md"
