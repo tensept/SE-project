@@ -9,10 +9,15 @@ const DiaryPage = () => {
   const pathname = usePathname(); // ดึง path ปัจจุบัน เช่น "/diary/2025-01-06"
   const [symptom, setSymptom] = useState("");
   const [painLevel, setPainLevel] = useState(1);
-  const [mealNote, setMealNote] = useState("");
+  const [breakfastNote, setBreakfastNote] = useState("");
+  const [lunchNote, setLunchNote] = useState("");
+  const [dinnerNote, setDinnerNote] = useState("");
   const [symptomImage, setSymptomImage] = useState<string | null>(null);
-  const [mealImage, setMealImage] = useState(null);
+  const [breakfastImage, setBreakfastImage] = useState(null);
+  const [lunchImage, setLunchImage] = useState(null);
+  const [dinnerImage, setDinnerImage] = useState(null);
   const [diaryID, setDiaryID] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -379,14 +384,14 @@ const DiaryPage = () => {
             id="meal-upload"
             type="file"
             accept="image/*"
-            onChange={(e) => handleImageUpload(e, setMealImage)}
+            onChange={(e) => handleImageUpload(e, setSymptomImage)}
             style={{ display: "none" }} // ซ่อน input
           />
 
-          {mealImage && (
+          {symptomImage && (
             <div style={{ marginTop: "10px" }}>
               <img
-                src={mealImage}
+                src={symptomImage}
                 alt="Meal Preview"
                 style={{
                   width: "100%",
@@ -466,8 +471,8 @@ const DiaryPage = () => {
       >
         <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อเช้า</h2>
         <textarea
-          value={mealNote}
-          onChange={(e) => setMealNote(e.target.value)}
+          value={breakfastNote}
+          onChange={(e) => setBreakfastNote(e.target.value)}
           placeholder="Describe your meals here..."
           maxLength={250}
           style={{
@@ -480,7 +485,7 @@ const DiaryPage = () => {
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
-          {mealNote.length}/250
+          {breakfastNote.length}/250
         </div>
 
         <div style={{ marginTop: "10px" }}>
@@ -489,14 +494,14 @@ const DiaryPage = () => {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => handleImageUpload(e, setSymptomImage)}
+              onChange={(e) => handleImageUpload(e, setBreakfastImage)}
               style={{ display: "none" }}
             />
           </label>
-          {mealImage && (
+          {breakfastImage && (
             <div style={{ marginTop: "10px" }}>
               <img
-                src={mealImage}
+                src={breakfastImage}
                 alt="Meal Preview"
                 style={{
                   width: "100%",
@@ -530,14 +535,14 @@ const DiaryPage = () => {
             id="meal-upload"
             type="file"
             accept="image/*"
-            onChange={(e) => handleImageUpload(e, setMealImage)}
+            onChange={(e) => handleImageUpload(e, setBreakfastImage)}
             style={{ display: "none" }} // ซ่อน input
           />
 
-          {mealImage && (
+          {breakfastImage && (
             <div style={{ marginTop: "10px" }}>
               <img
-                src={mealImage}
+                src={breakfastImage}
                 alt="Meal Preview"
                 style={{
                   width: "100%",
@@ -563,8 +568,8 @@ const DiaryPage = () => {
       >
         <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อกลางวัน</h2>
         <textarea
-          value={mealNote}
-          onChange={(e) => setMealNote(e.target.value)}
+          value={lunchNote}
+          onChange={(e) => setLunchNote(e.target.value)}
           placeholder="Describe your meals here..."
           maxLength={250}
           style={{
@@ -577,7 +582,7 @@ const DiaryPage = () => {
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
-          {mealNote.length}/250
+          {lunchNote.length}/250
         </div>
 
         <div style={{ marginTop: "10px" }}>
@@ -590,10 +595,10 @@ const DiaryPage = () => {
               style={{ display: "none" }}
             />
           </label>
-          {mealImage && (
+          {lunchImage && (
             <div style={{ marginTop: "10px" }}>
               <img
-                src={mealImage}
+                src={lunchImage}
                 alt="Meal Preview"
                 style={{
                   width: "100%",
@@ -627,14 +632,14 @@ const DiaryPage = () => {
             id="meal-upload"
             type="file"
             accept="image/*"
-            onChange={(e) => handleImageUpload(e, setMealImage)}
+            onChange={(e) => handleImageUpload(e, setLunchImage)}
             style={{ display: "none" }} // ซ่อน input
           />
 
-          {mealImage && (
+          {lunchImage && (
             <div style={{ marginTop: "10px" }}>
               <img
-                src={mealImage}
+                src={lunchImage}
                 alt="Meal Preview"
                 style={{
                   width: "100%",
@@ -660,8 +665,8 @@ const DiaryPage = () => {
       >
         <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อเย็น</h2>
         <textarea
-          value={mealNote}
-          onChange={(e) => setMealNote(e.target.value)}
+          value={dinnerNote}
+          onChange={(e) => setDinnerNote(e.target.value)}
           placeholder="Describe your meals here..."
           maxLength={250}
           style={{
@@ -674,7 +679,7 @@ const DiaryPage = () => {
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
-          {mealNote.length}/250
+          {dinnerNote.length}/250
         </div>
 
         <div style={{ marginTop: "10px" }}>
@@ -687,10 +692,10 @@ const DiaryPage = () => {
               style={{ display: "none" }}
             />
           </label>
-          {mealImage && (
+          {dinnerImage && (
             <div style={{ marginTop: "10px" }}>
               <img
-                src={mealImage}
+                src={dinnerImage}
                 alt="Meal Preview"
                 style={{
                   width: "100%",
@@ -724,14 +729,14 @@ const DiaryPage = () => {
             id="meal-upload"
             type="file"
             accept="image/*"
-            onChange={(e) => handleImageUpload(e, setMealImage)}
+            onChange={(e) => handleImageUpload(e, setDinnerImage)}
             style={{ display: "none" }} // ซ่อน input
           />
 
-          {mealImage && (
+          {dinnerImage && (
             <div style={{ marginTop: "10px" }}>
               <img
-                src={mealImage}
+                src={dinnerImage}
                 alt="Meal Preview"
                 style={{
                   width: "100%",
