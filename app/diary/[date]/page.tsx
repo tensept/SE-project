@@ -314,6 +314,7 @@ const DiaryPage = () => {
             marginTop: "10px",
             border: "1px solid #ff80ab",
             borderRadius: "5px",
+            color: "black"
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -429,6 +430,7 @@ const DiaryPage = () => {
             marginTop: "10px",
             border: "1px solid #ff80ab",
             borderRadius: "5px",
+            color: "black"
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
