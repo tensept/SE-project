@@ -44,13 +44,6 @@ const HealthDiaryLandingPage = () => {
   </div>
 </div>
 
-
-
-
-
-
-
-
       {/* Features Section */}
       <div className="container mx-auto px-4 py-10">
         <h2 className="text-xl font-bold text-gray-800 mb-8 tracking-wider">FEATURES WE PROVIDE</h2>

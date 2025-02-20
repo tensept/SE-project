@@ -473,7 +473,7 @@ const DiaryPage = () => {
         <h2 style={{ color: "#d81b60", fontSize: "18px" }}>ระดับความเจ็บปวด</h2>
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
-        >
+         >
           <span style={{ marginRight: "10px", color: "#d81b60" }}>1</span>
           <input
             type="range"
