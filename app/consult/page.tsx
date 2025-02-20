@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ConsultList from "../components/ConsultList";
 import ChatBox from "../components/Chatbox";
 
@@ -7,39 +7,79 @@ interface Chat {
   id: number;
   title: string;
   description: string;
+  pinned: boolean;
 }
 
 interface Message {
   id: number;
   text: string;
   user: string;
-  chatId: number; // เก็บว่าเป็นของแชทไหน
+  chatId: number;
+  timestamp: string;
   replyTo?: number | null;
 }
 
 export default function ConsultPage() {
-  const [chats, setChats] = useState<Chat[]>([
-    { id: 1, title: "Question 1", description: "Description" },
-  ]);
-  const [selectedChat, setSelectedChat] = useState<Chat>(chats[0]);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [chats, setChats] = useState<Chat[]>(() => {
+    return JSON.parse(localStorage.getItem("chats") || "[]") || [];
+  });
+
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(chats[0] || null);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    return JSON.parse(localStorage.getItem("messages") || "[]") || [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("chats", JSON.stringify(chats));
+  }, [chats]);
+
+  useEffect(() => {
+    localStorage.setItem("messages", JSON.stringify(messages));
+  }, [messages]);
 
   const addChat = () => {
     const newChat: Chat = {
       id: Date.now(),
       title: `Question ${chats.length + 1}`,
-    //   description: "New supporting text...",
+      description: "New supporting text...",
+      pinned: false,
     };
 
     setChats([...chats, newChat]);
-    setMessages([...messages]); // ให้แชทใหม่ไม่มีข้อความ
     setSelectedChat(newChat);
+  };
+
+  const deleteChat = (id: number) => {
+    setChats(chats.filter(chat => chat.id !== id));
+    setMessages(messages.filter(msg => msg.chatId !== id));
+
+    if (selectedChat?.id === id) {
+      setSelectedChat(chats.length > 1 ? chats[0] : null);
+    }
+  };
+
+  const onToggleFavorite = (id: number) => {
+    setChats(chats.map(chat =>
+      chat.id === id ? { ...chat, pinned: !chat.pinned } : chat
+    ));
   };
 
   return (
     <main className="flex min-h-screen bg-white relative">
-      <ConsultList chats={chats} onSelectChat={setSelectedChat} onAddChat={addChat} />
-      <ChatBox selectedChat={selectedChat} messages={messages} setMessages={setMessages} />
+      <ConsultList 
+        chats={chats} 
+        onSelectChat={setSelectedChat} 
+        onAddChat={addChat} 
+        onToggleFavorite={onToggleFavorite}
+        onDeleteChat={deleteChat}
+      />
+      {selectedChat && (
+        <ChatBox 
+          selectedChat={selectedChat} 
+          messages={messages.filter(msg => msg.chatId === selectedChat.id)} 
+          setMessages={setMessages} 
+        />
+      )}
     </main>
   );
 }
