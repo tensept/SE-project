@@ -31,7 +31,7 @@ const navigateToTodayDiary = () => {
       <nav className="w-full">
         <ul className="space-y-4">
           <NavItem href="/doctor" icon={ScrollText} label="List" active={pathname === "/doctor"} />
-          <NavItem href="/consult" icon={MessagesSquare} label="Diary" active={pathname === "/consult"} />
+          <NavItem href="/consult" icon={MessagesSquare} label="Consult" active={pathname === "/consult"} />
         </ul>
       </nav>
 
