@@ -1,9 +1,9 @@
 "use client";
-import React from 'react';
+import React from "react";
 
 const HealthDiaryLandingPage = () => {
   return (
-    <div className="min-h-screen bg-pink-40">
+    <div className="min-h-screen bg-[#fef7ff]">
       {/* Navigation Bar
       <nav className="flex items-center justify-between p-4 bg-white">
         <div className="flex items-center">
@@ -25,109 +25,123 @@ const HealthDiaryLandingPage = () => {
       </nav> */}
 
       {/* Hero Section */}
-<div className="relative flex justify-center">
-  <img 
-    src="/12.png" 
-    alt="Health Diary" 
-    className="object-cover"
-  />
-  <div className="absolute left-12 top-1/2 transform -translate-y-1/2 p-6">
-  <h1 className="text-7xl md:text-7xl font-bold text-black leading-relaxed">
-  Welcome to Diary
-  <span className="block mb-4"></span> {/* ใช้ span เพื่อเพิ่มระยะห่าง */}
-  for Better Health
-</h1>
-    <br />
-    <p className="text-black text-lg md:text-2xl mt-2 leading-loose">
-      Experience life's momentum with<span className="block mb-4"></span>health at your command.
-    </p>
-  </div>
-</div>
-
-
-
-
-
-
-
+      <div className="relative flex justify-center">
+        <img src="/12.png" alt="Health Diary" className="object-cover" />
+        <div className="absolute left-6 sm:left-10 md:left-12 top-1/2 transform -translate-y-1/2 p-4 sm:p-6">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-black leading-snug sm:leading-tight">
+            ยินดีต้อนรับสู่สมุดบันทึก
+            <span className="block mb-1 sm:mb-4"></span> {/* ลดระยะห่าง */}
+            สำหรับสุขภาพที่ดีขึ้น
+          </h1>
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-black mt-1 sm:mt-2 leading-snug sm:leading-normal">
+            ช่วยบันทึกข้อมูลสุขภาพของคุณ
+            <span className="block mb-1 sm:mb-2"></span>
+            ได้รับคำแนะนำจากผู้เชี่ยวชาญ
+          </p>
+        </div>
+      </div>
 
       {/* Features Section */}
       <div className="container mx-auto px-4 py-10">
-        <h2 className="text-xl font-bold text-gray-800 mb-8 tracking-wider">FEATURES WE PROVIDE</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-pink-100 rounded-3xl p-6 flex items-center justify-between">
-            <img src="/4.png" alt="Medical notebook" className="w-32 h-32" />
-          </div>
-          
-          <div className="grid grid-cols-1 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-800">✓</span>
-              </div>
-              <span className="font-medium">Make your diary</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-800">✓</span>
-              </div>
-              <span className="font-medium">Food Warning</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-800">✓</span>
-              </div>
-              <span className="font-medium">Interactive Doctor</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-800">✓</span>
-              </div>
-              <span className="font-medium">Pain Status</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          {/* วิธีใช้ */}
+          <div className="bg-[#ffedee] rounded-3xl p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 tracking-wider">
+              วิธีใช้
+            </h2>
+            <div className="border-t border-gray-400 mb-6"></div>
+            <div className="rounded-3xl overflow-hidden">
+              <img
+                src="/14.png"
+                alt="Medical notebook"
+                className="w-full h-auto object-cover"
+              />
             </div>
           </div>
-          
-          <div className="grid grid-cols-1 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-800">✓</span>
+
+          {/* สมุดบันทึกนี้ทำอะไรได้บ้าง */}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              สมุดบันทึกนี้ทำอะไรได้บ้าง
+            </h2>
+            <div className="border-t border-gray-400 mb-6"></div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* คอลัมน์ซ้าย */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
+                    <span className="text-black-800 text-lg">✓</span>
+                  </div>
+                  <span className="font-medium text-lg">บันทึกอาหารที่กิน</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
+                    <span className="text-black-800 text-lg">✓</span>
+                  </div>
+                  <span className="font-medium text-lg">
+                    บันทึกอาการแต่ละวัน
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
+                    <span className="text-black-800 text-lg">✓</span>
+                  </div>
+                  <span className="font-medium text-lg">
+                    เตือนอาหารที่กินไม่ได้
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
+                    <span className="text-black-800 text-lg">✓</span>
+                  </div>
+                  <span className="font-medium text-lg">
+                    ระบุระดับความเจ็บปวด
+                  </span>
+                </div>
               </div>
-              <span className="font-medium">Record Symptoms</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-800">✓</span>
+
+              {/* คอลัมน์ขวา */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
+                    <span className="text-black-800 text-lg">✓</span>
+                  </div>
+                  <span className="font-medium text-lg">ปรึกษาคุณหมอ</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
+                    <span className="text-black-800 text-lg">✓</span>
+                  </div>
+                  <span className="font-medium text-lg">ดูประวัติย้อนหลัง</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
+                    <span className="text-black-800 text-lg">✓</span>
+                  </div>
+                  <span className="font-medium text-lg">
+                    เพิ่มเหตุการณ์สำคัญ
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
+                    <span className="text-black-800 text-lg">✓</span>
+                  </div>
+                  <span className="font-medium text-lg">แจ้งเตือนนัดหมาย</span>
+                </div>
               </div>
-              <span className="font-medium">History</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-800">✓</span>
-              </div>
-              <span className="font-medium">Add Event</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-800">✓</span>
-              </div>
-              <span className="font-medium">Notification</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* How to Use Section */}
-      <div className="container mx-auto px-4 py-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">How to use</h2>
-        <div className="border-t border-gray-300 mb-6"></div></div>
-        
-        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* <div className="container mx-auto px-4 py-8">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">สมุดบันทึกนี้ทำอะไรได้บ้าง</h2>
+        <div className="border-t border-gray-300 mb-6"></div>
+      </div> */}
+
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-2xl p-6 flex items-center gap-4">
             <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
               <span className="font-medium">1</span>
@@ -151,14 +165,13 @@ const HealthDiaryLandingPage = () => {
         </div>
       </div> */}
 
-
-<div className="flex justify-center md:justify">
-      <img 
-        src="/8.png" 
-        alt="Health Diary" 
-        className="w-full max-w-lg md:max-w-6xl"
-      />
-    </div>          
+      {/* <div className="flex justify-center md:justify">
+        <img
+          src="/8.png"
+          alt="Health Diary"
+          className="w-full max-w-lg md:max-w-6xl"
+        />
+      </div> */}
 
       {/* Footer
       <footer className="container mx-auto p-6 flex flex-col md:flex-row justify-between items-center">
@@ -181,8 +194,6 @@ const HealthDiaryLandingPage = () => {
       </footer> */}
       <br />
     </div>
-    
-    
   );
 };
 

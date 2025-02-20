@@ -32,7 +32,7 @@ const HealthDiaryLandingPage = () => {
     className="object-cover"
   />
   <div className="absolute left-12 top-1/2 transform -translate-y-1/2 p-6">
-  <h1 className="text-7xl md:text-7xl font-bold text-black leading-relaxed">
+  <h1 className="text-7xl md:text-2xl font-bold text-black leading-relaxed">
   Welcome to Diary
   <span className="block mb-4"></span> {/* ใช้ span เพื่อเพิ่มระยะห่าง */}
   for Better Health
