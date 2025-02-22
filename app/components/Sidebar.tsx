@@ -1,7 +1,7 @@
   'use client';
   import Link from "next/link";
   import { usePathname , useRouter } from "next/navigation";
-  import { Home, BookOpen, MessagesSquare, MoreHorizontal, Plus,History } from "lucide-react";
+  import { Home, BookOpen, MessagesSquare, MoreHorizontal, Plus, History, Calendar } from "lucide-react";
   import Image from "next/image";
 
 
@@ -25,21 +25,14 @@
             className="w-[100%] h-auto"
             priority
           />
-        
 
         {/* Navigation Items */}
         <nav className="w-full">
           <ul className="space-y-4">
             <NavItem href="/" icon={Home} label="Home" active={pathname === "/"} />
-<<<<<<< HEAD
-            <NavItem href="/calendar" icon={BookOpen} label="Diary" active={pathname === "/diary"} />
-            <NavItem href="/consult" icon={MessageCircle} label="Consult" active={pathname === "/consult"} />
-            <NavItem href="#" icon={MoreHorizontal} label="Others" active={pathname === "/others"} />
-=======
-            <NavItem href="/diary" icon={BookOpen} label="Diary" active={pathname === "/diary"} />
+            <NavItem href="/calendar" icon={Calendar} label="Calendar" active={pathname === "/calendar"} />
             <NavItem href="/consult" icon={MessagesSquare} label="Consult" active={pathname === "/consult"} />
-            <NavItem href="/" icon={History} label="History" active={pathname === "/"} />
->>>>>>> 48df4166bdb1abcb5de169953dadd220fd50bf59
+            <NavItem href="/history" icon={History} label="History" active={pathname === "/history"} />
           </ul>
         </nav>
         {/* Add Button */}

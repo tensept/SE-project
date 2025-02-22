@@ -6,6 +6,7 @@ const DiaryPage = () => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
   const pathname = usePathname(); // ดึง path ปัจจุบัน เช่น "/diary/2025-01-06"
+  const [activity, setActivity] = useState("");
   const [symptom, setSymptom] = useState("");
   const [painLevel, setPainLevel] = useState(1);
   const [breakfastNote, setBreakfastNote] = useState("");
@@ -17,7 +18,6 @@ const DiaryPage = () => {
   const [dinnerImage, setDinnerImage] = useState(null);
   const [diaryID, setDiaryID] = useState(null);
   const [checkedFoods, setCheckedFoods] = useState(false);
-  const [activity, setActivity] = useState("");
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -43,8 +43,9 @@ const DiaryPage = () => {
         const result = await response.json();
         console.log("Data fetched:", result);
 
-        const { id, symptom, painScore, breakfast, lunch, dinner, food } = result;
+        const { id, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
         setDiaryID(id);
+        setActivity(activity);
         setSymptom(symptom);
         setPainLevel(painScore);
         setBreakfastNote(breakfast);
@@ -89,7 +90,7 @@ const DiaryPage = () => {
       }
     };
 
-    postPatient();
+    // postPatient();
     fetchDiary();
   }, []);
 
@@ -120,6 +121,7 @@ const DiaryPage = () => {
         body: JSON.stringify({
           patientId: 1,
           date: dateFromPath,
+          activity: activity,
           symptom: symptom,
           painScore: painLevel,
           breakfast: breakfastNote,
@@ -158,6 +160,7 @@ const DiaryPage = () => {
       body: JSON.stringify({
         patientId: 1,
         date: dateFromPath,
+        activity: activity,
         symptom: symptom,
         painScore: painLevel,
         breakfast: breakfastNote,
@@ -404,7 +407,7 @@ const DiaryPage = () => {
           พฤติกรรมการใช้ชีวิต
         </h2>
         <textarea
-          value={activity}
+          value={activity || ""}
           onChange={(e) => setActivity(e.target.value)}
           placeholder="Describe your activity here..."
           maxLength={250}
@@ -419,7 +422,7 @@ const DiaryPage = () => {
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
-          {activity.length}/250
+          {(activity || "").length}/250
         </div>
       </section>
 
