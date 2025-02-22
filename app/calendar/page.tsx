@@ -120,14 +120,14 @@ const Calendar: React.FC = () => {
           </ul>
         </div>
 
-        <div className="w-9/12 mt-8">
+        <div className="w-9/12 mt-8 ">
           <FullCalendar
             height={"85vh"}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
-              left: "prev,next today",
+              left: "prev,next",
               center: "title",
-              right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+              right: "dayGridMonth,timeGridWeek,timeGridDay",
             }}
             initialView="dayGridMonth"
             editable={true}
@@ -136,7 +136,7 @@ const Calendar: React.FC = () => {
             dayMaxEvents={true}
             select={handleDateClick}
             dayHeaderContent={(headerInfo) => (
-              <span className="text-black font-bold border-b border-black">
+              <span className="text-black font-bold ">
                 {headerInfo.text}
               </span>
             )}

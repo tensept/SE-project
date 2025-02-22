@@ -23,3 +23,98 @@ html, body {
   height: 100%;
   background-color: white;
 }
+
+.fc-button.fc-dayGridMonth-button {
+  margin-right: 5px !important;
+  background-color: #FFC2D1 !important; /* เปลี่ยนสีปุ่มเป็นน้ำเงิน */
+  color: black !important; /* เปลี่ยนสีตัวอักษรเป็นขาว */
+  border-radius: 8px !important; /* ทำให้ปุ่มมีมุมโค้ง */
+  border-color: #FFC2D1;
+  padding: 6px 12px !important; /* ขยายขนาดปุ่ม */
+  font-weight: bold !important; /* ทำให้ตัวหนังสือหนา */
+}
+
+.fc-button.fc-timeGridWeek-button {
+  margin-right: 5px !important;
+  background-color: #FFC2D1 !important; /* เปลี่ยนสีปุ่มเป็นน้ำเงิน */
+  color: black !important; /* เปลี่ยนสีตัวอักษรเป็นขาว */
+  border-radius: 8px !important; /* ทำให้ปุ่มมีมุมโค้ง */
+  border-color: #FFC2D1;
+  padding: 6px 12px !important; /* ขยายขนาดปุ่ม */
+  font-weight: bold !important; /* ทำให้ตัวหนังสือหนา */
+}
+
+.fc-button.fc-timeGridDay-button {
+  background-color: #FFC2D1 !important; /* เปลี่ยนสีปุ่มเป็นน้ำเงิน */
+  color: black !important; /* เปลี่ยนสีตัวอักษรเป็นขาว */
+  border-radius: 8px !important; /* ทำให้ปุ่มมีมุมโค้ง */
+  border-color: #FFC2D1;
+  padding: 6px 12px !important; /* ขยายขนาดปุ่ม */
+  font-weight: bold !important; /* ทำให้ตัวหนังสือหนา */
+}
+
+.fc-button.fc-prev-button {
+  margin-right: 5px !important;
+  background-color: #FFC2D1 !important; /* เปลี่ยนสีปุ่มเป็นน้ำเงิน */
+  color: black !important; /* เปลี่ยนสีตัวอักษรเป็นขาว */
+  border-radius: 8px !important; /* ทำให้ปุ่มมีมุมโค้ง */
+  border-color: #FFC2D1;
+  padding: 6px 12px !important; /* ขยายขนาดปุ่ม */
+  font-weight: bold !important; /* ทำให้ตัวหนังสือหนา */
+}
+
+.fc-button.fc-next-button {
+  background-color: #FFC2D1 !important; /* เปลี่ยนสีปุ่มเป็นน้ำเงิน */
+  color: black !important; /* เปลี่ยนสีตัวอักษรเป็นขาว */
+  border-radius: 8px !important; /* ทำให้ปุ่มมีมุมโค้ง */
+  border-color: #FFC2D1;
+  padding: 6px 12px !important; /* ขยายขนาดปุ่ม */
+  font-weight: bold !important; /* ทำให้ตัวหนังสือหนา */
+}
+
+/* เปลี่ยนสีวันที่ปัจจุบันเป็นสีชมพู */
+.fc-day-today {
+  background-color: #fbcfe8 !important; /* สีชมพูอ่อน */
+  color: #9d174d !important; /* เปลี่ยนสีตัวอักษร */
+  border-radius: 6px; /* ทำให้ขอบมน */
+  font-weight: bold;
+  transition: background 0.2s ease-in-out;
+}
+
+/* เมื่อเอาเมาส์ไปชี้วันที่อื่น (ที่ไม่ใช่วันที่ปัจจุบัน) ให้เป็นสีเทา */
+.fc-daygrid-day:not(.fc-day-today):hover {
+  background-color: #e5e7eb !important; /* สีเทาอ่อน */
+  cursor: pointer; /* เปลี่ยนเป็น Cursor แบบ Pointer */
+  transition: background 0.2s ease-in-out;
+}
+
+.fc-day-today:hover {
+  background-color: #f472b6 !important; /* สีชมพูเข้ม */
+}
+
+/* ซ่อน Checkbox เริ่มต้น */
+.custom-checkbox {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #6d5858; /* ขอบสีเขียว */
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* เมื่อ Checkbox ถูกติ๊กแล้วเปลี่ยนเป็นสีเขียว */
+.custom-checkbox:checked {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+.custom-checkbox:checked::after {
+  content: "✔";
+  font-size: 14px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

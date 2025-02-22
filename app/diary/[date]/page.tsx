@@ -17,6 +17,7 @@ const DiaryPage = () => {
   const [dinnerImage, setDinnerImage] = useState(null);
   const [diaryID, setDiaryID] = useState(null);
   const [checkedFoods, setCheckedFoods] = useState(false);
+  const [activity, setActivity] = useState("");
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -237,39 +238,39 @@ const DiaryPage = () => {
     if (!checkedFoods) {
       setCheckedFoods(Array(foods.length).fill(false));
     } else {
-      const columns = 3;
-      const rows = Math.ceil(foods.length / columns);
-      const foodGrid = Array.from({ length: rows }, (_, rowIndex) =>
-        foods.slice(rowIndex * columns, rowIndex * columns + columns)
-      );
-
       return (
-        <div style={{ display: "flex", flexWrap: "wrap" }}>
-          {foodGrid.map((row, rowIndex) => (
-            <div key={rowIndex} style={{ flex: 1, minWidth: "200px" }}>
-              {row.map((food, index) => {
-                const foodIndex = rowIndex * columns + index;
-                return (
-                  <div key={foodIndex} style={{ marginBottom: "10px" }}>
-                    <label style={{ color: "#d81b60" }}>
-                      <input
-                        type="checkbox"
-                        checked={checkedFoods ? checkedFoods[foodIndex] : false}
-                        onChange={() => {
-                          const newCheckedFoods = [...checkedFoods];
-                          newCheckedFoods[foodIndex] =
-                            !newCheckedFoods[foodIndex];
-                          setCheckedFoods(newCheckedFoods);
-                          console.log(newCheckedFoods);
-                        }}
-                        style={{ marginRight: "10px" }}
-                      />
-                      {food}
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)", // 3 คอลัมน์
+            gap: "10px 20px", // ระยะห่างระหว่างแถวและคอลัมน์
+            maxWidth: "800px", // จำกัดความกว้างของ container
+            margin: "auto", // จัดให้อยู่ตรงกลาง
+          }}
+        >
+          {foods.map((food, index) => (
+            <label
+              key={index}
+              style={{
+                color: "#d81b60",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={checkedFoods ? checkedFoods[index] : false}
+                onChange={() => {
+                  const newCheckedFoods = [...checkedFoods];
+                  newCheckedFoods[index] = !newCheckedFoods[index];
+                  setCheckedFoods(newCheckedFoods);
+                  console.log(newCheckedFoods);
+                }}
+                style={{ marginRight: "10px" }}
+                className="custom-checkbox"
+              />
+              {food}
+            </label>
           ))}
         </div>
       );
@@ -315,7 +316,6 @@ const DiaryPage = () => {
         padding: "20px",
       }}
     >
-      <div></div>
       {/* Header */}
       <header
         style={{
@@ -325,7 +325,7 @@ const DiaryPage = () => {
           marginBottom: "20px",
         }}
       >
-        <h1 style={{ color: "#ff80ab", fontSize: "24px" }}>Diary</h1>
+        <h1 style={{ color: "#ff80ab", fontSize: "24px" }}>สมุดบันทึก</h1>
         <div>
           <button
             onClick={() => router.push("/calendar")}
@@ -339,7 +339,8 @@ const DiaryPage = () => {
               cursor: "pointer",
             }}
           >
-            🗓 Back to Calendar
+            {/* 🗓 Back to Calendar */}
+            🗓 กลับสู่หน้าปฏิทิน
           </button>
           <button
             onClick={handlePreviousDay}
@@ -353,7 +354,7 @@ const DiaryPage = () => {
               cursor: "pointer",
             }}
           >
-            ← Previous Day
+            {/* ← Previous Day */}← วันก่อนหน้า
           </button>
           <button
             onClick={handleNextDay}
@@ -366,7 +367,8 @@ const DiaryPage = () => {
               cursor: "pointer",
             }}
           >
-            Next Day →
+            {/* Next Day → */}
+            วันถัดไป →
           </button>
         </div>
       </header>
@@ -382,11 +384,44 @@ const DiaryPage = () => {
       >
         {currentDate
           ? `${currentDate.getDate()} ${currentDate.toLocaleDateString(
-              "en-US",
+              "th-TH",
               { month: "long" }
-            )} ${currentDate.getFullYear()}`
+            )} ${currentDate.getFullYear() + 543}`
           : "Loading..."}
       </div>
+
+      {/* Activity Section */}
+      <section
+        style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "20px",
+          marginBottom: "20px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+          พฤติกรรมการใช้ชีวิต
+        </h2>
+        <textarea
+          value={activity}
+          onChange={(e) => setActivity(e.target.value)}
+          placeholder="Describe your activity here..."
+          maxLength={250}
+          style={{
+            width: "100%",
+            height: "100px",
+            padding: "10px",
+            marginTop: "10px",
+            border: "1px solid #000000",
+            borderRadius: "5px",
+            color: "black",
+          }}
+        />
+        <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
+          {activity.length}/250
+        </div>
+      </section>
 
       {/* Symptom Section */}
       <section
@@ -398,7 +433,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>
           ลักษณะอาการหรือบาดแผล
         </h2>
         <textarea
@@ -411,16 +446,16 @@ const DiaryPage = () => {
             height: "100px",
             padding: "10px",
             marginTop: "10px",
-            border: "1px solid #ff80ab",
+            border: "1px solid #000000",
             borderRadius: "5px",
-            color: "black"
+            color: "black",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
           {symptom.length}/250
         </div>
         <div style={{ marginTop: "10px" }}>
-          <label style={{ color: "#ff80ab", cursor: "pointer" }}>
+          <label style={{ color: "#000000", cursor: "pointer" }}>
             แนบรูปบาดแผล *กรณีผู้ป่วยที่มีบาดแผล*
             <input
               type="file"
@@ -461,10 +496,12 @@ const DiaryPage = () => {
                 src={symptomImage}
                 alt="Meal Preview"
                 style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
+                  width: "100%", // ปรับให้ภาพแคบลง
+                  maxHeight: "300px",
+                  height: "auto",
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
+                  boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
               />
             </div>
@@ -483,7 +520,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>ระดับความเจ็บปวด</h2>
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>ระดับความเจ็บปวด</h2>
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >
@@ -527,7 +564,7 @@ const DiaryPage = () => {
       </section>
 
       <section>
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>
           รายการอาหารที่รับประทานได้ : ปลามีเกล็ด ข้าว ลูกเดือย กล้วยน้ำว้า
           มะละกอสุก ผักปลอดสารพิษ น้ำนมจากพืช น้ำไม่เย็น
         </h2>
@@ -543,7 +580,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อเช้า</h2>
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>มื้อเช้า</h2>
         <textarea
           value={breakfastNote}
           onChange={(e) => setBreakfastNote(e.target.value)}
@@ -554,9 +591,9 @@ const DiaryPage = () => {
             height: "100px",
             padding: "10px",
             marginTop: "10px",
-            border: "1px solid #ff80ab",
+            border: "1px solid #000000",
             borderRadius: "5px",
-            color: "black"
+            color: "black",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -564,7 +601,7 @@ const DiaryPage = () => {
         </div>
 
         <div style={{ marginTop: "10px" }}>
-          <label style={{ color: "#ff80ab", cursor: "pointer" }}>
+          <label style={{ color: "#000000", cursor: "pointer" }}>
             แนบรูปอาหารมื้อเช้า
             <input
               type="file"
@@ -605,10 +642,12 @@ const DiaryPage = () => {
                 src={breakfastImage}
                 alt="Breakfast Preview"
                 style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
+                  width: "100%", // ปรับให้ภาพแคบลง
+                  maxHeight: "300px",
+                  height: "auto",
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
+                  boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
               />
             </div>
@@ -626,7 +665,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อกลางวัน</h2>
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>มื้อกลางวัน</h2>
         <textarea
           value={lunchNote}
           onChange={(e) => setLunchNote(e.target.value)}
@@ -637,7 +676,7 @@ const DiaryPage = () => {
             height: "100px",
             padding: "10px",
             marginTop: "10px",
-            border: "1px solid #ff80ab",
+            border: "1px solid #000000",
             borderRadius: "5px",
           }}
         />
@@ -646,7 +685,7 @@ const DiaryPage = () => {
         </div>
 
         <div style={{ marginTop: "10px" }}>
-          <label style={{ color: "#ff80ab", cursor: "pointer" }}>
+          <label style={{ color: "#000000", cursor: "pointer" }}>
             แนบรูปอาหารมื้อกลางวัน
             <input
               type="file"
@@ -688,10 +727,12 @@ const DiaryPage = () => {
                 src={lunchImage}
                 alt="Lunch Preview"
                 style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
+                  width: "100%", // ปรับให้ภาพแคบลง
+                  maxHeight: "300px",
+                  height: "auto",
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
+                  boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
               />
             </div>
@@ -709,7 +750,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>มื้อเย็น</h2>
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>มื้อเย็น</h2>
         <textarea
           value={dinnerNote}
           onChange={(e) => setDinnerNote(e.target.value)}
@@ -720,7 +761,7 @@ const DiaryPage = () => {
             height: "100px",
             padding: "10px",
             marginTop: "10px",
-            border: "1px solid #ff80ab",
+            border: "1px solid #000000",
             borderRadius: "5px",
           }}
         />
@@ -729,7 +770,7 @@ const DiaryPage = () => {
         </div>
 
         <div style={{ marginTop: "10px" }}>
-          <label style={{ color: "#ff80ab", cursor: "pointer" }}>
+          <label style={{ color: "#000000", cursor: "pointer" }}>
             แนบรูปอาหารมื้อเย็น
             <input
               type="file"
@@ -771,10 +812,12 @@ const DiaryPage = () => {
                 src={dinnerImage}
                 alt="Dinner Preview"
                 style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "cover",
+                  width: "100%", // ปรับให้ภาพแคบลง
+                  maxHeight: "300px",
+                  height: "auto",
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
+                  boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
               />
             </div>
@@ -792,8 +835,8 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#d81b60", fontSize: "18px" }}>
-          หากรับประทานอาหารที่แพทย์สั่งห้ามให้ติ้กถูกที่หน้าข้อความ
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+          หากรับประทานอาหารที่แพทย์สั่งห้ามให้ ✅ ถูกที่หน้าข้อความ
         </h2>
         {/* check box */}
         {checkedBoxFoods()}
