@@ -31,9 +31,9 @@
         <nav className="w-full">
           <ul className="space-y-4">
             <NavItem href="/" icon={Home} label="Home" active={pathname === "/"} />
-            <NavItem href="/diary" icon={BookOpen} label="Diary" active={pathname === "/diary"} />
+            <NavItem href="/calendar" icon={BookOpen} label="Diary" active={pathname === "/diary"} />
             <NavItem href="/consult" icon={MessageCircle} label="Consult" active={pathname === "/consult"} />
-            <NavItem href="/others" icon={MoreHorizontal} label="Others" active={pathname === "/others"} />
+            <NavItem href="#" icon={MoreHorizontal} label="Others" active={pathname === "/others"} />
           </ul>
         </nav>
         {/* Add Button */}

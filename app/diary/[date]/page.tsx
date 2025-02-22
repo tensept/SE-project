@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 const DiaryPage = () => {
   const router = useRouter();
-  const [popUp, setPopUp] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const pathname = usePathname(); // ดึง path ปัจจุบัน เช่น "/diary/2025-01-06"
   const [symptom, setSymptom] = useState("");
@@ -30,7 +29,7 @@ const DiaryPage = () => {
       try {
         console.log("Fetching data from:", path);
 
-        const response = await fetch(`${path}/diaries/2/${dateFromPath}`, {
+        const response = await fetch(`${path}/diaries/1/${dateFromPath}`, {
           method: "GET", // Explicitly specify the GET method
           headers: {
             "Content-Type": "application/json",
@@ -43,11 +42,14 @@ const DiaryPage = () => {
         const result = await response.json();
         console.log("Data fetched:", result);
 
-        const { id, symptom, painScore, breakfast } = result;
+        const { id, symptom, painScore, breakfast, lunch, dinner, food } = result;
         setDiaryID(id);
         setSymptom(symptom);
         setPainLevel(painScore);
-        setMealNote(breakfast);
+        setBreakfastNote(breakfast);
+        setLunchNote(lunch);
+        setDinnerNote(dinner);
+        setCheckedFoods(food);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -70,7 +72,10 @@ const DiaryPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 2,
+            patientId: 3,
+            name: "John Doe",
+            age: 30,
+            citizenID: "1234567890123",
           }),
         });
         if (!response.ok) {
@@ -112,11 +117,14 @@ const DiaryPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          patient: 2,
+          patientId: 1,
           date: dateFromPath,
           symptom: symptom,
           painScore: painLevel,
-          breakfast: mealNote,
+          breakfast: breakfastNote,
+          lunch: lunchNote,
+          dinner: dinnerNote,
+          food: checkedFoods,
         }),
       });
       if (!response.ok) {
@@ -147,11 +155,14 @@ const DiaryPage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        patient: 2,
+        patientId: 1,
         date: dateFromPath,
         symptom: symptom,
         painScore: painLevel,
-        breakfast: mealNote,
+        breakfast: breakfastNote,
+        lunch: lunchNote,
+        dinner: dinnerNote,
+        food: checkedFoods,
       }),
     });
 
@@ -175,7 +186,9 @@ const DiaryPage = () => {
   const handleSave = () => {
     console.log("Symptom:", symptom);
     console.log("Pain Level:", painLevel);
-    console.log("Meal Note:", mealNote);
+    console.log("Breakfase Note:", breakfastNote);
+    console.log("Lunch Note:", lunchNote);
+    console.log("Dinner Note:", dinnerNote);
     if (diaryID) {
       updateDiary();
     } else {

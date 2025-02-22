@@ -66,7 +66,6 @@ const SymptomTracker = () => {
                 className="w-full outline-none resize-none bg-transparent" 
                 rows={3}
                 placeholder="I feel ----------------------------------------------------------------------------"
-                defaultValue="I feel ----------------------------------------------------------------------------"
               ></textarea>
             </div>
           </div>
