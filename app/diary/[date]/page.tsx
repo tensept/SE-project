@@ -18,6 +18,7 @@ const DiaryPage = () => {
   const [dinnerImage, setDinnerImage] = useState(null);
   const [diaryID, setDiaryID] = useState(null);
   const [checkedFoods, setCheckedFoods] = useState(false);
+  const [activity, setActivity] = useState("");
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -262,7 +263,6 @@ const DiaryPage = () => {
       );
     }
   };
-  
 
   const painEmojis = [
     "😁",
@@ -341,8 +341,7 @@ const DiaryPage = () => {
               cursor: "pointer",
             }}
           >
-            {/* ← Previous Day */}
-            ← วันก่อนหน้า
+            {/* ← Previous Day */}← วันก่อนหน้า
           </button>
           <button
             onClick={handleNextDay}
@@ -374,9 +373,42 @@ const DiaryPage = () => {
           ? `${currentDate.getDate()} ${currentDate.toLocaleDateString(
               "th-TH",
               { month: "long" }
-            )} ${currentDate.getFullYear()+543}`
+            )} ${currentDate.getFullYear() + 543}`
           : "Loading..."}
       </div>
+
+      {/* Activity Section */}
+      <section
+        style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "20px",
+          marginBottom: "20px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+          พฤติกรรมการใช้ชีวิต
+        </h2>
+        <textarea
+          value={activity}
+          onChange={(e) => setActivity(e.target.value)}
+          placeholder="Describe your activity here..."
+          maxLength={250}
+          style={{
+            width: "100%",
+            height: "100px",
+            padding: "10px",
+            marginTop: "10px",
+            border: "1px solid #000000",
+            borderRadius: "5px",
+            color: "black",
+          }}
+        />
+        <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
+          {activity.length}/250
+        </div>
+      </section>
 
       {/* Symptom Section */}
       <section
@@ -403,7 +435,7 @@ const DiaryPage = () => {
             marginTop: "10px",
             border: "1px solid #000000",
             borderRadius: "5px",
-            color: "black"
+            color: "black",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -446,15 +478,15 @@ const DiaryPage = () => {
           />
 
           {symptomImage && (
-            <div style={{ marginTop: "10px"  }}>
+            <div style={{ marginTop: "10px" }}>
               <img
                 src={symptomImage}
                 alt="Meal Preview"
                 style={{
-                  width: "100%",// ปรับให้ภาพแคบลง
+                  width: "100%", // ปรับให้ภาพแคบลง
                   maxHeight: "300px",
                   height: "auto",
-                  objectFit: "contain",// แสดงภาพแบบเต็มโดยไม่ถูกตัด
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
                   boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
@@ -478,7 +510,7 @@ const DiaryPage = () => {
         <h2 style={{ color: "#000000", fontSize: "18px" }}>ระดับความเจ็บปวด</h2>
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
-         >
+        >
           <span style={{ marginRight: "10px", color: "#d81b60" }}>1</span>
           <input
             type="range"
@@ -548,7 +580,7 @@ const DiaryPage = () => {
             marginTop: "10px",
             border: "1px solid #000000",
             borderRadius: "5px",
-            color: "black"
+            color: "black",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -597,10 +629,10 @@ const DiaryPage = () => {
                 src={breakfastImage}
                 alt="Breakfast Preview"
                 style={{
-                  width: "100%",// ปรับให้ภาพแคบลง
+                  width: "100%", // ปรับให้ภาพแคบลง
                   maxHeight: "300px",
                   height: "auto",
-                  objectFit: "contain",// แสดงภาพแบบเต็มโดยไม่ถูกตัด
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
                   boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
@@ -682,10 +714,10 @@ const DiaryPage = () => {
                 src={lunchImage}
                 alt="Lunch Preview"
                 style={{
-                  width: "100%",// ปรับให้ภาพแคบลง
+                  width: "100%", // ปรับให้ภาพแคบลง
                   maxHeight: "300px",
                   height: "auto",
-                  objectFit: "contain",// แสดงภาพแบบเต็มโดยไม่ถูกตัด
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
                   boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
@@ -767,10 +799,10 @@ const DiaryPage = () => {
                 src={dinnerImage}
                 alt="Dinner Preview"
                 style={{
-                  width: "100%",// ปรับให้ภาพแคบลง
+                  width: "100%", // ปรับให้ภาพแคบลง
                   maxHeight: "300px",
                   height: "auto",
-                  objectFit: "contain",// แสดงภาพแบบเต็มโดยไม่ถูกตัด
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
                   boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
