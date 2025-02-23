@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="flex h-screen">
-          <SidebarDC /> {/* ✅ เพิ่ม Sidebar ตรงนี้ */}
+          <Sidebar/> {/* ✅ เพิ่ม Sidebar ตรงนี้ */}
           <main className="flex-1 p-6 bg-gray-50">{children}</main> {/* ✅ ส่วน Content */}
         </div>
       </body>

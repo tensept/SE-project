@@ -48,15 +48,8 @@ const SymptomTracker = () => {
             <div className="border border-gray-300 rounded-2xl p-4">
               <textarea 
                 className="w-full outline-none resize-none bg-transparent" 
-<<<<<<< HEAD
                 rows={3}
                 placeholder="I feel ----------------------------------------------------------------------------"
-=======
-                rows={2}
-                readOnly
-                placeholder="Activity ----------------------------------------------------------------------------"
-                defaultValue="Activity ----------------------------------------------------------------------------"
->>>>>>> 48df4166bdb1abcb5de169953dadd220fd50bf59
               ></textarea>
             </div>
           </div>

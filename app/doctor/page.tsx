@@ -7,7 +7,6 @@ interface MessageProps {
   time: string;
   isRead: boolean;
   id: number;
-  
 }
 
 const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
@@ -19,35 +18,24 @@ const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
 
   return (
     <div
-<<<<<<< HEAD
-      className="relative py-4 px-4 my-2 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-      onClick={handleClick}
-    >
-      <div className="flex items-center">
-        <div className="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0"></div>
-        <div className="ml-4 flex-grow">
-          <div className="font-medium text-gray-800">{sender}</div>
-          <div className="text-sm text-gray-500">{time}</div>
-        </div>
-        <div className="text-sm text-gray-400">{isRead ? "read" : "unread"}</div>
-=======
-      className={`relative py-4 px-6 bg-white rounded-xl shadow-md hover:shadow-lg transition cursor-pointer flex items-center border-l-4 ${isRead ? "border-gray-300" : "border-[#FB6F92]"}`}
+      className={`relative py-4 px-6 bg-white rounded-xl shadow-md hover:shadow-lg transition cursor-pointer flex items-center border-l-4 ${
+        isRead ? "border-gray-300" : "border-[#FB6F92]"
+      }`}
       onClick={handleClick}
       style={{ margin: "8px 0" }}
     >
       <div className="w-12 h-12 rounded-full bg-[#FFC2D1] flex items-center justify-center">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" fill="#FFFFFF"/>
-        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#FFFFFF"/>
-      </svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" fill="#FFFFFF"/>
+          <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#FFFFFF"/>
+        </svg>
       </div>
       <div className="ml-4 flex-grow">
-      <div className="font-medium text-gray-900 text-lg">{sender}</div>
-      <div className="text-sm text-gray-600">{time}</div>
+        <div className="font-medium text-gray-900 text-lg">{sender}</div>
+        <div className="text-sm text-gray-600">{time}</div>
       </div>
       <div className={`text-sm font-medium ${isRead ? "text-gray-400" : "text-[#FB6F92]"}`}>
-      {isRead ? "Read" : "Unread"}
->>>>>>> 48df4166bdb1abcb5de169953dadd220fd50bf59
+        {isRead ? "Read" : "Unread"}
       </div>
     </div>
   );
@@ -55,15 +43,12 @@ const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
 
 const HealthDiaryMessages: React.FC = () => {
   const [date, setDate] = useState(new Date());
-<<<<<<< HEAD
   const [messages, setMessages] = useState([]);
+  const [isDateChanged, setIsDateChanged] = useState(false);
 
   useEffect(() => {
     fetchDiary();
   }, [date]);
-=======
-  const [isDateChanged, setIsDateChanged] = useState(false);
->>>>>>> 48df4166bdb1abcb5de169953dadd220fd50bf59
 
   const handlePreviousDate = () => {
     setDate(prevDate => {
@@ -83,29 +68,22 @@ const HealthDiaryMessages: React.FC = () => {
     triggerDateChangeEffect();
   };
 
-<<<<<<< HEAD
-  const formattedDate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-=======
-    // ฟังก์ชันเปลี่ยนสีวันที่ชั่วคราว
-    const triggerDateChangeEffect = () => {
-      setIsDateChanged(true);
-      setTimeout(() => setIsDateChanged(false), 1000); // สีจะกลับเป็นปกติหลังจาก 0.5 วินาที
-    };
+  const triggerDateChangeEffect = () => {
+    setIsDateChanged(true);
+    setTimeout(() => setIsDateChanged(false), 1000);
+  };
 
   const formattedDate = date.toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
->>>>>>> 48df4166bdb1abcb5de169953dadd220fd50bf59
 
   const fetchDiary = async () => {
     try {
       const response = await fetch(`http://localhost:1234/diaries/by-date/${formattedDate}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       });
       if (response.status === 404) {
         console.log("No diary found for the date");
@@ -119,10 +97,8 @@ const HealthDiaryMessages: React.FC = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-gray-50 flex">
-<<<<<<< HEAD
       {/* Left Sidebar Navigation */}
       <div className="w-16 bg-white border-r flex flex-col items-center">
         <div className="mt-6 mb-8">
@@ -133,49 +109,20 @@ const HealthDiaryMessages: React.FC = () => {
             </svg>
           </div>
         </div>
-
-        <div className="flex flex-col space-y-6 items-center">
-          <button className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center text-white shadow-md">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </button>
-
-          <button className="w-12 h-12 bg-white rounded-full flex flex-col items-center justify-center text-pink-500 relative">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z" fill="#EC4899" />
-            </svg>
-            <span className="text-xs mt-1 font-medium">List</span>
-          </button>
-
-          <button className="w-12 h-12 bg-white rounded-full flex flex-col items-center justify-center text-pink-500">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2z" fill="#EC4899" />
-            </svg>
-            <span className="text-xs mt-1 font-medium">Consult</span>
-          </button>
-        </div>
       </div>
-=======
->>>>>>> 48df4166bdb1abcb5de169953dadd220fd50bf59
 
       <div className="flex-1 p-4">
         {/* Date Navigation */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <button className="p-3 bg-gray-200 rounded-full shadow-md hover:shadow-lg" onClick={handlePreviousDate}>
-            ◀
+              ◀
             </button>
-             {/* วันที่ */}
-          <span
-            className={`font-medium text-lg transition-colors duration-500 ${
-              isDateChanged ? "text-[#FB6F92]" : "text-gray-800"
-            } mx-6`}
-          >
-            {formattedDate}
-          </span>
+            <span className={`font-medium text-lg transition-colors duration-500 ${isDateChanged ? "text-[#FB6F92]" : "text-gray-800"} mx-6`}>
+              {formattedDate}
+            </span>
             <button className="p-3 bg-gray-200 rounded-full shadow-md hover:shadow-lg" onClick={handleNextDate}>
-            ▶
+              ▶
             </button>
           </div>
         </div>
@@ -185,8 +132,8 @@ const HealthDiaryMessages: React.FC = () => {
 
         {/* Messages List */}
         <div className="space-y-1">
-          {messages.map(message => (
-            <MessageItem key={message.id} sender={message.symptom} time={message.createdAt} isRead={message.isRead} id={0} />
+          {messages.map((message: any) => (
+            <MessageItem key={message.id} sender={message.symptom} time={message.createdAt} isRead={message.isRead} id={message.id} />
           ))}
         </div>
       </div>
