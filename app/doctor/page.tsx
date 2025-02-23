@@ -43,6 +43,7 @@ const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
 const HealthDiaryMessages: React.FC = () => {
   const [date, setDate] = useState(new Date());
   const [messages, setMessages] = useState([]);
+  const [show_date_time, setShow_Date_Time] = useState("");
 
   useEffect(() => {
     fetchDiary();
@@ -96,6 +97,7 @@ const HealthDiaryMessages: React.FC = () => {
       }
       const data = await response.json();
       setMessages(data);
+      setShow_Date_Time(data[0].created_at.split("T")[0]);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }
@@ -132,7 +134,7 @@ const HealthDiaryMessages: React.FC = () => {
         {/* Messages List */}
         <div className="space-y-1">
           {messages.map(message => (
-            <MessageItem key={message.id} sender={message.symptom} time={message.createdAt} isRead={message.isRead} id={0} />
+            <MessageItem key={message.id} sender={message.patient.name} time={message.createdAt} isRead={message.isRead} id={0} />
           ))}
         </div>
       </div>
