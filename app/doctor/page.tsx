@@ -35,7 +35,11 @@ const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
         <div className="text-sm text-gray-600">{time}</div>
       </div>
       <div className={`text-sm font-medium ${isRead ? "text-gray-400" : "text-[#FB6F92]"}`}>
+<<<<<<< HEAD
         {isRead ? "Read" : "Unread"}
+=======
+      {isRead ? "Read" : "Unread"}
+>>>>>>> b151199b001217736fdabd991064d259786c8a5c
       </div>
     </div>
   );
@@ -68,20 +72,34 @@ const HealthDiaryMessages: React.FC = () => {
     triggerDateChangeEffect();
   };
 
+<<<<<<< HEAD
   const triggerDateChangeEffect = () => {
     setIsDateChanged(true);
     setTimeout(() => setIsDateChanged(false), 1000);
   };
+=======
+    // ฟังก์ชันเปลี่ยนสีวันที่ชั่วคราว
+    const triggerDateChangeEffect = () => {
+      setIsDateChanged(true);
+      setTimeout(() => setIsDateChanged(false), 1000); // สีจะกลับเป็นปกติหลังจาก 0.5 วินาที
+    };
+>>>>>>> b151199b001217736fdabd991064d259786c8a5c
 
   const formattedDate = date.toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
+<<<<<<< HEAD
+=======
+
+  const date_for_api = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+  const [isDateChanged, setIsDateChanged] = useState(false);
+>>>>>>> b151199b001217736fdabd991064d259786c8a5c
 
   const fetchDiary = async () => {
     try {
-      const response = await fetch(`http://localhost:1234/diaries/by-date/${formattedDate}`, {
+      const response = await fetch(`http://localhost:1234/diaries/by-date/${date_for_api}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -99,6 +117,7 @@ const HealthDiaryMessages: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+<<<<<<< HEAD
       {/* Left Sidebar Navigation */}
       <div className="w-16 bg-white border-r flex flex-col items-center">
         <div className="mt-6 mb-8">
@@ -110,6 +129,8 @@ const HealthDiaryMessages: React.FC = () => {
           </div>
         </div>
       </div>
+=======
+>>>>>>> b151199b001217736fdabd991064d259786c8a5c
 
       <div className="flex-1 p-4">
         {/* Date Navigation */}

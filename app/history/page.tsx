@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
 
 const SymptomTracker = () => {
-  const [painLevel, setPainLevel] = useState(10);
   const router = useRouter();
   const restrictedFoods = ['banana', 'lemon', 'cherry', 'apple'];
   
@@ -50,6 +49,8 @@ const SymptomTracker = () => {
                 className="w-full outline-none resize-none bg-transparent" 
                 rows={3}
                 placeholder="I feel ----------------------------------------------------------------------------"
+                readOnly
+                defaultValue="Activity ----------------------------------------------------------------------------"
               ></textarea>
             </div>
           </div>

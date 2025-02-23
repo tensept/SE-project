@@ -25,15 +25,20 @@
             className="w-[100%] h-auto"
             priority
           />
-        
 
         {/* Navigation Items */}
         <nav className="w-full">
           <ul className="space-y-4">
             <NavItem href="/" icon={Home} label="Home" active={pathname === "/"} />
+<<<<<<< HEAD
             <NavItem href="/calendar" icon={BookOpen} label="Diary" active={pathname === "/diary"} />
             <NavItem href="/consult" icon={MessageCircle} label="Consult" active={pathname === "/consult"} />
             <NavItem href="#" icon={MoreHorizontal} label="Others" active={pathname === "/others"} />
+=======
+            <NavItem href="/calendar" icon={Calendar} label="Calendar" active={pathname === "/calendar"} />
+            <NavItem href="/consult" icon={MessagesSquare} label="Consult" active={pathname === "/consult"} />
+            <NavItem href="/history" icon={History} label="History" active={pathname === "/history"} />
+>>>>>>> b151199b001217736fdabd991064d259786c8a5c
           </ul>
         </nav>
         {/* Add Button */}
