@@ -1,7 +1,7 @@
   'use client';
   import Link from "next/link";
   import { usePathname , useRouter } from "next/navigation";
-  import { Home, BookOpen, MessageCircle, History, Plus } from "lucide-react";
+  import { Home, BookOpen, MessagesSquare, MoreHorizontal, Plus,History,MessageCircle , Calendar} from "lucide-react";
   import Image from "next/image";
 
 
@@ -25,15 +25,14 @@
             className="w-[100%] h-auto"
             priority
           />
-        
 
         {/* Navigation Items */}
         <nav className="w-full">
           <ul className="space-y-4">
             <NavItem href="/" icon={Home} label="Home" active={pathname === "/"} />
-            <NavItem href="/calendar" icon={BookOpen} label="Diary" active={pathname === "/calendar"} />
-            <NavItem href="/consult" icon={MessageCircle} label="Consult" active={pathname === "/consult"} />
-            <NavItem href="/" icon={History} label="History" active={pathname === "/"} />
+            <NavItem href="/calendar" icon={Calendar} label="Calendar" active={pathname === "/calendar"} />
+            <NavItem href="/consult" icon={MessagesSquare} label="Consult" active={pathname === "/consult"} />
+            <NavItem href="/history" icon={History} label="History" active={pathname === "/history"} />
           </ul>
         </nav>
         {/* Add Button */}

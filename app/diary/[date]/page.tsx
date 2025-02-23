@@ -4,9 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 const DiaryPage = () => {
   const router = useRouter();
-  const [popUp, setPopUp] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const pathname = usePathname(); // ดึง path ปัจจุบัน เช่น "/diary/2025-01-06"
+  const [activity, setActivity] = useState("");
   const [symptom, setSymptom] = useState("");
   const [painLevel, setPainLevel] = useState(1);
   const [breakfastNote, setBreakfastNote] = useState("");
@@ -30,7 +30,7 @@ const DiaryPage = () => {
       try {
         console.log("Fetching data from:", path);
 
-        const response = await fetch(`${path}/diaries/2/${dateFromPath}`, {
+        const response = await fetch(`${path}/diaries/1/${dateFromPath}`, {
           method: "GET", // Explicitly specify the GET method
           headers: {
             "Content-Type": "application/json",
@@ -43,11 +43,15 @@ const DiaryPage = () => {
         const result = await response.json();
         console.log("Data fetched:", result);
 
-        const { id, symptom, painScore, breakfast } = result;
+        const { id, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
         setDiaryID(id);
+        setActivity(activity);
         setSymptom(symptom);
         setPainLevel(painScore);
-        setMealNote(breakfast);
+        setBreakfastNote(breakfast);
+        setLunchNote(lunch);
+        setDinnerNote(dinner);
+        setCheckedFoods(food);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -70,7 +74,10 @@ const DiaryPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: 2,
+            patientId: 3,
+            name: "John Doe",
+            age: 30,
+            citizenID: "1234567890123",
           }),
         });
         if (!response.ok) {
@@ -83,7 +90,7 @@ const DiaryPage = () => {
       }
     };
 
-    postPatient();
+    // postPatient();
     fetchDiary();
   }, []);
 
@@ -112,11 +119,15 @@ const DiaryPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          patient: 2,
+          patientId: 1,
           date: dateFromPath,
+          activity: activity,
           symptom: symptom,
           painScore: painLevel,
-          breakfast: mealNote,
+          breakfast: breakfastNote,
+          lunch: lunchNote,
+          dinner: dinnerNote,
+          food: checkedFoods,
         }),
       });
       if (!response.ok) {
@@ -147,11 +158,15 @@ const DiaryPage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        patient: 2,
+        patientId: 1,
         date: dateFromPath,
+        activity: activity,
         symptom: symptom,
         painScore: painLevel,
-        breakfast: mealNote,
+        breakfast: breakfastNote,
+        lunch: lunchNote,
+        dinner: dinnerNote,
+        food: checkedFoods,
       }),
     });
 
@@ -175,7 +190,9 @@ const DiaryPage = () => {
   const handleSave = () => {
     console.log("Symptom:", symptom);
     console.log("Pain Level:", painLevel);
-    console.log("Meal Note:", mealNote);
+    console.log("Breakfase Note:", breakfastNote);
+    console.log("Lunch Note:", lunchNote);
+    console.log("Dinner Note:", dinnerNote);
     if (diaryID) {
       updateDiary();
     } else {
@@ -262,7 +279,6 @@ const DiaryPage = () => {
       );
     }
   };
-  
 
   const painEmojis = [
     "😁",
@@ -341,8 +357,7 @@ const DiaryPage = () => {
               cursor: "pointer",
             }}
           >
-            {/* ← Previous Day */}
-            ← วันก่อนหน้า
+            {/* ← Previous Day */}← วันก่อนหน้า
           </button>
           <button
             onClick={handleNextDay}
@@ -374,9 +389,42 @@ const DiaryPage = () => {
           ? `${currentDate.getDate()} ${currentDate.toLocaleDateString(
               "th-TH",
               { month: "long" }
-            )} ${currentDate.getFullYear()+543}`
+            )} ${currentDate.getFullYear() + 543}`
           : "Loading..."}
       </div>
+
+      {/* Activity Section */}
+      <section
+        style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "20px",
+          marginBottom: "20px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+          พฤติกรรมการใช้ชีวิต
+        </h2>
+        <textarea
+          value={activity || ""}
+          onChange={(e) => setActivity(e.target.value)}
+          placeholder="Describe your activity here..."
+          maxLength={250}
+          style={{
+            width: "100%",
+            height: "100px",
+            padding: "10px",
+            marginTop: "10px",
+            border: "1px solid #000000",
+            borderRadius: "5px",
+            color: "black",
+          }}
+        />
+        <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
+          {(activity || "").length}/250
+        </div>
+      </section>
 
       {/* Symptom Section */}
       <section
@@ -403,7 +451,7 @@ const DiaryPage = () => {
             marginTop: "10px",
             border: "1px solid #000000",
             borderRadius: "5px",
-            color: "black"
+            color: "black",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -446,15 +494,15 @@ const DiaryPage = () => {
           />
 
           {symptomImage && (
-            <div style={{ marginTop: "10px"  }}>
+            <div style={{ marginTop: "10px" }}>
               <img
                 src={symptomImage}
                 alt="Meal Preview"
                 style={{
-                  width: "100%",// ปรับให้ภาพแคบลง
+                  width: "100%", // ปรับให้ภาพแคบลง
                   maxHeight: "300px",
                   height: "auto",
-                  objectFit: "contain",// แสดงภาพแบบเต็มโดยไม่ถูกตัด
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
                   boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
@@ -478,7 +526,7 @@ const DiaryPage = () => {
         <h2 style={{ color: "#000000", fontSize: "18px" }}>ระดับความเจ็บปวด</h2>
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
-         >
+        >
           <span style={{ marginRight: "10px", color: "#d81b60" }}>1</span>
           <input
             type="range"
@@ -548,7 +596,7 @@ const DiaryPage = () => {
             marginTop: "10px",
             border: "1px solid #000000",
             borderRadius: "5px",
-            color: "black"
+            color: "black",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -597,10 +645,10 @@ const DiaryPage = () => {
                 src={breakfastImage}
                 alt="Breakfast Preview"
                 style={{
-                  width: "100%",// ปรับให้ภาพแคบลง
+                  width: "100%", // ปรับให้ภาพแคบลง
                   maxHeight: "300px",
                   height: "auto",
-                  objectFit: "contain",// แสดงภาพแบบเต็มโดยไม่ถูกตัด
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
                   boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
@@ -682,10 +730,10 @@ const DiaryPage = () => {
                 src={lunchImage}
                 alt="Lunch Preview"
                 style={{
-                  width: "100%",// ปรับให้ภาพแคบลง
+                  width: "100%", // ปรับให้ภาพแคบลง
                   maxHeight: "300px",
                   height: "auto",
-                  objectFit: "contain",// แสดงภาพแบบเต็มโดยไม่ถูกตัด
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
                   boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}
@@ -767,10 +815,10 @@ const DiaryPage = () => {
                 src={dinnerImage}
                 alt="Dinner Preview"
                 style={{
-                  width: "100%",// ปรับให้ภาพแคบลง
+                  width: "100%", // ปรับให้ภาพแคบลง
                   maxHeight: "300px",
                   height: "auto",
-                  objectFit: "contain",// แสดงภาพแบบเต็มโดยไม่ถูกตัด
+                  objectFit: "contain", // แสดงภาพแบบเต็มโดยไม่ถูกตัด
                   borderRadius: "5px",
                   boxShadow: "0px 4px 6px rgba(0.5, 0.5, 0.5, 0.5)", // เพิ่มเงาให้ภาพดูเด่นขึ้น
                 }}

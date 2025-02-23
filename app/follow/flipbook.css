@@ -1,0 +1,223 @@
+.book-container {
+    position: relative;
+    left: 22%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    height: 630px;
+    width: 1000px;
+    max-width: 1000px;
+    background-color: #FFC2D1;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column; /* จัดเรียงแนวตั้ง */
+    justify-content: center; /* ให้ book อยู่ตรงกลาง */
+    align-items: center; /* จัดให้อยู่กึ่งกลางแนวนอน */
+}
+
+.center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-left: 400px; /* ✅ ขยับไปขวา 200px */
+}
+.book {
+  width: 400px;
+  height: 500px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 400px;
+  margin-bottom: 100px;
+}
+.pages {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.page {
+  width: 450px;
+  height: 600px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 7mm;
+  margin: 0 6px;
+  transform-style: preserve-3d;
+  transform-origin: left;
+  transition: 0.25s;
+  box-shadow: 1px 0px 0 0 rgba(0, 0, 0, 0.15),
+    20px 3px 1px 0 #E2ACB0;
+}
+.page-side {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 20px 30px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  font-family: poppins;
+  border-radius: 7mm;
+  position: absolute;
+  top: 0;
+  left: 10; /*ปรับระยะห่างหน้ากระดาษ*/
+  backface-visibility: hidden;
+}
+.page-head {
+  width: 100%;
+}
+.page-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 40px;
+  font-weight: 500;
+}
+.page-subtitle {
+  font-size: 12px;
+  font-weight: 300;
+}
+.page-content {
+  flex-grow: 1;
+  font-size: 14px;
+  display: flex;
+  align-items: flex-end;
+}
+.page-footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  font-size: 14px;
+}
+.pg-no {
+  width: 14px;
+  padding: 0 15px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  color: rgb(40, 40, 40);
+  background: white;
+  border-radius: 3mm;
+}
+.front {
+  background: #FAEDF0;
+  color: rgb(40, 40, 40);
+  padding-left: 40px;
+}
+.back {
+  background:#FAEDF0;
+  color: rgb(40, 40, 40);
+  padding-right: 40px;
+  transform: rotateY(180deg);
+}
+.beads {
+  position: absolute;
+  top: 0;
+  left: -12px;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  z-index: 10000;
+}
+.bead {
+  width: 36px;
+  height: 12px;
+  background: white;
+  border-radius: 5mm;
+  z-index: 9999;
+  box-shadow: inset 1px 2px 0 0 rgba(0, 0, 0, 0.15),
+    inset 1px 3px 1px 0 rgba(0, 0, 0, 0.1);
+}
+.controls {
+  width: 350px;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.controls button {
+  background: white;
+  width: 40px;
+  height: 40px;
+  border: 0.4mm solid rgb(40, 40, 40);
+  border-radius: 50%;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+/* ปุ่มลูกศร */
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color:#FDD3D0;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 24px;
+    transition: background 0.3s ease;
+    z-index: 10000; /* ทำให้ปุ่มอยู่เหนือทุกอย่าง */
+  }
+  
+  /* ปุ่มชิดขอบด้านในของหนังสือ */
+  .nav-button.left {
+    left: -430px;  /* ห่างจากขอบซ้าย 5px */
+    top: 40px;
+  }
+  
+  .nav-button.right {
+    right: -40px; /* ห่างจากขอบขวา 5px */
+    top: 40px;
+  }
+  
+  /* Hover Effect */
+  .nav-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  .clip-marker {
+    position: absolute;
+    left: -40px; /* ✅ ขยับไปทางขวามากขึ้น */
+    background-color: #ffcc00;
+    color: #333;
+    font-weight: bold;
+    padding: 10px 16px;
+    width: 90px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%);
+    transform-origin: left center;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* ✅ เอฟเฟกต์ Hover */
+  .clip-marker:hover {
+    background-color: #ffaa00;
+    transform: scale(1.05) rotate(-2deg);
+  }
+  
+  /* ✅ Diary Marker */
+  .diary-marker {
+    top: 10%;
+  }
+  
+  /* ✅ Follow-up Marker (ให้เรียงต่อกัน) */
+  .followup-marker {
+    top: 20%;
+  }
+  

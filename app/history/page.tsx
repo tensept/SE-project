@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
 
 const SymptomTracker = () => {
-  const [painLevel, setPainLevel] = useState(10);
   const router = useRouter();
   const restrictedFoods = ['banana', 'lemon', 'cherry', 'apple'];
   
@@ -33,7 +32,7 @@ const SymptomTracker = () => {
               <path d="M19 12H5" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M12 19L5 12L12 5" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            Back to List
+            ย้อนกลับ
           </button>
         </div>
       </div>
@@ -44,56 +43,51 @@ const SymptomTracker = () => {
         {/* Main Content */}
         <div className="flex-1 p-6">
           <div className="mb-8">
-            <h2 className="text-lg font-medium mb-3">Symptom</h2>
+            <h2 className="text-lg font-medium mb-3">พฤติกรรมการใช้ชีวิต</h2>
             <div className="border border-gray-300 rounded-2xl p-4">
               <textarea 
                 className="w-full outline-none resize-none bg-transparent" 
-                rows={2}
-                readOnly
+                rows={3}
                 placeholder="I feel ----------------------------------------------------------------------------"
-                defaultValue="I feel ----------------------------------------------------------------------------"
+                readOnly
+                defaultValue="Activity ----------------------------------------------------------------------------"
               ></textarea>
-              <img 
-                src="/12.png" 
-                alt="Health Diary" 
-                className="object-cover"
-              />
             </div>
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-lg font-medium mb-3">Pain Status</h2>
+            <div className="mb-8">
+            <h2 className="text-lg font-medium mb-3">ลักษณะอาการหรือบาดแผล</h2>
             <div className="border border-gray-300 rounded-2xl p-4">
               <textarea 
-                className="w-full outline-none resize-none bg-transparent" 
-                rows={1}
-                readOnly
-                placeholder="Level 2"
-                defaultValue="Level 2"
-              ></textarea>
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <h2 className="text-lg font-medium mb-3">Breakfast</h2>
-            <div className="border border-gray-300 rounded-2xl p-4">
-              <textarea 
-                className="w-full outline-none resize-none bg-transparent" 
-                rows={2}
-                readOnly
-                placeholder="---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-                defaultValue="--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+              className="w-full outline-none resize-none bg-transparent" 
+              rows={2}
+              readOnly
+              placeholder="I feel ----------------------------------------------------------------------------"
+              defaultValue="I feel ----------------------------------------------------------------------------"
               ></textarea>
               <img 
-                src="/12.png" 
-                alt="Health Diary" 
-                className="object-cover"
+              src="/12.png" 
+              alt="Health Diary" 
+              className="object-cover"
               />
             </div>
-          </div>
+            </div>
+
+            <div className="mb-8">
+            <h2 className="text-lg font-medium mb-3">ระดับความเจ็บปวด</h2>
+            <div className="border border-gray-300 rounded-2xl p-4">
+              <textarea 
+              className="w-full outline-none resize-none bg-transparent" 
+              rows={1}
+              readOnly
+              placeholder="Level 2"
+              defaultValue="Level 2"
+              ></textarea>
+            </div>
+            </div>
 
           <div className="mb-8">
-            <h2 className="text-lg font-medium mb-3">Lunch</h2>
+            <h2 className="text-lg font-medium mb-3">มื้อเช้า</h2>
             <div className="border border-gray-300 rounded-2xl p-4">
               <textarea 
                 className="w-full outline-none resize-none bg-transparent" 
@@ -111,7 +105,25 @@ const SymptomTracker = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-lg font-medium mb-3">Dinner</h2>
+            <h2 className="text-lg font-medium mb-3">มื้อกลางวัน</h2>
+            <div className="border border-gray-300 rounded-2xl p-4">
+              <textarea 
+                className="w-full outline-none resize-none bg-transparent" 
+                rows={2}
+                readOnly
+                placeholder="---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+                defaultValue="--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+              ></textarea>
+              <img 
+                src="/12.png" 
+                alt="Health Diary" 
+                className="object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-lg font-medium mb-3">มื้อเย็น</h2>
             <div className="border border-gray-300 rounded-2xl p-4">
               <textarea 
                 className="w-full outline-none resize-none bg-transparent" 
@@ -129,7 +141,7 @@ const SymptomTracker = () => {
           </div>
 
         <div>
-          <label className="text-lg font-medium mb-3">Don't eat but eat</label>
+          <label className="text-lg font-medium mb-3">อาหารสแลงที่รับประทาน</label>
           <span className="block mb-2 sm:mb-2"></span>
           <div className="pl-6"> {/* ใช้ padding-left เพื่อเยื้องเข้าไป */}
             {restrictedFoods.map((food, index) => (
