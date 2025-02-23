@@ -1,7 +1,7 @@
   'use client';
   import Link from "next/link";
   import { usePathname , useRouter } from "next/navigation";
-  import { Home, BookOpen, MessagesSquare, MoreHorizontal, Plus,History } from "lucide-react";
+  import { Home, BookOpen, MessageCircle, History, Plus } from "lucide-react";
   import Image from "next/image";
 
 
@@ -31,8 +31,8 @@
         <nav className="w-full">
           <ul className="space-y-4">
             <NavItem href="/" icon={Home} label="Home" active={pathname === "/"} />
-            <NavItem href="/diary" icon={BookOpen} label="Diary" active={pathname === "/diary"} />
-            <NavItem href="/consult" icon={MessagesSquare} label="Consult" active={pathname === "/consult"} />
+            <NavItem href="/calendar" icon={BookOpen} label="Diary" active={pathname === "/calendar"} />
+            <NavItem href="/consult" icon={MessageCircle} label="Consult" active={pathname === "/consult"} />
             <NavItem href="/" icon={History} label="History" active={pathname === "/"} />
           </ul>
         </nav>
