@@ -7,6 +7,7 @@ import SummaryCard from '../components/SummaryCard';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 interface DiaryEntry {
+<<<<<<< HEAD
   date: string;
   time: string;
   activity: string;
@@ -19,6 +20,18 @@ interface DiaryEntry {
   };
 }
 
+=======
+    date: string;
+    time: string;
+    symptom: string;
+    painLevel: number;
+    meals: {
+      breakfast: string;
+    };
+  }
+
+  
+>>>>>>> bda4de12bd6b9939c11a4151bc63c124b81aa6ea
 const FlipBook: React.FC = () => {
   const userInfo = {
     profilePic: "/Jud.jpg",
@@ -46,6 +59,7 @@ const FlipBook: React.FC = () => {
   const calculatePainData = () => {
     const monthlyData: { [key: string]: { total: number; count: number } } = {};
     
+<<<<<<< HEAD
     entries.forEach((entry) => {
       const [, month] = entry.date.split(" ");
       if (!monthlyData[month]) monthlyData[month] = { total: 0, count: 0 };
@@ -58,6 +72,62 @@ const FlipBook: React.FC = () => {
       averagePain: monthlyData[month].total / monthlyData[month].count,
     }));
   };
+=======
+    const [entries, setEntries] = useState<DiaryEntry[]>([
+        { date: '29 December 2023', time: '6:00 PM', symptom: '', painLevel: 3, meals: { breakfast: '' } },
+        { date: '30 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
+        { date: '31 December 2023', time: '5:48 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } },
+        { date: '1 January 2024', time: '6:58 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } },
+        { date: '2 January 2024', time: '7:00 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } }
+      ]);
+      
+      
+      const [isFetching, setIsFetching] = useState(false);
+    
+      const formattedEntries = entries.length % 2 === 0 ? entries : [...entries, null as unknown as DiaryEntry];
+      const [currentPage, setCurrentPage] = useState(2);
+      const canGoPrevious = currentPage > 0;
+      const canGoNext = currentPage + 2 < entries.length;
+      
+      const fetchMoreEntries = () => {
+        if (isFetching) return;
+        setIsFetching(true);
+      
+        let newEntries: DiaryEntry[] = [
+          { date: '28 December 2023', time: '6:00 PM', symptom: '', painLevel: 3, meals: { breakfast: '' } },
+          { date: '27 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
+          { date: '26 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
+          { date: '25 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
+          { date: '24 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } }
+        ];
+      
+        setEntries((prev) => [...newEntries, ...prev]);
+      
+        // ✅ ปรับให้หน้าแรกยังเป็น 30 Dec - 31 Dec
+        setCurrentPage((prev) => prev + 2);
+      
+        setTimeout(() => setIsFetching(false), 500);
+      };
+      
+      // ✅ เช็คว่าถอยหลังไปถึงหน้าแรกหรือยัง แล้วโหลดเพิ่ม
+      useEffect(() => {
+        if (currentPage === 0) {
+          fetchMoreEntries();
+        }
+      }, [currentPage]);
+      
+      
+      const previous = () => {
+        setCurrentPage((prev) => Math.max(prev - 2, 0)); // ✅ ป้องกันติดลบ
+      };
+      
+      const next = () => {
+        if (currentPage + 2 < formattedEntries.length) {
+          setCurrentPage((prev) => prev + 2);
+        }
+      };
+      
+>>>>>>> bda4de12bd6b9939c11a4151bc63c124b81aa6ea
 
   return (
     <div className="center">

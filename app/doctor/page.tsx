@@ -35,11 +35,7 @@ const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
         <div className="text-sm text-gray-600">{time}</div>
       </div>
       <div className={`text-sm font-medium ${isRead ? "text-gray-400" : "text-[#FB6F92]"}`}>
-<<<<<<< HEAD
-        {isRead ? "Read" : "Unread"}
-=======
       {isRead ? "Read" : "Unread"}
->>>>>>> b151199b001217736fdabd991064d259786c8a5c
       </div>
     </div>
   );
@@ -72,30 +68,20 @@ const HealthDiaryMessages: React.FC = () => {
     triggerDateChangeEffect();
   };
 
-<<<<<<< HEAD
-  const triggerDateChangeEffect = () => {
-    setIsDateChanged(true);
-    setTimeout(() => setIsDateChanged(false), 1000);
-  };
-=======
     // ฟังก์ชันเปลี่ยนสีวันที่ชั่วคราว
     const triggerDateChangeEffect = () => {
       setIsDateChanged(true);
       setTimeout(() => setIsDateChanged(false), 1000); // สีจะกลับเป็นปกติหลังจาก 0.5 วินาที
     };
->>>>>>> b151199b001217736fdabd991064d259786c8a5c
 
   const formattedDate = date.toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-<<<<<<< HEAD
-=======
 
   const date_for_api = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-  const [isDateChanged, setIsDateChanged] = useState(false);
->>>>>>> b151199b001217736fdabd991064d259786c8a5c
+  // const [isDateChanged, setIsDateChanged] = useState(false);
 
   const fetchDiary = async () => {
     try {
@@ -110,6 +96,7 @@ const HealthDiaryMessages: React.FC = () => {
       }
       const data = await response.json();
       setMessages(data);
+      setShow_Date_Time(data[0].created_at.split("T")[0]);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }
@@ -117,20 +104,6 @@ const HealthDiaryMessages: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-<<<<<<< HEAD
-      {/* Left Sidebar Navigation */}
-      <div className="w-16 bg-white border-r flex flex-col items-center">
-        <div className="mt-6 mb-8">
-          <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4z" fill="#EC4899" />
-              <path d="M18 16H6c-1.1 0-2 .9-2 2v4h16v-4c0-1.1-.9-2-2-2z" fill="#EC4899" />
-            </svg>
-          </div>
-        </div>
-      </div>
-=======
->>>>>>> b151199b001217736fdabd991064d259786c8a5c
 
       <div className="flex-1 p-4">
         {/* Date Navigation */}
@@ -154,7 +127,7 @@ const HealthDiaryMessages: React.FC = () => {
         {/* Messages List */}
         <div className="space-y-1">
           {messages.map((message: any) => (
-            <MessageItem key={message.id} sender={message.symptom} time={message.createdAt} isRead={message.isRead} id={message.id} />
+            <MessageItem key={message.id} sender={message.patient.name} time={message.createdAt} isRead={message.isRead} id={message.id} />
           ))}
         </div>
       </div>
@@ -163,3 +136,7 @@ const HealthDiaryMessages: React.FC = () => {
 };
 
 export default HealthDiaryMessages;
+function setShow_Date_Time(arg0: any) {
+  throw new Error("Function not implemented.");
+}
+

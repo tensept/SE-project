@@ -27,14 +27,88 @@ const Calendar: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<DateSelectArg | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedEvents = localStorage.getItem("events");
-      if (savedEvents) {
-        setCurrentEvents(JSON.parse(savedEvents));
-      }
+  // Error status 500 
+  const handleCreateEvent = async (createEventDto: EventInput): Promise<void> => {
+    try {
+        const response = await fetch('http://localhost:1234/events', { // เปลี่ยนเป็นพอร์ต 3000 ตามที่ NestJS ใช้
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(createEventDto),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const newEvent = await response.json();
+        console.log("Event Created:", newEvent);
+
+        // อัปเดต State (ถ้าใช้ React)
+        if (typeof setCurrentEvents === "function") {
+            setCurrentEvents((prevEvents) => [...prevEvents, newEvent]);
+        }
+
+    } catch (error) {
+        console.error("Error creating event:", error);
     }
-  }, []);
+  };
+
+  const [messages, setMessages] = useState([]);
+
+useEffect(() => {
+  console.log("Before: ", messages);
+  getEvent();
+}, []);
+
+useEffect(() => {
+  console.log("Updated messages: ", messages);
+}, [messages]); // Logs new messages when it updates
+
+const getEvent = async () => {
+  try {
+    const response = await fetch("http://localhost:1234/events?patientId=1&month=2&year=2025", {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (response.status === 404) {
+      console.log("No diary found for the date");
+      return;
+    }
+
+    const data = await response.json();
+    console.log("Data:", data);
+    console.log("cur Event:",currentEvents);
+    setMessages(data); // Updates state asynchronously
+  } catch (error) {
+    console.error("Error fetching diary:", error);
+  }
+};
+
+
+  // I thing that we don't have this feature
+
+  // const handleUpdateEvent = async (id: string, updateEventDto: EventInput): Promise<void> => {
+  //   try {
+  //     const response = await fetch(`http://localhost:1234/api/events/${id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(updateEventDto),
+  //     });
+  //     if (response.ok) {
+  //       const updatedEvent = await response.json();
+  //       setCurrentEvents((prevEvents) =>
+  //         prevEvents.map((event) => (event.id === id ? updatedEvent : event))
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error('Error updating event:', error);
+  //   }
+  // };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
