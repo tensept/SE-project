@@ -81,7 +81,7 @@ const HealthDiaryMessages: React.FC = () => {
   });
 
   const date_for_api = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-  const [isDateChanged, setIsDateChanged] = useState(false);
+  // const [isDateChanged, setIsDateChanged] = useState(false);
 
   const fetchDiary = async () => {
     try {
@@ -136,3 +136,7 @@ const HealthDiaryMessages: React.FC = () => {
 };
 
 export default HealthDiaryMessages;
+function setShow_Date_Time(arg0: any) {
+  throw new Error("Function not implemented.");
+}
+
