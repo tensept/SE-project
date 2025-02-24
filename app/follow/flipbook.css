@@ -118,6 +118,14 @@
   padding-right: 40px;
   transform: rotateY(180deg);
 }
+.left-page {
+  transform-origin: left center;
+}
+
+.right-page {
+  transform-origin: right center;
+}
+
 .beads {
   position: absolute;
   top: 0;
@@ -190,34 +198,41 @@
   }
   .clip-marker {
     position: absolute;
-    left: -40px; /* ✅ ขยับไปทางขวามากขึ้น */
-    background-color: #ffcc00;
+    left: -50px; /* ✅ ขยับไปทางขวามากขึ้น */
     color: #333;
     font-weight: bold;
-    padding: 10px 16px;
-    width: 90px;
+    padding: 10px 3px;
+    width: 60px;
+    height: 90px;
     text-align: center;
-    border: none;
+    border-radius: 20px;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
-    clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 0% 100%);
+    clip-path: polygon(0% 0%, 85% 0%, 85% 100%, 0% 100%);
     transform-origin: left center;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
   }
+
+  .clip-marker span {
+    display: inline-block;
+    transform: rotate(-90deg); /* หมุนคำให้เป็นแนวตั้ง */
+    white-space: nowrap; /* ป้องกันขึ้นบรรทัดใหม่ */
+}
   
   /* ✅ เอฟเฟกต์ Hover */
   .clip-marker:hover {
-    background-color: #ffaa00;
-    transform: scale(1.05) rotate(-2deg);
+    background-color: #f8cadb;
   }
   
   /* ✅ Diary Marker */
   .diary-marker {
     top: 10%;
+    background-color: #FDD3D0;
   }
   
   /* ✅ Follow-up Marker (ให้เรียงต่อกัน) */
   .followup-marker {
-    top: 20%;
+    top: 25%;
+    background-color: #FCC6CB;
   }
   
