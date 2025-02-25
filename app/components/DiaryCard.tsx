@@ -17,8 +17,8 @@ interface DiaryCardProps {
 
 const DiaryCard: React.FC<DiaryCardProps> = ({ date, time, activity ,symptom, painLevel, meals }) => {
     return (
-        <div className="w-full h-full p-12 mb-2">
-        <div className="flex flex-col items-center mb-2 mt-[-30px]">
+        <div className="w-full h-full p-6 mb-2">
+        <div className="flex flex-col items-center mb-2 mt-[-10px]">
           <span className="text-gray-600">{date}</span>
           <span className="text-gray-400">{time}</span>
         </div>

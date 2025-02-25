@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import "../follow/flipbook.css"; 
+import React, { useState } from "react";
+import "../follow/flipbook.css";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import DiaryCard from '../components/DiaryCard';
-import SummaryCard from '../components/SummaryCard';
+import DiaryCard from "../components/DiaryCard";
+import SummaryCard from "../components/SummaryCard";
+import ChartCard from "../components/ChartCard";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 interface DiaryEntry {
-<<<<<<< HEAD
   date: string;
   time: string;
   activity: string;
@@ -20,18 +20,6 @@ interface DiaryEntry {
   };
 }
 
-=======
-    date: string;
-    time: string;
-    symptom: string;
-    painLevel: number;
-    meals: {
-      breakfast: string;
-    };
-  }
-
-  
->>>>>>> bda4de12bd6b9939c11a4151bc63c124b81aa6ea
 const FlipBook: React.FC = () => {
   const userInfo = {
     profilePic: "/Jud.jpg",
@@ -43,125 +31,129 @@ const FlipBook: React.FC = () => {
     bloodPressure: "120/80",
   };
 
-  const [entries, setEntries] = useState<DiaryEntry[]>([
-    { date: '29 December 2023', time: '6:00 PM', activity: '', symptom: '', painLevel: 3, meals: { breakfast: '', lunch: '', dinner: ''} },
-    { date: '30 December 2023', time: '5:30 PM', activity: '', symptom: '', painLevel: 1, meals: { breakfast: '', lunch: '', dinner: '' } },
-    { date: '31 December 2023', time: '5:48 PM', activity: '', symptom: '', painLevel: 2, meals: { breakfast: '', lunch: '', dinner: '' } },
-    { date: '1 January 2024', time: '6:48 PM', activity: '', symptom: '', painLevel: 2, meals: { breakfast: '', lunch: '', dinner: '' } },
-  ]);
-
-  const formattedEntries = entries.length % 2 === 0 ? entries : [...entries, null as unknown as DiaryEntry];
-
-  const [currentPage, setCurrentPage] = useState(2);
-  const canGoPrevious = currentPage > 0;
-  const canGoNext = currentPage + 2 < formattedEntries.length + 2; // ✅ เพิ่มเงื่อนไขหน้าสุดท้าย
-
-  const calculatePainData = () => {
-    const monthlyData: { [key: string]: { total: number; count: number } } = {};
+  const entries: (DiaryEntry | null)[] = [
+      // ✅ November 2024
+      { date: "05 November 2024", time: "6:45 AM", activity: "Jogging", symptom: "Slight Knee Pain", painLevel: 2, meals: { breakfast: "Omelet", lunch: "Grilled Chicken", dinner: "Soup" } },
+      { date: "10 November 2024", time: "7:30 PM", activity: "Yoga", symptom: "Relaxed", painLevel: 1, meals: { breakfast: "Smoothie", lunch: "Quinoa Salad", dinner: "Grilled Fish" } },
+      { date: "15 November 2024", time: "5:00 PM", activity: "Swimming", symptom: "Sore Shoulders", painLevel: 3, meals: { breakfast: "Toast", lunch: "Pasta", dinner: "Roast Beef" } },
+      { date: "20 November 2024", time: "6:15 PM", activity: "Cycling", symptom: "Tired", painLevel: 2, meals: { breakfast: "Yogurt", lunch: "Rice & Chicken", dinner: "Steak" } },
+      { date: "25 November 2024", time: "8:00 AM", activity: "Hiking", symptom: "None", painLevel: 1, meals: { breakfast: "Oatmeal", lunch: "Sandwich", dinner: "Grilled Vegetables" } },
     
-<<<<<<< HEAD
-    entries.forEach((entry) => {
-      const [, month] = entry.date.split(" ");
-      if (!monthlyData[month]) monthlyData[month] = { total: 0, count: 0 };
-      monthlyData[month].total += entry.painLevel;
-      monthlyData[month].count += 1;
-    });
+      // ✅ December 2024
+      { date: "05 December 2024", time: "6:30 PM", activity: "Weight Training", symptom: "Sore Arms", painLevel: 4, meals: { breakfast: "Eggs", lunch: "Salad", dinner: "Fish & Rice" } },
+      { date: "12 December 2024", time: "7:00 AM", activity: "Running", symptom: "Ankle Pain", painLevel: 3, meals: { breakfast: "Pancakes", lunch: "Chicken Wrap", dinner: "Soup" } },
+      { date: "18 December 2024", time: "5:45 PM", activity: "Dancing", symptom: "None", painLevel: 1, meals: { breakfast: "Fruit Salad", lunch: "Sushi", dinner: "Steak" } },
+      { date: "22 December 2024", time: "6:00 PM", activity: "Meditation", symptom: "Calm", painLevel: 1, meals: { breakfast: "Smoothie Bowl", lunch: "Rice & Beans", dinner: "Grilled Salmon" } },
+      { date: "28 December 2024", time: "8:30 PM", activity: "Stretching", symptom: "Relaxed", painLevel: 1, meals: { breakfast: "Muffin", lunch: "Pasta", dinner: "Roast Chicken" } },
+    
+      // ✅ January 2025 (คงข้อมูลเดิม)
+      { date: "10 January 2025", time: "7:00 AM", activity: "Running", symptom: "Tired", painLevel: 2, meals: { breakfast: "Oatmeal", lunch: "Salad", dinner: "Chicken" } },
+      { date: "12 January 2025", time: "6:30 PM", activity: "Gym", symptom: "Sore Muscles", painLevel: 4, meals: { breakfast: "Eggs", lunch: "Rice & Fish", dinner: "Soup" } },
+      { date: "15 January 2025", time: "8:00 PM", activity: "Cycling", symptom: "None", painLevel: 1, meals: { breakfast: "Pancakes", lunch: "Burger", dinner: "Steak" } },
+      { date: "18 January 2025", time: "5:45 PM", activity: "Swimming", symptom: "Cold", painLevel: 3, meals: { breakfast: "Toast", lunch: "Pasta", dinner: "Grilled Chicken" } },
+      { date: "20 January 2025", time: "6:15 PM", activity: "Yoga", symptom: "Relaxed", painLevel: 1, meals: { breakfast: "Smoothie", lunch: "Vegetable Stir-fry", dinner: "Salmon" } },
+    
+      // ✅ February 2025 (คงข้อมูลเดิม)
+      { date: "20 February 2025", time: "5:30 PM", activity: "เดินเล่น 30 นาที", symptom: "รู้สึกปวดหัวเล็กน้อย", painLevel: 1, meals: { breakfast: "ขนมปัง + นม", lunch: "ข้าวมันไก่", dinner: "สลัดผัก + น้ำส้ม" } },
+      { date: "21 February 2025", time: "5:30 PM", activity: "โยคะ 45 นาที", symptom: "เวียนหัวเล็กน้อย", painLevel: 1, meals: { breakfast: "โจ๊กหมู", lunch: "ผัดกะเพรา", dinner: "ปลาเผา + ข้าวสวย" } },
+      { date: "22 February 2025", time: "5:30 PM", activity: "ขี่จักรยาน 1 ชม.", symptom: "รู้สึกเหนื่อย", painLevel: 1, meals: { breakfast: "ซีเรียล + นม", lunch: "สปาเก็ตตี้คาโบนาร่า", dinner: "แกงส้ม + ข้าว" } },
+      { date: "23 February 2025", time: "6:00 PM", activity: "วิ่งจ๊อกกิ้ง 30 นาที", symptom: "ปวดกล้ามเนื้อน่อง", painLevel: 3, meals: { breakfast: "แซนด์วิชทูน่า", lunch: "ข้าวผัดทะเล", dinner: "ซุปไก่ + ผักต้ม" } },
+      { date: "24 February 2025", time: "5:30 PM", activity: "เล่นเวทเทรนนิ่ง", symptom: "ปวดไหล่", painLevel: 1, meals: { breakfast: "ไข่ต้ม + ขนมปัง", lunch: "ข้าวแกงเขียวหวาน", dinner: "สเต็กปลา + มันบด" } },
+      { date: "25 February 2025", time: "5:48 PM", activity: "เดินขึ้นลงบันได 20 นาที", symptom: "เจ็บข้อเท้านิดหน่อย", painLevel: 2, meals: { breakfast: "แพนเค้ก + กาแฟ", lunch: "ข้าวคลุกกะปิ", dinner: "แกงจืดเต้าหู้หมูสับ" } },
+      { date: "26 February 2025", time: "0:30 AM", activity: "นอนดึก", symptom: "รู้สึกปวดหัวเล็กน้อย", painLevel: 2, meals: { breakfast: "โอวัลติน + ขนมปัง", lunch: "ก๋วยเตี๋ยวเรือ", dinner: "ไข่ตุ๋น + ข้าว" } }
+    ];
+    
 
+  const adjustedEntries = [...entries];
+
+  // เช็คว่าจำนวน entries เป็น "คู่" หรือไม่
+  const isEven = adjustedEntries.length % 2 === 0;
+  
+  // ถ้าเป็นคู่ → เพิ่ม `null` ชั่วคราว
+  if (isEven) {
+    adjustedEntries.unshift(null);
+  }
+  
+  const today = "26 February 2025";
+  const todayIndex = adjustedEntries.findIndex(entry => entry?.date === today);
+  const summaryPageIndex = adjustedEntries.length;  // Summary หลังหน้าสุดท้ายของ entries
+  const chartPageIndex = adjustedEntries.length + 1; // Chart เป็นหน้าสุดท้าย
+  
+  const [currentPage, setCurrentPage] = useState(
+    todayIndex % 2 === 0 ? todayIndex : Math.max(todayIndex - 1, 0)
+  );
+  
+  const canGoPrevious = currentPage > 2;
+  const canGoNext = currentPage < chartPageIndex;
+  const calculatePainData = () => {
+    const monthlyData: { [key: string]: { total: number; days: number } } = {};
+  
+    entries.forEach((entry) => {
+      if (!entry) return;
+      const [, month] = entry.date.split(" "); // ดึงเฉพาะชื่อเดือน
+      if (!monthlyData[month]) monthlyData[month] = { total: 0, days: 0 };
+  
+      monthlyData[month].total += entry.painLevel;
+      monthlyData[month].days += 1;
+    });
+  
     return Object.keys(monthlyData).map((month) => ({
       month,
-      averagePain: monthlyData[month].total / monthlyData[month].count,
+      averagePain:
+        (monthlyData[month].total / (monthlyData[month].days * 10)) * 100, // คำนวณเป็นเปอร์เซ็นต์
     }));
   };
-=======
-    const [entries, setEntries] = useState<DiaryEntry[]>([
-        { date: '29 December 2023', time: '6:00 PM', symptom: '', painLevel: 3, meals: { breakfast: '' } },
-        { date: '30 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
-        { date: '31 December 2023', time: '5:48 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } },
-        { date: '1 January 2024', time: '6:58 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } },
-        { date: '2 January 2024', time: '7:00 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } }
-      ]);
-      
-      
-      const [isFetching, setIsFetching] = useState(false);
-    
-      const formattedEntries = entries.length % 2 === 0 ? entries : [...entries, null as unknown as DiaryEntry];
-      const [currentPage, setCurrentPage] = useState(2);
-      const canGoPrevious = currentPage > 0;
-      const canGoNext = currentPage + 2 < entries.length;
-      
-      const fetchMoreEntries = () => {
-        if (isFetching) return;
-        setIsFetching(true);
-      
-        let newEntries: DiaryEntry[] = [
-          { date: '28 December 2023', time: '6:00 PM', symptom: '', painLevel: 3, meals: { breakfast: '' } },
-          { date: '27 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
-          { date: '26 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
-          { date: '25 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
-          { date: '24 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } }
-        ];
-      
-        setEntries((prev) => [...newEntries, ...prev]);
-      
-        // ✅ ปรับให้หน้าแรกยังเป็น 30 Dec - 31 Dec
-        setCurrentPage((prev) => prev + 2);
-      
-        setTimeout(() => setIsFetching(false), 500);
-      };
-      
-      // ✅ เช็คว่าถอยหลังไปถึงหน้าแรกหรือยัง แล้วโหลดเพิ่ม
-      useEffect(() => {
-        if (currentPage === 0) {
-          fetchMoreEntries();
-        }
-      }, [currentPage]);
-      
-      
-      const previous = () => {
-        setCurrentPage((prev) => Math.max(prev - 2, 0)); // ✅ ป้องกันติดลบ
-      };
-      
-      const next = () => {
-        if (currentPage + 2 < formattedEntries.length) {
-          setCurrentPage((prev) => prev + 2);
-        }
-      };
-      
->>>>>>> bda4de12bd6b9939c11a4151bc63c124b81aa6ea
-
+  
+  
+  
   return (
     <div className="center">
       <div className="book-container">
-        <button className="clip-marker diary-marker" onClick={() => setCurrentPage(0)}>
+      <button className="clip-marker diary-marker" onClick={() => setCurrentPage(todayIndex)}>
           <span>Diary</span>
         </button>
-        <button className="clip-marker followup-marker" onClick={() => setCurrentPage(formattedEntries.length)}>
+        <button className="clip-marker followup-marker" onClick={() => setCurrentPage(chartPageIndex)}>
           <span>Follow-up</span>
         </button>
-
         <div className="book">
-          <button className="nav-button left" onClick={() => setCurrentPage((prev) => Math.max(prev - 2, 0))} disabled={!canGoPrevious}>
+          <button
+            className="nav-button left"
+            onClick={() => setCurrentPage((prev) => prev - 2)}
+            disabled={!canGoPrevious}
+          >
             <SlArrowLeft />
           </button>
-
+  
           <div className="pages">
-            {Array.from({ length: Math.ceil(formattedEntries.length / 2) + 1 }).map((_, index) => {
-              const leftPage = index * 2;
-              const rightPage = leftPage + 1;
-              const isLastPage = leftPage >= formattedEntries.length; // ✅ เช็คว่าถึงหน้าสุดท้ายหรือยัง
-
+            {adjustedEntries.map((_, index) => {
+              if (index % 2 !== 0) return null;
+              const leftIndex = index;
+              const rightIndex = index + 1;
+  
               return (
                 <div
                   key={index}
-                  className={`page ${leftPage === currentPage ? "active" : ""}`}
+                  className={`page ${index === currentPage ? "active" : ""}`}
                   style={{
-                    transform: leftPage < currentPage ? "rotateY(180deg)" : "rotateY(0deg)",
-                    zIndex: leftPage === currentPage ? "9999" : "9998",
+                    transform: index < currentPage ? "rotateY(180deg)" : "rotateY(0deg)",
+                    transition: "transform 0.5s ease-in-out",
+                    zIndex: index === currentPage ? "9999" : "9998",
                   }}
                 >
-                  {/* ✅ หน้าซ้าย */}
+                  {/* Left Page */}
                   <div className="page-side front w-full h-full flex items-center justify-center">
-                    {isLastPage ? (
+                    {adjustedEntries[leftIndex] ? (
+                      <DiaryCard key={`left-${leftIndex}`} {...adjustedEntries[leftIndex]} />
+                    ) : (
+                      <div className="empty-page">Empty Page</div>
+                    )}
+                  </div>
+  
+                  {/* Right Page */}
+                  <div className="page-side back w-full h-full flex items-center justify-center">
+                    {adjustedEntries[rightIndex] ? (
+                      <DiaryCard key={`right-${rightIndex}`} {...adjustedEntries[rightIndex]} />
+                    ) : rightIndex === summaryPageIndex ? (
                       <SummaryCard
                         user={{
                           name: userInfo.name,
@@ -172,68 +164,38 @@ const FlipBook: React.FC = () => {
                           bloodPressure: userInfo.bloodPressure,
                           profileImage: userInfo.profilePic,
                         }}
-                        painData={calculatePainData()} 
+                        painData={calculatePainData()}
                       />
                     ) : (
-                      formattedEntries[leftPage] && (
-                        <DiaryCard
-                          key={`left-${leftPage}`}
-                          date={formattedEntries[leftPage]?.date ?? ""}
-                          time={formattedEntries[leftPage]?.time ?? ""}
-                          activity={formattedEntries[leftPage]?.activity ?? ""}
-                          symptom={formattedEntries[leftPage]?.symptom ?? ""}
-                          painLevel={formattedEntries[leftPage]?.painLevel ?? 0}
-                          meals={formattedEntries[leftPage]?.meals ?? { breakfast: "", lunch: "", dinner: "" }}
-                        />
-                      )
-                    )}
-                  </div>
-
-                  {/* ✅ หน้าขวา */}
-                  <div className="page-side back w-full h-full flex items-center justify-center">
-                    {isLastPage ? (
-                      <div className="chart-container">
-                        <ResponsiveContainer width="100%" height={300}>
-                          <BarChart data={calculatePainData()}>
-                            <XAxis dataKey="month" />
-                            <YAxis domain={[0, 10]} />
-                            <Tooltip />
-                            <Bar dataKey="averagePain" fill="#ff7f50" />
-                          </BarChart>
-                        </ResponsiveContainer>
-                        <h3>
-                          สุขภาพ{" "}
-                          {calculatePainData().reduce((sum, d) => sum + d.averagePain, 0) / calculatePainData().length < 5
-                            ? "😊 ดีขึ้นแล้ว!"
-                            : "😟 ต้องดูแลตัวเองเพิ่ม!"}
-                        </h3>
-                      </div>
-                    ) : (
-                      formattedEntries[rightPage] && (
-                        <DiaryCard
-                          key={`right-${rightPage}`}
-                          date={formattedEntries[rightPage]?.date ?? ""}
-                          time={formattedEntries[rightPage]?.time ?? ""}
-                          activity={formattedEntries[rightPage]?.activity ?? ""}
-                          symptom={formattedEntries[rightPage]?.symptom ?? ""}
-                          painLevel={formattedEntries[rightPage]?.painLevel ?? 0}
-                          meals={formattedEntries[rightPage]?.meals ?? { breakfast: "", lunch: "", dinner: "" }}
-                        />
-                      )
+                      <div className="empty-page">Empty Page</div>
                     )}
                   </div>
                 </div>
               );
             })}
+  
+            {/* แสดง Chart ถ้าถึงหน้าสุดท้าย */}
+            {currentPage >= chartPageIndex && (
+              <div className="page active">
+                <div className="page-side front w-full h-full flex items-center justify-center">
+                <ChartCard painData={calculatePainData()} />
+                </div>
+              </div>
+            )}
           </div>
-
-          <button className="nav-button right" onClick={() => setCurrentPage((prev) => prev + 2)} disabled={!canGoNext}>
+  
+          <button
+            className="nav-button right"
+            onClick={() => setCurrentPage((prev) => prev + 2)}
+            disabled={!canGoNext}
+          >
             <SlArrowRight />
           </button>
         </div>
       </div>
     </div>
   );
+
 };
 
 export default FlipBook;
