@@ -23,16 +23,46 @@ interface DiaryEntry {
 }
 
 const FlipBook: React.FC = () => {
+  const [diary, setDiary] = useState<any>({});
+  const [entries, setEntries] = useState<DiaryEntry[]>([]);
+
+  const fetchDiary = async () => {
+    try {
+      const response = await fetch(`http://localhost:1234/diaries/1`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.status === 404) {
+        console.log("No diary found for the date");
+        return;
+      }
+
+      const data = await response.json();
+      setDiary(data);
+      const data_for_ent = data;
+      console.log("dfe1: ",data_for_ent);
+      setEntries(data_for_ent || []); // ✅ Ensure entries is always an array
+    } catch (error) {
+      console.error("Error fetching diary:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDiary();
+  }, []);
+
   const userInfo = {
     profilePic: "/Jud.jpg",
-    name: "John Doe",
-    age: 30,
+    name: diary?.patient?.name || "",
+    age: diary?.patient?.age || "",
     gender: "Male",
     weight: "70 kg",
     height: "175 cm",
     bloodPressure: "120/80",
   };
 
+<<<<<<< HEAD
   const [selectedFoods, setSelectedFoods] = useState<string[]>([]); // ✅ เก็บค่าที่บันทึกแล้ว
 
   const entries: (DiaryEntry | null)[] = [
@@ -54,6 +84,25 @@ const FlipBook: React.FC = () => {
   ]
 
     
+=======
+  const formattedEntries =
+    entries.length % 2 === 0 ? entries : [...entries, null as unknown as DiaryEntry];
+  console.log("formatted: ",formattedEntries);
+  console.log("Entity: ",entries)
+  const [currentPage, setCurrentPage] = useState(2);
+  const canGoPrevious = currentPage > 0;
+  const canGoNext = currentPage + 2 < formattedEntries.length + 2;
+
+  const calculatePainData = () => {
+    const monthlyData: { [key: string]: { total: number; count: number } } = {};
+
+    entries.forEach((entry) => {
+      const [, month] = entry.date;
+      if (!monthlyData[month]) monthlyData[month] = { total: 0, count: 0 };
+      monthlyData[month].total += entry.painLevel;
+      monthlyData[month].count += 1;
+    });
+>>>>>>> 0013ed543aeba1f365157494865f5d4b1eed5361
 
   const adjustedEntries = [...entries];
 
@@ -94,9 +143,6 @@ const FlipBook: React.FC = () => {
         (monthlyData[month].total / (monthlyData[month].days * 10)) * 100, // คำนวณเป็นเปอร์เซ็นต์
     }));
   };
-  
-  
-  
   return (
     <div className="center">
       <div className="book-container">
@@ -116,11 +162,11 @@ const FlipBook: React.FC = () => {
           </button>
   
           <div className="pages">
-            {adjustedEntries.map((_, index) => {
-              if (index % 2 !== 0) return null;
-              const leftIndex = index;
-              const rightIndex = index + 1;
-  
+            {Array.from({ length: Math.ceil(formattedEntries.length / 2) + 1 }).map((_, index) => {
+              const leftPage = index * 2;
+              const rightPage = leftPage + 1;
+              const isLastPage = leftPage >= formattedEntries.length;
+
               return (
                 <div
                   key={index}
@@ -131,7 +177,7 @@ const FlipBook: React.FC = () => {
                     zIndex: index === currentPage ? "9999" : "9998",
                   }}
                 >
-                  {/* Left Page */}
+                  {/* ✅ Left Page */}
                   <div className="page-side front w-full h-full flex items-center justify-center">
                     {adjustedEntries[leftIndex] ? (
                       <DiaryCard key={`left-${leftIndex}`} {...adjustedEntries[leftIndex]} />
@@ -158,7 +204,58 @@ const FlipBook: React.FC = () => {
                         painData={calculatePainData()}
                       />
                     ) : (
-                      <div className="empty-page">Empty Page</div>
+                      formattedEntries[leftPage] && (
+                        <DiaryCard
+                          date={formattedEntries[leftPage]?.date ?? ""}
+                          time={formattedEntries[leftPage]?.time ?? ""}
+                          activity={formattedEntries[leftPage]?.activity ?? ""}
+                          symptom={formattedEntries[leftPage]?.symptom ?? ""}
+                          painLevel={formattedEntries[leftPage]?.painScore ?? 0}
+                          meals={formattedEntries[leftPage]?.meals ?? { 
+                            breakfast: formattedEntries[leftPage]?.breakfast, 
+                            lunch: formattedEntries[leftPage]?.lunch, 
+                            dinner: formattedEntries[leftPage]?.dinner 
+                          }}
+                        />
+                      )
+                    )}
+                  </div>
+
+                  {/* ✅ Right Page */}
+                  <div className="page-side back w-full h-full flex items-center justify-center">
+                    {isLastPage ? (
+                      <div className="chart-container">
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={calculatePainData()}>
+                            <XAxis dataKey="month" />
+                            <YAxis domain={[0, 10]} />
+                            <Tooltip />
+                            <Bar dataKey="averagePain" fill="#ff7f50" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                        <h3>
+                          สุขภาพ{" "}
+                          {calculatePainData().reduce((sum, d) => sum + d.averagePain, 0) / calculatePainData().length < 5
+                            ? "😊 ดีขึ้นแล้ว!"
+                            : "😟 ต้องดูแลตัวเองเพิ่ม!"}
+                        </h3>
+                      </div>
+                    ) : (
+                      formattedEntries[rightPage] && (
+                        <DiaryCard
+                          key={`right-${rightPage}`}
+                          date={formattedEntries[rightPage]?.date ?? ""}
+                          time={formattedEntries[rightPage]?.time ?? ""}
+                          activity={formattedEntries[rightPage]?.activity ?? ""}
+                          symptom={formattedEntries[rightPage]?.symptom ?? ""}
+                          painLevel={formattedEntries[rightPage]?.painScore ?? 0}
+                          meals={formattedEntries[rightPage]?.meals ?? { 
+                            breakfast: formattedEntries[rightPage]?.breakfast, 
+                            lunch: formattedEntries[rightPage]?.lunch, 
+                            dinner: formattedEntries[rightPage]?.dinner 
+                          }}
+                        />
+                      )
                     )}
                   </div>
                 </div>

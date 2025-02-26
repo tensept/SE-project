@@ -1,13 +1,8 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  formatDate,
-  EventClickArg,
-  EventApi,
-  EventInput,
-} from "@fullcalendar/core";
+import { formatDate, EventClickArg, EventApi } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -27,88 +22,114 @@ const Calendar: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<DateSelectArg | null>(null);
   const router = useRouter();
 
-  // Error status 500 
-  const handleCreateEvent = async (createEventDto: EventInput): Promise<void> => {
+  // Fetch events from the API
+  const getEvent = async () => {
     try {
-        const response = await fetch('http://localhost:1234/events', { // เปลี่ยนเป็นพอร์ต 3000 ตามที่ NestJS ใช้
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(createEventDto),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+      const response = await fetch(
+        `http://localhost:1234/events?patientId=2&month=${currentMonth+1}&year=${currentYear}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
         }
+      );
 
-        const newEvent = await response.json();
-        console.log("Event Created:", newEvent);
+      if (response.status === 404) {
+        console.log("No diary found for the date");
+        return;
+      }
+      console.log("cm: ",currentMonth);
+      console.log("cy: ",currentYear);
 
-        // อัปเดต State (ถ้าใช้ React)
-        if (typeof setCurrentEvents === "function") {
-            setCurrentEvents((prevEvents) => [...prevEvents, newEvent]);
-        }
+      const data = await response.json();
+      console.log("Data:", data);
 
+      // Format API data into FullCalendar format
+      const formattedEvents = data.map(
+        (event: { id: number; date: string; event: string }) => ({
+          id: event.id.toString(), // Ensure the ID is a string
+          title: event.event,
+          start: event.date, // FullCalendar expects an ISO8601 string
+          end: event.date, // Assuming it's an all-day event
+          allDay: true, // Assuming it's an all-day event (adjust as needed)
+        })
+      );
+
+      setCurrentEvents(formattedEvents); // Update state with the events
+      console.log("CE: ",currentEvents);
     } catch (error) {
-        console.error("Error creating event:", error);
+      console.error("Error fetching diary:", error);
     }
   };
 
-  const [messages, setMessages] = useState([]);
-
-useEffect(() => {
-  console.log("Before: ", messages);
-  getEvent();
-}, []);
-
-useEffect(() => {
-  console.log("Updated messages: ", messages);
-}, [messages]); // Logs new messages when it updates
-
-const getEvent = async () => {
-  try {
-    const response = await fetch("http://localhost:1234/events?patientId=1&month=2&year=2025", {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (response.status === 404) {
-      console.log("No diary found for the date");
-      return;
+  const postEvent = async (eventTitle: string, eventDate: string, patientId: number) => {
+    try {
+      const response = await fetch(`http://localhost:1234/events`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event: eventTitle,
+          date: eventDate,
+          patientId: patientId, // Ensure patientId is provided if required by your backend
+        }),
+      });
+  
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.log("No diary found for the date");
+        } else {
+          console.error("Error creating event:", response.statusText);
+        }
+        return;
+      }
+  
+      console.log("cm: ", currentMonth);
+      console.log("cy: ", currentYear);
+  
+      const data = await response.json();
+      console.log("Data:", data);
+  
+      // Format API data into FullCalendar format
+      const formattedEvent = {
+        id: data.id.toString(), // Ensure the ID is a string
+        title: data.event,
+        start: data.date, // FullCalendar expects an ISO8601 string
+        end: data.date, // Assuming it's an all-day event
+        allDay: true,
+      };
+  
+      setCurrentEvents((prevEvents) => [...prevEvents, formattedEvent]); // Update state
+      console.log("Updated Events: ", currentEvents);
+    } catch (error) {
+      console.error("Error posting event:", error);
     }
+  };
 
-    const data = await response.json();
-    console.log("Data:", data);
-    console.log("cur Event:",currentEvents);
-    setMessages(data); // Updates state asynchronously
-  } catch (error) {
-    console.error("Error fetching diary:", error);
-  }
-};
-
-
-  // I thing that we don't have this feature
-
-  // const handleUpdateEvent = async (id: string, updateEventDto: EventInput): Promise<void> => {
-  //   try {
-  //     const response = await fetch(`http://localhost:1234/api/events/${id}`, {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(updateEventDto),
-  //     });
-  //     if (response.ok) {
-  //       const updatedEvent = await response.json();
-  //       setCurrentEvents((prevEvents) =>
-  //         prevEvents.map((event) => (event.id === id ? updatedEvent : event))
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error('Error updating event:', error);
-  //   }
-  // };
+  // เหลือ Method Delete ที่ยีงใช้ไม่ได้
+  const deleteEvent = async (eventId: number) => {
+    try {
+      const response = await fetch(`http://localhost:1234/events/${eventId}`, {
+        method: "DELETE",
+      });
+  
+      if (!response.ok) {
+        console.error("Error deleting event:", response.statusText);
+        return;
+      }
+  
+      console.log(`Event ${eventId} deleted successfully`);
+  
+      // Remove event from state
+      setCurrentEvents((prevEvents) =>
+        prevEvents.filter((event) => event.id !== eventId.toString())
+      );
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
+  };
+  
+  useEffect(() => {
+    getEvent(); // Fetch events when component mounts
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -127,6 +148,8 @@ const getEvent = async () => {
         `Are you sure you want to delete the event "${selected.event.title}"?`
       )
     ) {
+      console.log(selected.event.id);
+      deleteEvent(parseInt(selected.event.id));
       selected.event.remove();
     }
   };
@@ -150,17 +173,36 @@ const getEvent = async () => {
         allDay: selectedDate.allDay,
       };
 
-      calendarApi.addEvent(newEvent);
+      // Send the event to your API (or handle locally)
+      const sent_event = {
+        patientId: 2,
+        date: newEvent.start.toISOString(),
+        event: newEvent.title,
+      };
+      console.log("sent_event: ", sent_event);
+      calendarApi.addEvent(newEvent); // Add event to FullCalendar
+      postEvent(newEvent.title,newEvent.start.toISOString(),2);
       handleCloseDialog();
     }
   };
+
   const navigateToDiary = () => {
     if (selectedDate) {
-      const formattedDate = selectedDate.start.toLocaleDateString("en-CA"); // Format เป็น YYYY-MM-DD
+      const formattedDate = selectedDate.start.toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
       router.push(`/diary/${formattedDate}`);
     }
   };
 
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const filteredEvents = currentEvents.filter((event: EventApi) => {
+    const eventMonth = new Date(event.start!).getMonth();
+    return eventMonth === currentMonth;
+  });
+  const sortedEvents = [...filteredEvents].sort(
+    (a, b) => new Date(a.start!).getTime() - new Date(b.start!).getTime()
+  );
+  
   return (
     <div style={{ backgroundColor: "#F9F9F9", minHeight: "100vh" }}>
       <div className="flex w-full px-10 justify-start items-start gap-8 ">
@@ -169,13 +211,13 @@ const getEvent = async () => {
             Calendar Events
           </div>
           <ul className="space-y-4">
-            {currentEvents.length <= 0 && (
+            {sortedEvents.length <= 0 && (
               <div className="italic text-center text-gray-400">
                 No Events Present
               </div>
             )}
-            {currentEvents.length > 0 &&
-              currentEvents.map((event: EventApi) => (
+            {sortedEvents.length > 0 &&
+              sortedEvents.map((event: EventApi) => (
                 <li
                   className="border border-pink-200 shadow px-4 py-2 rounded-md text-pink-800"
                   key={event.id}
@@ -194,7 +236,7 @@ const getEvent = async () => {
           </ul>
         </div>
 
-        <div className="w-9/12 mt-8 ">
+        <div className="w-9/12 mt-8">
           <FullCalendar
             height={"85vh"}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -209,21 +251,8 @@ const getEvent = async () => {
             selectMirror={true}
             dayMaxEvents={true}
             select={handleDateClick}
-            dayHeaderContent={(headerInfo) => (
-              <span className="text-black font-bold ">
-                {headerInfo.text}
-              </span>
-            )}
-            dayCellContent={(cellInfo) => (
-              <span className="text-black">{cellInfo.dayNumberText}</span>
-            )}
             eventClick={handleEventClick}
-            eventsSet={(events) => setCurrentEvents(events)}
-            initialEvents={
-              typeof window !== "undefined"
-                ? JSON.parse(localStorage.getItem("events") || "[]")
-                : []
-            }
+            events={currentEvents} // Set events state as the source
           />
         </div>
       </div>
@@ -232,9 +261,14 @@ const getEvent = async () => {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex justify-center">Add New Event</DialogTitle>
+            <DialogTitle className="flex justify-center">
+              Add New Event
+            </DialogTitle>
           </DialogHeader>
-            <form onSubmit={handleAddEvent} className="flex flex-col items-center">
+          <form
+            onSubmit={handleAddEvent}
+            className="flex flex-col items-center"
+          >
             <input
               type="text"
               placeholder="Event Title"
@@ -246,25 +280,25 @@ const getEvent = async () => {
             <p className="mt-2 text-sm text-black font-bold text-center">
               📌 ข้อควรปฏิบัติ
             </p>
-
             <p className="mt-2 text-sm text-black-500 font-bold">
-              ✔️อาหารที่ทานได้ : ปลามีเกล็ด ข้าว ลูกเดือย กล้วยน้ำว้า มะละกอสุก
-              ผักปลอดสารพิษ น้ำนมจากพืช น้ำไม่เย็น
+              <p className="mt-2 text-sm text-black-500 font-bold">
+                ✔️อาหารที่ทานได้ : ปลามีเกล็ด ข้าว ลูกเดือย กล้วยน้ำว้า
+                มะละกอสุก ผักปลอดสารพิษ น้ำนมจากพืช น้ำไม่เย็น
+              </p>
+              <p className="mt-5 text-sm text-black-500 font-bold">
+                ❌อาหารแสลง : ชา กาแฟ น้ำเย็น น้ำแข็ง บุหรี่ เหล้า เบียร์
+                ข้าวเหนียว ไข่ไก่ ไก่ หมู วัว ปลาไม่มีเกล็ด อาหารหมักดอง ปลาเต็ม
+                ปลาร้า มาม่า อาหารทะเล เครื่องในสัตว์ เส้นก๋วยเตียว อาหารแปรรูป
+                ปลากระป๋อง
+              </p>
+              <p className="mt-5 text-sm text-black-100 font-bold">
+                🧘ไหว้พระ สวดมนต์ ทำสมาธิ กรวดน้ำให้เจ้ากรรมนายเวร
+                ใส่บาตรทุกวันพระ ข้าว 1 ถ้วย กล้วย 1 ทวี
+                และเงินตามกำลังวังวันเกิด จันทร์ 15 บาท, อังคาร 8 บาท,
+                วันพุธ(กลางวัน) 17 บาท, วันพุธ (กลางคืน) 12 บาท, พฤหัสบดี 19
+                บาท, ศุกร์ 21 บาท, เสาร์ 10 บาท, อาทิตย์ 6 บาท
+              </p>
             </p>
-            <p className="mt-5 text-sm text-black-500 font-bold">
-              ❌อาหารแสลง : ชา กาแฟ น้ำเย็น น้ำแข็ง บุหรี่ เหล้า เบียร์
-              ข้าวเหนียว ไข่ไก่ ไก่ หมู วัว ปลาไม่มีเกล็ด อาหารหมักดอง ปลาเต็ม
-              ปลาร้า มาม่า อาหารทะเล เครื่องในสัตว์ เส้นก๋วยเตียว อาหารแปรรูป
-              ปลากระป๋อง
-            </p>
-            <p className="mt-5 text-sm text-black-100 font-bold">
-              🧘ไหว้พระ สวดมนต์ ทำสมาธิ กรวดน้ำให้เจ้ากรรมนายเวร
-              ใส่บาตรทุกวันพระ ข้าว 1 ถ้วย กล้วย 1 ทวี และเงินตามกำลังวังวันเกิด
-              จันทร์ 15 บาท, อังคาร 8 บาท, วันพุธ(กลางวัน) 17 บาท, วันพุธ
-              (กลางคืน) 12 บาท, พฤหัสบดี 19 บาท, ศุกร์ 21 บาท, เสาร์ 10 บาท,
-              อาทิตย์ 6 บาท
-            </p>
-
             <div className="flex justify-center space-x-4 mt-4">
               <button
                 type="submit"
