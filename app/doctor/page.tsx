@@ -7,13 +7,36 @@ interface MessageProps {
   time: string;
   isRead: boolean;
   id: number;
+  date: string;
+  patientId: number;
 }
 
-const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
+const MessageItem: React.FC<MessageProps & { markAsRead: (id: number) => void }> = ({ sender, time, isRead, id, date, patientId, markAsRead }) => {
   const router = useRouter();
 
-  const handleClick = () => {
-    router.push(`/history`);
+  const isReaded = async () => {
+    try {
+      const response = await fetch(`http://localhost:1234/diaries/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isRead: true }),
+      });
+
+      if (response.ok) {
+        markAsRead(id); // ✅ อัปเดต UI โดยไม่ต้อง fetch ใหม่
+      } else {
+        console.log("Failed to update isRead status");
+      }
+    } catch (error) {
+      console.error("Error updating diary:", error);
+    }
+  };
+
+  const handleClick = async () => {
+    if (!isRead) {
+      await isReaded();
+    }
+    router.push(`/history/${date}/${patientId}`);
   };
 
   return (
@@ -35,7 +58,7 @@ const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
         <div className="text-sm text-gray-600">{time}</div>
       </div>
       <div className={`text-sm font-medium ${isRead ? "text-gray-400" : "text-[#FB6F92]"}`}>
-      {isRead ? "Read" : "Unread"}
+        {isRead ? "Read" : "Unread"}
       </div>
     </div>
   );
@@ -43,12 +66,16 @@ const MessageItem: React.FC<MessageProps> = ({ sender, time, isRead, id }) => {
 
 const HealthDiaryMessages: React.FC = () => {
   const [date, setDate] = useState(new Date());
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<MessageProps[]>([]);
   const [isDateChanged, setIsDateChanged] = useState(false);
 
   useEffect(() => {
     fetchDiary();
   }, [date]);
+
+  useEffect(() => {
+    setDate(new Date());
+  }, []);
 
   const handlePreviousDate = () => {
     setDate(prevDate => {
@@ -68,11 +95,10 @@ const HealthDiaryMessages: React.FC = () => {
     triggerDateChangeEffect();
   };
 
-    // ฟังก์ชันเปลี่ยนสีวันที่ชั่วคราว
-    const triggerDateChangeEffect = () => {
-      setIsDateChanged(true);
-      setTimeout(() => setIsDateChanged(false), 1000); // สีจะกลับเป็นปกติหลังจาก 0.5 วินาที
-    };
+  const triggerDateChangeEffect = () => {
+    setIsDateChanged(true);
+    setTimeout(() => setIsDateChanged(false), 1000);
+  };
 
   const formattedDate = date.toLocaleDateString("en-US", {
     day: "numeric",
@@ -80,33 +106,50 @@ const HealthDiaryMessages: React.FC = () => {
     year: "numeric",
   });
 
-  const date_for_api = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-  // const [isDateChanged, setIsDateChanged] = useState(false);
+  const date_for_api = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
   const fetchDiary = async () => {
     try {
       const response = await fetch(`http://localhost:1234/diaries/by-date/${date_for_api}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
+
       if (response.status === 404) {
         console.log("No diary found for the date");
         setMessages([]);
         return;
       }
+
       const data = await response.json();
-      setMessages(data);
-      setShow_Date_Time(data[0].created_at.split("T")[0]);
+
+      // ตรวจสอบว่าข้อมูลที่ดึงมามีฟิลด์ที่ต้องการหรือไม่
+      const formattedMessages = data.map((message: any) => ({
+        sender: message.patient?.name || "Unknown",  // ชื่อผู้ป่วย
+        time: new Date(message.createdAt).toLocaleString(),  // เวลา
+        isRead: message.isRead,
+        id: message.id,
+        date: date_for_api,
+        patientId: message.patient?.id || 0,
+      }));
+
+      setMessages(formattedMessages);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }
   };
 
+  const markMessageAsRead = (id: number) => {
+    setMessages(prevMessages =>
+      prevMessages.map(message =>
+        message.id === id ? { ...message, isRead: true } : message
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
-
       <div className="flex-1 p-4">
-        {/* Date Navigation */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <button className="p-3 bg-gray-200 rounded-full shadow-md hover:shadow-lg" onClick={handlePreviousDate}>
@@ -121,13 +164,20 @@ const HealthDiaryMessages: React.FC = () => {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="border-b mb-4"></div>
 
-        {/* Messages List */}
         <div className="space-y-1">
-          {messages.map((message: any) => (
-            <MessageItem key={message.id} sender={message.patient.name} time={message.createdAt} isRead={message.isRead} id={message.id} />
+          {messages.map(message => (
+            <MessageItem
+              key={message.id}
+              sender={message.sender}
+              time={message.time}
+              isRead={message.isRead}
+              id={message.id}
+              date={message.date}
+              patientId={message.patientId}
+              markAsRead={markMessageAsRead} // ✅ ส่งฟังก์ชันไปยัง MessageItem
+            />
           ))}
         </div>
       </div>
@@ -136,7 +186,3 @@ const HealthDiaryMessages: React.FC = () => {
 };
 
 export default HealthDiaryMessages;
-function setShow_Date_Time(arg0: any) {
-  throw new Error("Function not implemented.");
-}
-

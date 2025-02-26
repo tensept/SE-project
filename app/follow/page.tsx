@@ -1,13 +1,19 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import "../follow/flipbook.css"; 
+import "../follow/flipbook.css";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import DiaryCard from '../components/DiaryCard';
-import SummaryCard from '../components/SummaryCard';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import DiaryCard from "../components/DiaryCard";
+import SummaryCard from "../components/SummaryCard";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 interface DiaryEntry {
-<<<<<<< HEAD
   date: string;
   time: string;
   activity: string;
@@ -20,48 +26,59 @@ interface DiaryEntry {
   };
 }
 
-=======
-    date: string;
-    time: string;
-    symptom: string;
-    painLevel: number;
-    meals: {
-      breakfast: string;
-    };
-  }
-
-  
->>>>>>> bda4de12bd6b9939c11a4151bc63c124b81aa6ea
 const FlipBook: React.FC = () => {
+  const [diary, setDiary] = useState<any>({});
+  const [entries, setEntries] = useState<DiaryEntry[]>([]);
+
+  const fetchDiary = async () => {
+    try {
+      const response = await fetch(`http://localhost:1234/diaries/1`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.status === 404) {
+        console.log("No diary found for the date");
+        return;
+      }
+
+      const data = await response.json();
+      setDiary(data);
+      const data_for_ent = data;
+      console.log("dfe1: ",data_for_ent);
+      setEntries(data_for_ent || []); // ✅ Ensure entries is always an array
+    } catch (error) {
+      console.error("Error fetching diary:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDiary();
+  }, []);
+
   const userInfo = {
     profilePic: "/Jud.jpg",
-    name: "John Doe",
-    age: 30,
+    name: diary?.patient?.name || "",
+    age: diary?.patient?.age || "",
     gender: "Male",
     weight: "70 kg",
     height: "175 cm",
     bloodPressure: "120/80",
   };
 
-  const [entries, setEntries] = useState<DiaryEntry[]>([
-    { date: '29 December 2023', time: '6:00 PM', activity: '', symptom: '', painLevel: 3, meals: { breakfast: '', lunch: '', dinner: ''} },
-    { date: '30 December 2023', time: '5:30 PM', activity: '', symptom: '', painLevel: 1, meals: { breakfast: '', lunch: '', dinner: '' } },
-    { date: '31 December 2023', time: '5:48 PM', activity: '', symptom: '', painLevel: 2, meals: { breakfast: '', lunch: '', dinner: '' } },
-    { date: '1 January 2024', time: '6:48 PM', activity: '', symptom: '', painLevel: 2, meals: { breakfast: '', lunch: '', dinner: '' } },
-  ]);
-
-  const formattedEntries = entries.length % 2 === 0 ? entries : [...entries, null as unknown as DiaryEntry];
-
+  const formattedEntries =
+    entries.length % 2 === 0 ? entries : [...entries, null as unknown as DiaryEntry];
+  console.log("formatted: ",formattedEntries);
+  console.log("Entity: ",entries)
   const [currentPage, setCurrentPage] = useState(2);
   const canGoPrevious = currentPage > 0;
-  const canGoNext = currentPage + 2 < formattedEntries.length + 2; // ✅ เพิ่มเงื่อนไขหน้าสุดท้าย
+  const canGoNext = currentPage + 2 < formattedEntries.length + 2;
 
   const calculatePainData = () => {
     const monthlyData: { [key: string]: { total: number; count: number } } = {};
-    
-<<<<<<< HEAD
+
     entries.forEach((entry) => {
-      const [, month] = entry.date.split(" ");
+      const [, month] = entry.date;
       if (!monthlyData[month]) monthlyData[month] = { total: 0, count: 0 };
       monthlyData[month].total += entry.painLevel;
       monthlyData[month].count += 1;
@@ -72,62 +89,6 @@ const FlipBook: React.FC = () => {
       averagePain: monthlyData[month].total / monthlyData[month].count,
     }));
   };
-=======
-    const [entries, setEntries] = useState<DiaryEntry[]>([
-        { date: '29 December 2023', time: '6:00 PM', symptom: '', painLevel: 3, meals: { breakfast: '' } },
-        { date: '30 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
-        { date: '31 December 2023', time: '5:48 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } },
-        { date: '1 January 2024', time: '6:58 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } },
-        { date: '2 January 2024', time: '7:00 PM', symptom: '', painLevel: 2, meals: { breakfast: '' } }
-      ]);
-      
-      
-      const [isFetching, setIsFetching] = useState(false);
-    
-      const formattedEntries = entries.length % 2 === 0 ? entries : [...entries, null as unknown as DiaryEntry];
-      const [currentPage, setCurrentPage] = useState(2);
-      const canGoPrevious = currentPage > 0;
-      const canGoNext = currentPage + 2 < entries.length;
-      
-      const fetchMoreEntries = () => {
-        if (isFetching) return;
-        setIsFetching(true);
-      
-        let newEntries: DiaryEntry[] = [
-          { date: '28 December 2023', time: '6:00 PM', symptom: '', painLevel: 3, meals: { breakfast: '' } },
-          { date: '27 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
-          { date: '26 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
-          { date: '25 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } },
-          { date: '24 December 2023', time: '5:30 PM', symptom: '', painLevel: 1, meals: { breakfast: '' } }
-        ];
-      
-        setEntries((prev) => [...newEntries, ...prev]);
-      
-        // ✅ ปรับให้หน้าแรกยังเป็น 30 Dec - 31 Dec
-        setCurrentPage((prev) => prev + 2);
-      
-        setTimeout(() => setIsFetching(false), 500);
-      };
-      
-      // ✅ เช็คว่าถอยหลังไปถึงหน้าแรกหรือยัง แล้วโหลดเพิ่ม
-      useEffect(() => {
-        if (currentPage === 0) {
-          fetchMoreEntries();
-        }
-      }, [currentPage]);
-      
-      
-      const previous = () => {
-        setCurrentPage((prev) => Math.max(prev - 2, 0)); // ✅ ป้องกันติดลบ
-      };
-      
-      const next = () => {
-        if (currentPage + 2 < formattedEntries.length) {
-          setCurrentPage((prev) => prev + 2);
-        }
-      };
-      
->>>>>>> bda4de12bd6b9939c11a4151bc63c124b81aa6ea
 
   return (
     <div className="center">
@@ -148,7 +109,7 @@ const FlipBook: React.FC = () => {
             {Array.from({ length: Math.ceil(formattedEntries.length / 2) + 1 }).map((_, index) => {
               const leftPage = index * 2;
               const rightPage = leftPage + 1;
-              const isLastPage = leftPage >= formattedEntries.length; // ✅ เช็คว่าถึงหน้าสุดท้ายหรือยัง
+              const isLastPage = leftPage >= formattedEntries.length;
 
               return (
                 <div
@@ -159,7 +120,7 @@ const FlipBook: React.FC = () => {
                     zIndex: leftPage === currentPage ? "9999" : "9998",
                   }}
                 >
-                  {/* ✅ หน้าซ้าย */}
+                  {/* ✅ Left Page */}
                   <div className="page-side front w-full h-full flex items-center justify-center">
                     {isLastPage ? (
                       <SummaryCard
@@ -172,24 +133,27 @@ const FlipBook: React.FC = () => {
                           bloodPressure: userInfo.bloodPressure,
                           profileImage: userInfo.profilePic,
                         }}
-                        painData={calculatePainData()} 
+                        painData={calculatePainData()}
                       />
                     ) : (
                       formattedEntries[leftPage] && (
                         <DiaryCard
-                          key={`left-${leftPage}`}
                           date={formattedEntries[leftPage]?.date ?? ""}
                           time={formattedEntries[leftPage]?.time ?? ""}
                           activity={formattedEntries[leftPage]?.activity ?? ""}
                           symptom={formattedEntries[leftPage]?.symptom ?? ""}
-                          painLevel={formattedEntries[leftPage]?.painLevel ?? 0}
-                          meals={formattedEntries[leftPage]?.meals ?? { breakfast: "", lunch: "", dinner: "" }}
+                          painLevel={formattedEntries[leftPage]?.painScore ?? 0}
+                          meals={formattedEntries[leftPage]?.meals ?? { 
+                            breakfast: formattedEntries[leftPage]?.breakfast, 
+                            lunch: formattedEntries[leftPage]?.lunch, 
+                            dinner: formattedEntries[leftPage]?.dinner 
+                          }}
                         />
                       )
                     )}
                   </div>
 
-                  {/* ✅ หน้าขวา */}
+                  {/* ✅ Right Page */}
                   <div className="page-side back w-full h-full flex items-center justify-center">
                     {isLastPage ? (
                       <div className="chart-container">
@@ -216,8 +180,12 @@ const FlipBook: React.FC = () => {
                           time={formattedEntries[rightPage]?.time ?? ""}
                           activity={formattedEntries[rightPage]?.activity ?? ""}
                           symptom={formattedEntries[rightPage]?.symptom ?? ""}
-                          painLevel={formattedEntries[rightPage]?.painLevel ?? 0}
-                          meals={formattedEntries[rightPage]?.meals ?? { breakfast: "", lunch: "", dinner: "" }}
+                          painLevel={formattedEntries[rightPage]?.painScore ?? 0}
+                          meals={formattedEntries[rightPage]?.meals ?? { 
+                            breakfast: formattedEntries[rightPage]?.breakfast, 
+                            lunch: formattedEntries[rightPage]?.lunch, 
+                            dinner: formattedEntries[rightPage]?.dinner 
+                          }}
                         />
                       )
                     )}

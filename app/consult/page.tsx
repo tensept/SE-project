@@ -24,10 +24,36 @@ export default function ConsultPage() {
     return JSON.parse(localStorage.getItem("chats") || "[]") || [];
   });
 
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(chats[0] || null);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(
+    chats[0] || null
+  );
   const [messages, setMessages] = useState<Message[]>(() => {
     return JSON.parse(localStorage.getItem("messages") || "[]") || [];
   });
+
+  const postConsult = async () => {
+    try {
+      const response = await fetch(`http://localhost:1234/consults/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: {
+          patient: 1,
+          consultId: 0,
+          question: "",
+          answer: "",
+          reply: "",
+        },
+      });
+
+      if (response.status === 404) {
+        console.log("Cannot POST Consult");
+        setMessages([]);
+        return;
+      }
+    } catch (error) {
+      console.error("Error fetching diary:", error);
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem("chats", JSON.stringify(chats));
@@ -50,8 +76,8 @@ export default function ConsultPage() {
   };
 
   const deleteChat = (id: number) => {
-    setChats(chats.filter(chat => chat.id !== id));
-    setMessages(messages.filter(msg => msg.chatId !== id));
+    setChats(chats.filter((chat) => chat.id !== id));
+    setMessages(messages.filter((msg) => msg.chatId !== id));
 
     if (selectedChat?.id === id) {
       setSelectedChat(chats.length > 1 ? chats[0] : null);
@@ -59,25 +85,27 @@ export default function ConsultPage() {
   };
 
   const onToggleFavorite = (id: number) => {
-    setChats(chats.map(chat =>
-      chat.id === id ? { ...chat, pinned: !chat.pinned } : chat
-    ));
+    setChats(
+      chats.map((chat) =>
+        chat.id === id ? { ...chat, pinned: !chat.pinned } : chat
+      )
+    );
   };
 
   return (
     <main className="flex min-h-screen bg-white relative">
-      <ConsultList 
-        chats={chats} 
-        onSelectChat={setSelectedChat} 
-        onAddChat={addChat} 
+      <ConsultList
+        chats={chats}
+        onSelectChat={setSelectedChat}
+        onAddChat={addChat}
         onToggleFavorite={onToggleFavorite}
         onDeleteChat={deleteChat}
       />
       {selectedChat && (
-        <ChatBox 
-          selectedChat={selectedChat} 
-          messages={messages.filter(msg => msg.chatId === selectedChat.id)} 
-          setMessages={setMessages} 
+        <ChatBox
+          selectedChat={selectedChat}
+          messages={messages.filter((msg) => msg.chatId === selectedChat.id)}
+          setMessages={setMessages}
         />
       )}
     </main>
