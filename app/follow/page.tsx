@@ -5,6 +5,7 @@ import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import DiaryCard from "../components/DiaryCard";
 import SummaryCard from "../components/SummaryCard";
 import ChartCard from "../components/ChartCard";
+import FoodCheckbox from "../components/FoodCheckbox";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 interface DiaryEntry {
@@ -18,6 +19,7 @@ interface DiaryEntry {
     lunch: string;
     dinner: string;
   };
+  selectedFoods: string[]; // ✅ เพิ่ม prop นี้
 }
 
 const FlipBook: React.FC = () => {
@@ -31,37 +33,26 @@ const FlipBook: React.FC = () => {
     bloodPressure: "120/80",
   };
 
+  const [selectedFoods, setSelectedFoods] = useState<string[]>([]); // ✅ เก็บค่าที่บันทึกแล้ว
+
   const entries: (DiaryEntry | null)[] = [
       // ✅ November 2024
-      { date: "05 November 2024", time: "6:45 AM", activity: "Jogging", symptom: "Slight Knee Pain", painLevel: 2, meals: { breakfast: "Omelet", lunch: "Grilled Chicken", dinner: "Soup" } },
-      { date: "10 November 2024", time: "7:30 PM", activity: "Yoga", symptom: "Relaxed", painLevel: 1, meals: { breakfast: "Smoothie", lunch: "Quinoa Salad", dinner: "Grilled Fish" } },
-      { date: "15 November 2024", time: "5:00 PM", activity: "Swimming", symptom: "Sore Shoulders", painLevel: 3, meals: { breakfast: "Toast", lunch: "Pasta", dinner: "Roast Beef" } },
-      { date: "20 November 2024", time: "6:15 PM", activity: "Cycling", symptom: "Tired", painLevel: 2, meals: { breakfast: "Yogurt", lunch: "Rice & Chicken", dinner: "Steak" } },
-      { date: "25 November 2024", time: "8:00 AM", activity: "Hiking", symptom: "None", painLevel: 1, meals: { breakfast: "Oatmeal", lunch: "Sandwich", dinner: "Grilled Vegetables" } },
-    
-      // ✅ December 2024
-      { date: "05 December 2024", time: "6:30 PM", activity: "Weight Training", symptom: "Sore Arms", painLevel: 4, meals: { breakfast: "Eggs", lunch: "Salad", dinner: "Fish & Rice" } },
-      { date: "12 December 2024", time: "7:00 AM", activity: "Running", symptom: "Ankle Pain", painLevel: 3, meals: { breakfast: "Pancakes", lunch: "Chicken Wrap", dinner: "Soup" } },
-      { date: "18 December 2024", time: "5:45 PM", activity: "Dancing", symptom: "None", painLevel: 1, meals: { breakfast: "Fruit Salad", lunch: "Sushi", dinner: "Steak" } },
-      { date: "22 December 2024", time: "6:00 PM", activity: "Meditation", symptom: "Calm", painLevel: 1, meals: { breakfast: "Smoothie Bowl", lunch: "Rice & Beans", dinner: "Grilled Salmon" } },
-      { date: "28 December 2024", time: "8:30 PM", activity: "Stretching", symptom: "Relaxed", painLevel: 1, meals: { breakfast: "Muffin", lunch: "Pasta", dinner: "Roast Chicken" } },
-    
-      // ✅ January 2025 (คงข้อมูลเดิม)
-      { date: "10 January 2025", time: "7:00 AM", activity: "Running", symptom: "Tired", painLevel: 2, meals: { breakfast: "Oatmeal", lunch: "Salad", dinner: "Chicken" } },
-      { date: "12 January 2025", time: "6:30 PM", activity: "Gym", symptom: "Sore Muscles", painLevel: 4, meals: { breakfast: "Eggs", lunch: "Rice & Fish", dinner: "Soup" } },
-      { date: "15 January 2025", time: "8:00 PM", activity: "Cycling", symptom: "None", painLevel: 1, meals: { breakfast: "Pancakes", lunch: "Burger", dinner: "Steak" } },
-      { date: "18 January 2025", time: "5:45 PM", activity: "Swimming", symptom: "Cold", painLevel: 3, meals: { breakfast: "Toast", lunch: "Pasta", dinner: "Grilled Chicken" } },
-      { date: "20 January 2025", time: "6:15 PM", activity: "Yoga", symptom: "Relaxed", painLevel: 1, meals: { breakfast: "Smoothie", lunch: "Vegetable Stir-fry", dinner: "Salmon" } },
-    
-      // ✅ February 2025 (คงข้อมูลเดิม)
-      { date: "20 February 2025", time: "5:30 PM", activity: "เดินเล่น 30 นาที", symptom: "รู้สึกปวดหัวเล็กน้อย", painLevel: 1, meals: { breakfast: "ขนมปัง + นม", lunch: "ข้าวมันไก่", dinner: "สลัดผัก + น้ำส้ม" } },
-      { date: "21 February 2025", time: "5:30 PM", activity: "โยคะ 45 นาที", symptom: "เวียนหัวเล็กน้อย", painLevel: 1, meals: { breakfast: "โจ๊กหมู", lunch: "ผัดกะเพรา", dinner: "ปลาเผา + ข้าวสวย" } },
-      { date: "22 February 2025", time: "5:30 PM", activity: "ขี่จักรยาน 1 ชม.", symptom: "รู้สึกเหนื่อย", painLevel: 1, meals: { breakfast: "ซีเรียล + นม", lunch: "สปาเก็ตตี้คาโบนาร่า", dinner: "แกงส้ม + ข้าว" } },
-      { date: "23 February 2025", time: "6:00 PM", activity: "วิ่งจ๊อกกิ้ง 30 นาที", symptom: "ปวดกล้ามเนื้อน่อง", painLevel: 3, meals: { breakfast: "แซนด์วิชทูน่า", lunch: "ข้าวผัดทะเล", dinner: "ซุปไก่ + ผักต้ม" } },
-      { date: "24 February 2025", time: "5:30 PM", activity: "เล่นเวทเทรนนิ่ง", symptom: "ปวดไหล่", painLevel: 1, meals: { breakfast: "ไข่ต้ม + ขนมปัง", lunch: "ข้าวแกงเขียวหวาน", dinner: "สเต็กปลา + มันบด" } },
-      { date: "25 February 2025", time: "5:48 PM", activity: "เดินขึ้นลงบันได 20 นาที", symptom: "เจ็บข้อเท้านิดหน่อย", painLevel: 2, meals: { breakfast: "แพนเค้ก + กาแฟ", lunch: "ข้าวคลุกกะปิ", dinner: "แกงจืดเต้าหู้หมูสับ" } },
-      { date: "26 February 2025", time: "0:30 AM", activity: "นอนดึก", symptom: "รู้สึกปวดหัวเล็กน้อย", painLevel: 2, meals: { breakfast: "โอวัลติน + ขนมปัง", lunch: "ก๋วยเตี๋ยวเรือ", dinner: "ไข่ตุ๋น + ข้าว" } }
-    ];
+      { "date": "05 November 2024", "time": "6:45 AM", "activity": "Jogging", "symptom": "Slight Knee Pain", "painLevel": 2, "meals": { "breakfast": "Omelet", "lunch": "Grilled Chicken", "dinner": "Soup" }, "selectedFoods": ["Omelet", "Grilled Chicken"] },  
+      { "date": "10 November 2024", "time": "7:30 PM", "activity": "Yoga", "symptom": "Relaxed", "painLevel": 1, "meals": { "breakfast": "Smoothie", "lunch": "Quinoa Salad", "dinner": "Grilled Fish" }, "selectedFoods": ["Smoothie", "Quinoa Salad"] },  
+      { "date": "15 November 2024", "time": "5:00 PM", "activity": "Swimming", "symptom": "Sore Shoulders", "painLevel": 3, "meals": { "breakfast": "Toast", "lunch": "Pasta", "dinner": "Roast Beef" }, "selectedFoods": ["Toast", "Pasta"] },  
+      { "date": "20 November 2024", "time": "6:15 PM", "activity": "Cycling", "symptom": "Tired", "painLevel": 2, "meals": { "breakfast": "Yogurt", "lunch": "Rice & Chicken", "dinner": "Steak" }, "selectedFoods": ["Yogurt", "Rice & Chicken"] },  
+      { "date": "25 November 2024", "time": "8:00 AM", "activity": "Hiking", "symptom": "None", "painLevel": 1, "meals": { "breakfast": "Oatmeal", "lunch": "Sandwich", "dinner": "Grilled Vegetables" }, "selectedFoods": ["Oatmeal", "Sandwich"] },  
+
+      { "date": "05 December 2024", "time": "6:30 PM", "activity": "Weight Training", "symptom": "Sore Arms", "painLevel": 4, "meals": { "breakfast": "Eggs", "lunch": "Salad", "dinner": "Fish & Rice" }, "selectedFoods": ["Eggs", "Salad"] },  
+      { "date": "12 December 2024", "time": "7:00 AM", "activity": "Running", "symptom": "Ankle Pain", "painLevel": 3, "meals": { "breakfast": "Pancakes", "lunch": "Chicken Wrap", "dinner": "Soup" }, "selectedFoods": ["Pancakes", "Chicken Wrap"] },  
+      { "date": "18 December 2024", "time": "5:45 PM", "activity": "Dancing", "symptom": "None", "painLevel": 1, "meals": { "breakfast": "Fruit Salad", "lunch": "Sushi", "dinner": "Steak" }, "selectedFoods": ["Fruit Salad", "Sushi"] },  
+      { "date": "22 December 2024", "time": "6:00 PM", "activity": "Meditation", "symptom": "Calm", "painLevel": 1, "meals": { "breakfast": "Smoothie Bowl", "lunch": "Rice & Beans", "dinner": "Grilled Salmon" }, "selectedFoods": ["Smoothie Bowl", "Rice & Beans"] },  
+      { "date": "28 December 2024", "time": "8:30 PM", "activity": "Stretching", "symptom": "Relaxed", "painLevel": 1, "meals": { "breakfast": "Muffin", "lunch": "Pasta", "dinner": "Roast Chicken" }, "selectedFoods": ["Muffin", "Pasta"] },  
+
+      { "date": "25 February 2025", "time": "5:48 PM", "activity": "เดินขึ้นลงบันได 20 นาที", "symptom": "เจ็บข้อเท้านิดหน่อย", "painLevel": 2, "meals": { "breakfast": "แพนเค้ก + กาแฟ", "lunch": "ข้าวคลุกกะปิ", "dinner": "แกงจืดเต้าหู้หมูสับ" }, "selectedFoods": ["กาแฟ", "ข้าวเหนียว"] },  
+      { "date": "26 February 2025", "time": "0:30 AM", "activity": "นอนดึก", "symptom": "รู้สึกปวดหัวเล็กน้อย", "painLevel": 2, "meals": { "breakfast": "โอวัลติน + ขนมปัง", "lunch": "ก๋วยเตี๋ยวเรือ", "dinner": "ไข่ตุ๋น + ข้าว" }, "selectedFoods": ["โอวัลติน", "ขนมปัง"] }  
+  ]
+
     
 
   const adjustedEntries = [...entries];
