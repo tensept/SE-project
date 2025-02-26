@@ -1,17 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../follow/flipbook.css";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import DiaryCard from "../components/DiaryCard";
 import SummaryCard from "../components/SummaryCard";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import ChartCard from "../components/ChartCard";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 interface DiaryEntry {
   date: string;
@@ -84,27 +78,63 @@ const FlipBook: React.FC = () => {
       monthlyData[month].count += 1;
     });
 
+  const adjustedEntries = [...entries];
+
+  // เช็คว่าจำนวน entries เป็น "คู่" หรือไม่
+  const isEven = adjustedEntries.length % 2 === 0;
+  
+  // ถ้าเป็นคู่ → เพิ่ม `null` ชั่วคราว
+  if (isEven) {
+    adjustedEntries.unshift(null);
+  }
+  
+  const today = "26 February 2025";
+  const todayIndex = adjustedEntries.findIndex(entry => entry?.date === today);
+  const summaryPageIndex = adjustedEntries.length;  // Summary หลังหน้าสุดท้ายของ entries
+  const chartPageIndex = adjustedEntries.length + 1; // Chart เป็นหน้าสุดท้าย
+  
+  const [currentPage, setCurrentPage] = useState(
+    todayIndex % 2 === 0 ? todayIndex : Math.max(todayIndex - 1, 0)
+  );
+  
+  const canGoPrevious = currentPage > 2;
+  const canGoNext = currentPage < chartPageIndex;
+  const calculatePainData = () => {
+    const monthlyData: { [key: string]: { total: number; days: number } } = {};
+  
+    entries.forEach((entry) => {
+      if (!entry) return;
+      const [, month] = entry.date.split(" "); // ดึงเฉพาะชื่อเดือน
+      if (!monthlyData[month]) monthlyData[month] = { total: 0, days: 0 };
+  
+      monthlyData[month].total += entry.painLevel;
+      monthlyData[month].days += 1;
+    });
+  
     return Object.keys(monthlyData).map((month) => ({
       month,
-      averagePain: monthlyData[month].total / monthlyData[month].count,
+      averagePain:
+        (monthlyData[month].total / (monthlyData[month].days * 10)) * 100, // คำนวณเป็นเปอร์เซ็นต์
     }));
   };
-
   return (
     <div className="center">
       <div className="book-container">
-        <button className="clip-marker diary-marker" onClick={() => setCurrentPage(0)}>
+      <button className="clip-marker diary-marker" onClick={() => setCurrentPage(todayIndex)}>
           <span>Diary</span>
         </button>
-        <button className="clip-marker followup-marker" onClick={() => setCurrentPage(formattedEntries.length)}>
+        <button className="clip-marker followup-marker" onClick={() => setCurrentPage(chartPageIndex)}>
           <span>Follow-up</span>
         </button>
-
         <div className="book">
-          <button className="nav-button left" onClick={() => setCurrentPage((prev) => Math.max(prev - 2, 0))} disabled={!canGoPrevious}>
+          <button
+            className="nav-button left"
+            onClick={() => setCurrentPage((prev) => prev - 2)}
+            disabled={!canGoPrevious}
+          >
             <SlArrowLeft />
           </button>
-
+  
           <div className="pages">
             {Array.from({ length: Math.ceil(formattedEntries.length / 2) + 1 }).map((_, index) => {
               const leftPage = index * 2;
@@ -114,15 +144,27 @@ const FlipBook: React.FC = () => {
               return (
                 <div
                   key={index}
-                  className={`page ${leftPage === currentPage ? "active" : ""}`}
+                  className={`page ${index === currentPage ? "active" : ""}`}
                   style={{
-                    transform: leftPage < currentPage ? "rotateY(180deg)" : "rotateY(0deg)",
-                    zIndex: leftPage === currentPage ? "9999" : "9998",
+                    transform: index < currentPage ? "rotateY(180deg)" : "rotateY(0deg)",
+                    transition: "transform 0.5s ease-in-out",
+                    zIndex: index === currentPage ? "9999" : "9998",
                   }}
                 >
                   {/* ✅ Left Page */}
                   <div className="page-side front w-full h-full flex items-center justify-center">
-                    {isLastPage ? (
+                    {adjustedEntries[leftIndex] ? (
+                      <DiaryCard key={`left-${leftIndex}`} {...adjustedEntries[leftIndex]} />
+                    ) : (
+                      <div className="empty-page">Empty Page</div>
+                    )}
+                  </div>
+  
+                  {/* Right Page */}
+                  <div className="page-side back w-full h-full flex items-center justify-center">
+                    {adjustedEntries[rightIndex] ? (
+                      <DiaryCard key={`right-${rightIndex}`} {...adjustedEntries[rightIndex]} />
+                    ) : rightIndex === summaryPageIndex ? (
                       <SummaryCard
                         user={{
                           name: userInfo.name,
@@ -193,15 +235,29 @@ const FlipBook: React.FC = () => {
                 </div>
               );
             })}
+  
+            {/* แสดง Chart ถ้าถึงหน้าสุดท้าย */}
+            {currentPage >= chartPageIndex && (
+              <div className="page active">
+                <div className="page-side front w-full h-full flex items-center justify-center">
+                <ChartCard painData={calculatePainData()} />
+                </div>
+              </div>
+            )}
           </div>
-
-          <button className="nav-button right" onClick={() => setCurrentPage((prev) => prev + 2)} disabled={!canGoNext}>
+  
+          <button
+            className="nav-button right"
+            onClick={() => setCurrentPage((prev) => prev + 2)}
+            disabled={!canGoNext}
+          >
             <SlArrowRight />
           </button>
         </div>
       </div>
     </div>
   );
+
 };
 
 export default FlipBook;
