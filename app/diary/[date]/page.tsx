@@ -21,7 +21,7 @@ const DiaryPage = () => {
 
   useEffect(() => {
     const fetchDiary = async () => {
-      const path = process.env.BACK_END;
+      const path = process.env.NEXT_PUBLIC_BACK_END;
 
       try {
         console.log("Fetching data from:", path);
@@ -41,12 +41,12 @@ const DiaryPage = () => {
 
         const { id, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
         setDiaryID(id);
-        setActivity(activity);
-        setSymptom(symptom);
-        setPainLevel(painScore);
-        setBreakfastNote(breakfast);
-        setLunchNote(lunch);
-        setDinnerNote(dinner);
+        setActivity(activity || "");
+        setSymptom(symptom || "");
+        setPainLevel(painScore || 1);
+        setBreakfastNote(breakfast || "");
+        setLunchNote(lunch || "");
+        setDinnerNote(dinner || "");
         setCheckedFoods(food);
 
         console.log("id: ",id);
@@ -66,12 +66,9 @@ const DiaryPage = () => {
 
     // Demo POST patient
     const postPatient = async () => {
-      let path = process.env.BACK_END;
+      const path = process.env.NEXT_PUBLIC_BACK_END;
 
-      if (!path) {
-        // throw new Error("BACK_END environment variable is not defined");
-        path = "http://localhost:1234";
-    try {
+      try {
       console.log("Posting patient to:", path);
       const response = await fetch(path + "/patients", {
         method: "POST",
@@ -79,65 +76,23 @@ const DiaryPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          patientId: 3,
+          id: 2,
           name: "John Doe",
           age: 30,
-          citizenID: "1234567890123",
         }),
-      });
-
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        console.log("Data fetched:", result);
-
-        const { id, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
-        setDiaryID(id);
-        console.log(diaryID);
-        setActivity(activity);
-        setSymptom(symptom);
-        setPainLevel(painScore);
-        setBreakfastNote(breakfast);
-        setLunchNote(lunch);
-        setDinnerNote(dinner);
-        setCheckedFoods(food);
+      })
       } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-
-      try {
-        console.log("Posting patient to:", path);
-        const response = await fetch(path + "/patients", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            patientId: 2,
-            name: "John Doe",
-            age: 30,
-            citizenID: "1234567890123",
-          }),
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        console.log("Data posted:", result);
-      } catch (error) {
-        console.error("Error posting data:", error);
-      }
+        console.error("Error post patient:", error);
+      };
     };
 
-    // postPatient();
+    postPatient();
     fetchDiary();
   }, []);
 
   useEffect(() => {
     const fetchImage = async () => {
-      const path = process.env.BACK_END || "http://localhost:1234";
+      const path = process.env.NEXT_PUBLIC_BACK_END;
       try {
         console.log("Fetching data from:", path);
 
@@ -194,7 +149,7 @@ const DiaryPage = () => {
   }, []);
 
   const createDiary = async () => {
-    const path = process.env.BACK_END;
+    const path = process.env.NEXT_PUBLIC_BACK_END;
 
     try {
       console.log("Posting data to:", path);
@@ -241,11 +196,19 @@ const DiaryPage = () => {
 
   const updateDiary = async () => {
     // accept id as a parameter
-    let path = process.env.BACK_END;
+    const path = process.env.NEXT_PUBLIC_BACK_END;
 
-    if (!path) {
-      path = "http://localhost:1234";
-    }
+    console.log({
+      patientId: 2,
+      date: dateFromPath,
+      activity: activity,
+      symptom: symptom,
+      painScore: painLevel,
+      breakfast: breakfastNote,
+      lunch: lunchNote,
+      dinner: dinnerNote,
+      food: checkedFoods,
+    })
 
     const response = await fetch(`${path}/diaries/${diaryID}`, {
       // Include id in the URL
@@ -275,7 +238,7 @@ const DiaryPage = () => {
 
   
   const uploadImage = async () => {
-    const path = process.env.BACK_END || "http://localhost:1234";
+    const path = process.env.NEXT_PUBLIC_BACK_END;
   
     const imageUrls = [
       { url: symptomImage, filename: "symptom" },

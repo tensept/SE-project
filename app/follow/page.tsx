@@ -8,9 +8,6 @@ import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import DiaryCard from "../components/DiaryCard";
 import SummaryCard from "../components/SummaryCard";
 import ChartCard from "../components/ChartCard";
-<<<<<<< HEAD
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-=======
 
 interface MessageProps {
   date: string;
@@ -26,7 +23,6 @@ interface MessageProps {
     name: string;
   };
 }
->>>>>>> 5d2e05e79a56747bd84e44b2da5264d5bc9856df
 
 interface DiaryEntry {
   date: string;
@@ -43,12 +39,6 @@ interface DiaryEntry {
 }
 
 const FlipBook: React.FC = () => {
-<<<<<<< HEAD
-  const userInfo = {
-    profilePic: "/Jud.jpg",
-    name: "John Doe",
-    age: 30,
-=======
   const [messages, setMessages] = useState<MessageProps[]>([]);
   
   const fetchAllDiary = async () => {
@@ -81,35 +71,12 @@ const FlipBook: React.FC = () => {
     profilePic: "/Jud.jpg",
     name: messages.length > 0 ? messages[0].patient.name : "Unknown",
     age: messages.length > 0 ? messages[0].patient.age : -1,
->>>>>>> 5d2e05e79a56747bd84e44b2da5264d5bc9856df
     gender: "Male",
     weight: "70 kg",
     height: "175 cm",
     bloodPressure: messages.length > 0 ? messages[0].patient.HN : 0,
   };
 
-<<<<<<< HEAD
-  const entries: (DiaryEntry | null)[] = [
-      // ✅ November 2024
-      { "date": "05 November 2024", "time": "6:45 AM", "activity": "Jogging", "symptom": "Slight Knee Pain", "painLevel": 2, "meals": { "breakfast": "Omelet", "lunch": "Grilled Chicken", "dinner": "Soup" }, "selectedFoods": ["Omelet", "Grilled Chicken"] },  
-      { "date": "10 November 2024", "time": "7:30 PM", "activity": "Yoga", "symptom": "Relaxed", "painLevel": 1, "meals": { "breakfast": "Smoothie", "lunch": "Quinoa Salad", "dinner": "Grilled Fish" }, "selectedFoods": ["Smoothie", "Quinoa Salad"] },  
-      { "date": "15 November 2024", "time": "5:00 PM", "activity": "Swimming", "symptom": "Sore Shoulders", "painLevel": 3, "meals": { "breakfast": "Toast", "lunch": "Pasta", "dinner": "Roast Beef" }, "selectedFoods": ["Toast", "Pasta"] },  
-      { "date": "20 November 2024", "time": "6:15 PM", "activity": "Cycling", "symptom": "Tired", "painLevel": 2, "meals": { "breakfast": "Yogurt", "lunch": "Rice & Chicken", "dinner": "Steak" }, "selectedFoods": ["Yogurt", "Rice & Chicken"] },  
-      { "date": "25 November 2024", "time": "8:00 AM", "activity": "Hiking", "symptom": "None", "painLevel": 1, "meals": { "breakfast": "Oatmeal", "lunch": "Sandwich", "dinner": "Grilled Vegetables" }, "selectedFoods": ["Oatmeal", "Sandwich"] },  
-      
-      { "date": "05 December 2024", "time": "6:30 PM", "activity": "Weight Training", "symptom": "Sore Arms", "painLevel": 4, "meals": { "breakfast": "Eggs", "lunch": "Salad", "dinner": "Fish & Rice" }, "selectedFoods": ["Eggs", "Salad"] },  
-      { "date": "12 December 2024", "time": "7:00 AM", "activity": "Running", "symptom": "Ankle Pain", "painLevel": 3, "meals": { "breakfast": "Pancakes", "lunch": "Chicken Wrap", "dinner": "Soup" }, "selectedFoods": ["Pancakes", "Chicken Wrap"] },  
-      { "date": "18 December 2024", "time": "5:45 PM", "activity": "Dancing", "symptom": "None", "painLevel": 1, "meals": { "breakfast": "Fruit Salad", "lunch": "Sushi", "dinner": "Steak" }, "selectedFoods": ["Fruit Salad", "Sushi"] },  
-      { "date": "22 December 2024", "time": "6:00 PM", "activity": "Meditation", "symptom": "Calm", "painLevel": 1, "meals": { "breakfast": "Smoothie Bowl", "lunch": "Rice & Beans", "dinner": "Grilled Salmon" }, "selectedFoods": ["Smoothie Bowl", "Rice & Beans"] },  
-      { "date": "28 December 2024", "time": "8:30 PM", "activity": "Stretching", "symptom": "Relaxed", "painLevel": 1, "meals": { "breakfast": "Muffin", "lunch": "Pasta", "dinner": "Roast Chicken" }, "selectedFoods": ["Muffin", "Pasta"] },  
-      
-      { "date": "25 February 2025", "time": "5:48 PM", "activity": "เดินขึ้นลงบันได 20 นาที", "symptom": "เจ็บข้อเท้านิดหน่อย", "painLevel": 2, "meals": { "breakfast": "แพนเค้ก + กาแฟ", "lunch": "ข้าวคลุกกะปิ", "dinner": "แกงจืดเต้าหู้หมูสับ" }, "selectedFoods": ["กาแฟ", "ข้าวเหนียว"] },  
-      { "date": "26 February 2025", "time": "0:30 AM", "activity": "นอนดึก", "symptom": "รู้สึกปวดหัวเล็กน้อย", "painLevel": 2, "meals": { "breakfast": "โอวัลติน + ขนมปัง", "lunch": "ก๋วยเตี๋ยวเรือ", "dinner": "ไข่ตุ๋น + ข้าว" }, "selectedFoods": ["โอวัลติน", "ขนมปัง"] }  
-      ];
-      
-    
-  const [selectedFoods, setSelectedFoods] = useState<string[]>([]); // ✅ เก็บค่าที่บันทึกแล้ว
-=======
   const foods = [
     "ชา",
     "กาแฟ",
@@ -133,7 +100,6 @@ const FlipBook: React.FC = () => {
     "มาม่า",
     "ปลากระป๋อง",
   ];
->>>>>>> 5d2e05e79a56747bd84e44b2da5264d5bc9856df
 
   const entries: (DiaryEntry | null)[] = messages.map((message) => ({
     date: message.date,
