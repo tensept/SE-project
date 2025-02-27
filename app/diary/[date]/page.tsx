@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import FoodCheckbox from "@/app/components/FoodCheckbox";
 const DiaryPage = () => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -13,112 +12,98 @@ const DiaryPage = () => {
   const [breakfastNote, setBreakfastNote] = useState("");
   const [lunchNote, setLunchNote] = useState("");
   const [dinnerNote, setDinnerNote] = useState("");
-  const [symptomImage, setSymptomImage] = useState<string | null>(null);
-  const [breakfastImage, setBreakfastImage] = useState(null);
-  const [lunchImage, setLunchImage] = useState(null);
-  const [dinnerImage, setDinnerImage] = useState(null);
+  
+  const [symptomImage, setSymptomImage] = useState<string | null>("");
+  const [breakfastImage, setBreakfastImage] = useState("");
+  const [lunchImage, setLunchImage] = useState("");
+  const [dinnerImage, setDinnerImage] = useState("");
+  
   const [diaryID, setDiaryID] = useState(null);
-  //const [checkedFoods, setCheckedFoods] = useState(false);
-  const [selectedFoods, setSelectedFoods] = useState<string[]>([]);
-  const [tempSelectedFoods, setTempSelectedFoods] = useState<string[]>(selectedFoods);
-  const dateFromPath = pathname.split("/").pop(); // ดึงวันที่จาก path
-
+  const [checkedFoods, setCheckedFoods] = useState(false);
 
   useEffect(() => {
-      const fetchDiary = async () => {
-        let path = process.env.BACK_END || "http://localhost:1234";
-    
-        try {
-          console.log("Fetching data from:", path);
-    
-          const response = await fetch(`${path}/diaries/1/${dateFromPath}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-    
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-    
-          const result = await response.json();
-          console.log("Data fetched:", result);
-    
-          const { id, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
-          setDiaryID(id);
-          setActivity(activity);
-          setSymptom(symptom);
-          setPainLevel(painScore);
-          setBreakfastNote(breakfast);
-          setLunchNote(lunch);
-          setDinnerNote(dinner);
-          setSelectedFoods(food); // ✅ แก้ไขให้ใช้ setSelectedFoods แทน setCheckedFoods
-        } catch (error) {
-          console.error("Error fetching data:", error);
+    const fetchDiary = async () => {
+      const path = process.env.BACK_END;
+
+      try {
+        console.log("Fetching data from:", path);
+
+        const response = await fetch(`${path}/diaries/2/${dateFromPath}`, {
+          method: "GET", // Explicitly specify the GET method
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      };
-    
-      fetchDiary();
-    }, [dateFromPath]);
+        const result = await response.json();
+        console.log("Data fetched:", result);
+
+        const { id, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
+        setDiaryID(id);
+        setActivity(activity);
+        setSymptom(symptom);
+        setPainLevel(painScore);
+        setBreakfastNote(breakfast);
+        setLunchNote(lunch);
+        setDinnerNote(dinner);
+        setCheckedFoods(food);
+
+        console.log("id: ",id);
+        const imageResponse = await fetch(`${path}/images/${id}`, {
+          method: "GET", // Explicitly specify the GET method
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const result2 = await imageResponse.json();
+        console.log("Data fetched2:", result2);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
     // Demo POST patient
-  useEffect(() => {
-  const postPatient = async () => {
-    let path = process.env.BACK_END || "http://localhost:1234";
+    const postPatient = async () => {
+      let path = process.env.BACK_END;
 
-    try {
-      console.log("Posting patient to:", path);
-      const response = await fetch(path + "/patients", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          patientId: 3,
-          name: "John Doe",
-          age: 30,
-          citizenID: "1234567890123",
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!path) {
+        // throw new Error("BACK_END environment variable is not defined");
+        path = "http://localhost:1234";
       }
 
-      const result = await response.json();
-      console.log("Data posted:", result);
-    } catch (error) {
-      console.error("Error posting data:", error);
-    }
-  };
-
-  const fetchDiary = async () => {
-    let path = process.env.BACK_END || "http://localhost:1234";
-
-    try {
-      console.log("Fetching diary from:", path);
-      const response = await fetch(`${path}/diaries/1/${dateFromPath}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      try {
+        console.log("Posting patient to:", path);
+        const response = await fetch(path + "/patients", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            patientId: 2,
+            name: "John Doe",
+            age: 30,
+            citizenID: "1234567890123",
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("Data posted:", result);
+      } catch (error) {
+        console.error("Error posting data:", error);
       }
+    };
 
-      const result = await response.json();
-      console.log("Diary fetched:", result);
-    } catch (error) {
-      console.error("Error fetching diary:", error);
-    }
-  };
+    // postPatient();
+    fetchDiary();
+  }, []);
 
-  postPatient(); // ✅ เรียกใช้งาน
-  fetchDiary();  // ✅ เรียกใช้งาน
-}, []);
+  const dateFromPath = pathname.split("/").pop(); // ดึงวันที่จาก path
 
   useEffect(() => {
     if (dateFromPath) {
@@ -127,18 +112,18 @@ const DiaryPage = () => {
   }, []);
 
   const createDiary = async () => {
-    let path = process.env.BACK_END || "http://localhost:1234";
-  
+    const path = process.env.BACK_END;
+
     try {
       console.log("Posting data to:", path);
-  
-      const response = await fetch(`${path}/diaries`, {
+
+      const response = await fetch(path + "/diaries", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          patientId: 1,
+          patientId: 2,
           date: dateFromPath,
           activity: activity,
           symptom: symptom,
@@ -146,63 +131,63 @@ const DiaryPage = () => {
           breakfast: breakfastNote,
           lunch: lunchNote,
           dinner: dinnerNote,
-          food: selectedFoods, // ✅ ใช้ selectedFoods แทน checkedFoods
+          food: checkedFoods,
         }),
       });
-  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
       const result = await response.json();
       console.log("Data posted:", result);
-  
+
       const { id } = result;
       setDiaryID(id);
+
+      const imageUpload = await fetch(`${path}/images/${id}`, {
+        method: "POST", // Explicitly specify the GET method
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result2 = await imageUpload.json();
+      console.log("Data upload2:", result2);
+
     } catch (error) {
       console.error("Error posting data:", error);
     }
   };
-  
 
-  const updateDiary = async (updatedFoods: string[]) => { // ✅ เพิ่มพารามิเตอร์
-    if (!diaryID) {
-      console.error("Error: diaryID is undefined");
-      return;
+  const updateDiary = async () => {
+    // accept id as a parameter
+    let path = process.env.BACK_END;
+
+    if (!path) {
+      path = "http://localhost:1234";
     }
-  
-    let path = process.env.BACK_END || "http://localhost:1234";
-  
-    const data = {
-      patientId: 1,
-      date: dateFromPath,
-      activity: activity,
-      symptom: symptom,
-      painScore: painLevel,
-      breakfast: breakfastNote,
-      lunch: lunchNote,
-      dinner: dinnerNote,
-      food: updatedFoods, // ✅ ใช้ค่าที่อัปเดตล่าสุด
-    };
-  
-    console.log("Sending Data:", data); // ✅ Debug ค่าที่ส่งไป API
-  
-    try {
-      const response = await fetch(`${path}/diaries/${diaryID}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to update diary: ${response.statusText}`);
-      }
-  
-      console.log("Diary updated successfully");
-    } catch (error) {
-      console.error("Error updating diary:", error);
+
+    const response = await fetch(`${path}/diaries/${diaryID}`, {
+      // Include id in the URL
+      method: "PATCH", // Use PATCH instead of PUT
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        patientId: 2,
+        date: dateFromPath,
+        activity: activity,
+        symptom: symptom,
+        painScore: painLevel,
+        breakfast: breakfastNote,
+        lunch: lunchNote,
+        dinner: dinnerNote,
+        food: checkedFoods,
+      }),
+    });
+
+    if (response.ok) {
+      alert("Diary updated successfully!");
+    } else {
+      alert("Failed to update diary!");
     }
   };
 
@@ -219,22 +204,16 @@ const DiaryPage = () => {
   const handleSave = () => {
     console.log("Symptom:", symptom);
     console.log("Pain Level:", painLevel);
-    console.log("Breakfast Note:", breakfastNote);
+    console.log("Breakfase Note:", breakfastNote);
     console.log("Lunch Note:", lunchNote);
     console.log("Dinner Note:", dinnerNote);
-    console.log("Selected Foods:", tempSelectedFoods); // ✅ Debug ค่าอาหารที่เลือกก่อนบันทึก
-  
-    setSelectedFoods(tempSelectedFoods); // ✅ อัปเดต selectedFoods ก่อนบันทึก
-  
     if (diaryID) {
-      updateDiary(tempSelectedFoods); // ✅ ส่งค่าไปบันทึก
+      updateDiary();
     } else {
       createDiary();
       alert("Diary saved successfully!");
     }
   };
-  
-
 
   const handlePreviousDay = () => {
     const previousDay = new Date(currentDate);
@@ -248,74 +227,72 @@ const DiaryPage = () => {
     setCurrentDate(nextDay);
   };
 
+  const foods = [
+    "ชา",
+    "กาแฟ",
+    "น้ำเย็น",
+    "บุหรี่",
+    "เหล้า",
+    "เบียร์",
+    "ข้าวเหนียว",
+    "อาหารหมักดอง",
+    "ไข่ไก่",
+    "ปลาเค็ม",
+    "ปลาร้า",
+    "ไก่",
+    "หมู",
+    "วัว",
+    "ปลาไม่มีเกล็ด",
+    "เครื่องในสัตว์",
+    "อาหารทะเล",
+    "เส้นก๋วยเตี๋ยว",
+    "อาหารแปรรูป",
+    "มาม่า",
+    "ปลากระป๋อง",
+  ];
 
-  // const foods = [
-  //   "ชา",
-  //   "กาแฟ",
-  //   "น้ำเย็น",
-  //   "บุหรี่",
-  //   "เหล้า",
-  //   "เบียร์",
-  //   "ข้าวเหนียว",
-  //   "อาหารหมักดอง",
-  //   "ไข่ไก่",
-  //   "ปลาเค็ม",
-  //   "ปลาร้า",
-  //   "ไก่",
-  //   "หมู",
-  //   "วัว",
-  //   "ปลาไม่มีเกล็ด",
-  //   "เครื่องในสัตว์",
-  //   "อาหารทะเล",
-  //   "เส้นก๋วยเตี๋ยว",
-  //   "อาหารแปรรูป",
-  //   "มาม่า",
-  //   "ปลากระป๋อง",
-  // ];
-
-  // const checkedBoxFoods = () => {
-  //   if (!checkedFoods) {
-  //     setCheckedFoods(Array(foods.length).fill(false));
-  //   } else {
-  //     return (
-  //       <div
-  //         style={{
-  //           display: "grid",
-  //           gridTemplateColumns: "repeat(3, 1fr)", // 3 คอลัมน์
-  //           gap: "10px 20px", // ระยะห่างระหว่างแถวและคอลัมน์
-  //           maxWidth: "800px", // จำกัดความกว้างของ container
-  //           margin: "auto", // จัดให้อยู่ตรงกลาง
-  //         }}
-  //       >
-  //         {foods.map((food, index) => (
-  //           <label
-  //             key={index}
-  //             style={{
-  //               color: "#d81b60",
-  //               display: "flex",
-  //               alignItems: "center",
-  //             }}
-  //           >
-  //             <input
-  //               type="checkbox"
-  //               checked={checkedFoods ? checkedFoods[index] : false}
-  //               onChange={() => {
-  //                 const newCheckedFoods = [...checkedFoods];
-  //                 newCheckedFoods[index] = !newCheckedFoods[index];
-  //                 setCheckedFoods(newCheckedFoods);
-  //                 console.log(newCheckedFoods);
-  //               }}
-  //               style={{ marginRight: "10px" }}
-  //               className="custom-checkbox"
-  //             />
-  //             {food}
-  //           </label>
-  //         ))}
-  //       </div>
-  //     );
-  //   }
-  // };
-  
+  const checkedBoxFoods = () => {
+    if (!checkedFoods) {
+      setCheckedFoods(Array(foods.length).fill(false));
+    } else {
+      return (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)", // 3 คอลัมน์
+            gap: "10px 20px", // ระยะห่างระหว่างแถวและคอลัมน์
+            maxWidth: "800px", // จำกัดความกว้างของ container
+            margin: "auto", // จัดให้อยู่ตรงกลาง
+          }}
+        >
+          {foods.map((food, index) => (
+            <label
+              key={index}
+              style={{
+                color: "#d81b60",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={checkedFoods ? checkedFoods[index] : false}
+                onChange={() => {
+                  const newCheckedFoods = [...checkedFoods];
+                  newCheckedFoods[index] = !newCheckedFoods[index];
+                  setCheckedFoods(newCheckedFoods);
+                  console.log(newCheckedFoods);
+                }}
+                style={{ marginRight: "10px" }}
+                className="custom-checkbox"
+              />
+              {food}
+            </label>
+          ))}
+        </div>
+      );
+    }
+  };
 
   const painEmojis = [
     "😁",
@@ -867,21 +844,20 @@ const DiaryPage = () => {
 
       {/* check junkfood*/}
       <section
-      style={{
-        backgroundColor: "white",
-        borderRadius: "10px",
-        padding: "20px",
-        marginBottom: "20px",
-        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <h2 style={{ color: "#000000", fontSize: "18px" }}>
-        หากรับประทานอาหารที่แพทย์สั่งห้ามให้ ✅ ถูกที่หน้าข้อความ
-      </h2>
-
-      {/* ส่ง selectedFoods และ setSelectedFoods เข้าไป */}
-      <FoodCheckbox selectedFoods={selectedFoods} setSelectedFoods={setSelectedFoods} />
-    </section>
+        style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "20px",
+          marginBottom: "20px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+          หากรับประทานอาหารที่แพทย์สั่งห้ามให้ ✅ ถูกที่หน้าข้อความ
+        </h2>
+        {/* check box */}
+        {checkedBoxFoods()}
+      </section>
 
       <button
         onClick={handleSave}

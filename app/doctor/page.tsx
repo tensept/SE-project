@@ -32,11 +32,12 @@ const MessageItem: React.FC<MessageProps & { markAsRead: (id: number) => void }>
     }
   };
 
+  // อยากได้ให้ส่งข้อมูล diaryId ไปหน้า history ด้วย
   const handleClick = async () => {
     if (!isRead) {
       await isReaded();
     }
-    router.push(`/history/${date}/${patientId}`);
+    router.push(`/history`);
   };
 
   return (
@@ -134,6 +135,8 @@ const HealthDiaryMessages: React.FC = () => {
       }));
 
       setMessages(formattedMessages);
+      console.log("data", data);
+      console.log("messages", messages);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }

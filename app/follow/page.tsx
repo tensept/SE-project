@@ -1,12 +1,28 @@
+// (03:46) เหลือดึง CheckedBox กับแผนภูมิมาแสดง
+
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import "../follow/flipbook.css";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import DiaryCard from "../components/DiaryCard";
 import SummaryCard from "../components/SummaryCard";
 import ChartCard from "../components/ChartCard";
-import FoodCheckbox from "../components/FoodCheckbox";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
+interface MessageProps {
+  date: string;
+  time: string;
+  activity: string;
+  symptom: string;
+  painLevel: number;
+  breakfast: string;
+  lunch: string;
+  dinner: string;
+  food: boolean[];
+  patient: {
+    name: string;
+  };
+}
 
 interface DiaryEntry {
   date: string;
@@ -23,93 +39,88 @@ interface DiaryEntry {
 }
 
 const FlipBook: React.FC = () => {
-  const [diary, setDiary] = useState<any>({});
-  const [entries, setEntries] = useState<DiaryEntry[]>([]);
-
-  const fetchDiary = async () => {
+  const [messages, setMessages] = useState<MessageProps[]>([]);
+  
+  const fetchAllDiary = async () => {
     try {
       const response = await fetch(`http://localhost:1234/diaries/1`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
-
+  
       if (response.status === 404) {
         console.log("No diary found for the date");
+        setMessages([]);
         return;
       }
-
       const data = await response.json();
-      setDiary(data);
-      const data_for_ent = data;
-      console.log("dfe1: ",data_for_ent);
-      setEntries(data_for_ent || []); // ✅ Ensure entries is always an array
+      setMessages(data);
+      console.log("data", data);
+      console.log("messages", messages);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }
+    
   };
 
   useEffect(() => {
-    fetchDiary();
-  }, []);
+      fetchAllDiary();
+    }, []);
 
   const userInfo = {
     profilePic: "/Jud.jpg",
-    name: diary?.patient?.name || "",
-    age: diary?.patient?.age || "",
+    name: messages.length > 0 ? messages[0].patient.name : "Unknown",
+    age: messages.length > 0 ? messages[0].patient.age : -1,
     gender: "Male",
     weight: "70 kg",
     height: "175 cm",
-    bloodPressure: "120/80",
+    bloodPressure: messages.length > 0 ? messages[0].patient.HN : 0,
   };
 
-<<<<<<< HEAD
-  const [selectedFoods, setSelectedFoods] = useState<string[]>([]); // ✅ เก็บค่าที่บันทึกแล้ว
+  const foods = [
+    "ชา",
+    "กาแฟ",
+    "น้ำเย็น",
+    "บุหรี่",
+    "เหล้า",
+    "เบียร์",
+    "ข้าวเหนียว",
+    "อาหารหมักดอง",
+    "ไข่ไก่",
+    "ปลาเค็ม",
+    "ปลาร้า",
+    "ไก่",
+    "หมู",
+    "วัว",
+    "ปลาไม่มีเกล็ด",
+    "เครื่องในสัตว์",
+    "อาหารทะเล",
+    "เส้นก๋วยเตี๋ยว",
+    "อาหารแปรรูป",
+    "มาม่า",
+    "ปลากระป๋อง",
+  ];
 
-  const entries: (DiaryEntry | null)[] = [
-      // ✅ November 2024
-      { "date": "05 November 2024", "time": "6:45 AM", "activity": "Jogging", "symptom": "Slight Knee Pain", "painLevel": 2, "meals": { "breakfast": "Omelet", "lunch": "Grilled Chicken", "dinner": "Soup" }, "selectedFoods": ["Omelet", "Grilled Chicken"] },  
-      { "date": "10 November 2024", "time": "7:30 PM", "activity": "Yoga", "symptom": "Relaxed", "painLevel": 1, "meals": { "breakfast": "Smoothie", "lunch": "Quinoa Salad", "dinner": "Grilled Fish" }, "selectedFoods": ["Smoothie", "Quinoa Salad"] },  
-      { "date": "15 November 2024", "time": "5:00 PM", "activity": "Swimming", "symptom": "Sore Shoulders", "painLevel": 3, "meals": { "breakfast": "Toast", "lunch": "Pasta", "dinner": "Roast Beef" }, "selectedFoods": ["Toast", "Pasta"] },  
-      { "date": "20 November 2024", "time": "6:15 PM", "activity": "Cycling", "symptom": "Tired", "painLevel": 2, "meals": { "breakfast": "Yogurt", "lunch": "Rice & Chicken", "dinner": "Steak" }, "selectedFoods": ["Yogurt", "Rice & Chicken"] },  
-      { "date": "25 November 2024", "time": "8:00 AM", "activity": "Hiking", "symptom": "None", "painLevel": 1, "meals": { "breakfast": "Oatmeal", "lunch": "Sandwich", "dinner": "Grilled Vegetables" }, "selectedFoods": ["Oatmeal", "Sandwich"] },  
-
-      { "date": "05 December 2024", "time": "6:30 PM", "activity": "Weight Training", "symptom": "Sore Arms", "painLevel": 4, "meals": { "breakfast": "Eggs", "lunch": "Salad", "dinner": "Fish & Rice" }, "selectedFoods": ["Eggs", "Salad"] },  
-      { "date": "12 December 2024", "time": "7:00 AM", "activity": "Running", "symptom": "Ankle Pain", "painLevel": 3, "meals": { "breakfast": "Pancakes", "lunch": "Chicken Wrap", "dinner": "Soup" }, "selectedFoods": ["Pancakes", "Chicken Wrap"] },  
-      { "date": "18 December 2024", "time": "5:45 PM", "activity": "Dancing", "symptom": "None", "painLevel": 1, "meals": { "breakfast": "Fruit Salad", "lunch": "Sushi", "dinner": "Steak" }, "selectedFoods": ["Fruit Salad", "Sushi"] },  
-      { "date": "22 December 2024", "time": "6:00 PM", "activity": "Meditation", "symptom": "Calm", "painLevel": 1, "meals": { "breakfast": "Smoothie Bowl", "lunch": "Rice & Beans", "dinner": "Grilled Salmon" }, "selectedFoods": ["Smoothie Bowl", "Rice & Beans"] },  
-      { "date": "28 December 2024", "time": "8:30 PM", "activity": "Stretching", "symptom": "Relaxed", "painLevel": 1, "meals": { "breakfast": "Muffin", "lunch": "Pasta", "dinner": "Roast Chicken" }, "selectedFoods": ["Muffin", "Pasta"] },  
-
-      { "date": "25 February 2025", "time": "5:48 PM", "activity": "เดินขึ้นลงบันได 20 นาที", "symptom": "เจ็บข้อเท้านิดหน่อย", "painLevel": 2, "meals": { "breakfast": "แพนเค้ก + กาแฟ", "lunch": "ข้าวคลุกกะปิ", "dinner": "แกงจืดเต้าหู้หมูสับ" }, "selectedFoods": ["กาแฟ", "ข้าวเหนียว"] },  
-      { "date": "26 February 2025", "time": "0:30 AM", "activity": "นอนดึก", "symptom": "รู้สึกปวดหัวเล็กน้อย", "painLevel": 2, "meals": { "breakfast": "โอวัลติน + ขนมปัง", "lunch": "ก๋วยเตี๋ยวเรือ", "dinner": "ไข่ตุ๋น + ข้าว" }, "selectedFoods": ["โอวัลติน", "ขนมปัง"] }  
-  ]
-
-    
-=======
-  const formattedEntries =
-    entries.length % 2 === 0 ? entries : [...entries, null as unknown as DiaryEntry];
-  console.log("formatted: ",formattedEntries);
-  console.log("Entity: ",entries)
-  const [currentPage, setCurrentPage] = useState(2);
-  const canGoPrevious = currentPage > 0;
-  const canGoNext = currentPage + 2 < formattedEntries.length + 2;
-
-  const calculatePainData = () => {
-    const monthlyData: { [key: string]: { total: number; count: number } } = {};
-
-    entries.forEach((entry) => {
-      const [, month] = entry.date;
-      if (!monthlyData[month]) monthlyData[month] = { total: 0, count: 0 };
-      monthlyData[month].total += entry.painLevel;
-      monthlyData[month].count += 1;
-    });
->>>>>>> 0013ed543aeba1f365157494865f5d4b1eed5361
-
+  const entries: (DiaryEntry | null)[] = messages.map((message) => ({
+    date: message.date,
+    time: message.time,
+    activity: message.activity,
+    symptom: message.symptom,
+    painLevel: message.painScore,
+    meals: {
+      breakfast: message.breakfast,
+      lunch: message.lunch,
+      dinner: message.dinner,
+    },
+    selectedFoods: [],
+  }));
+      
   const adjustedEntries = [...entries];
 
   // เช็คว่าจำนวน entries เป็น "คู่" หรือไม่
   const isEven = adjustedEntries.length % 2 === 0;
   
-  // ถ้าเป็นคู่ → เพิ่ม `null` ชั่วคราว
+  // ถ้าเป็นคู่ → เพิ่ม null ชั่วคราว
   if (isEven) {
     adjustedEntries.unshift(null);
   }
@@ -143,6 +154,9 @@ const FlipBook: React.FC = () => {
         (monthlyData[month].total / (monthlyData[month].days * 10)) * 100, // คำนวณเป็นเปอร์เซ็นต์
     }));
   };
+  
+  
+  
   return (
     <div className="center">
       <div className="book-container">
@@ -162,11 +176,11 @@ const FlipBook: React.FC = () => {
           </button>
   
           <div className="pages">
-            {Array.from({ length: Math.ceil(formattedEntries.length / 2) + 1 }).map((_, index) => {
-              const leftPage = index * 2;
-              const rightPage = leftPage + 1;
-              const isLastPage = leftPage >= formattedEntries.length;
-
+            {adjustedEntries.map((_, index) => {
+              if (index % 2 !== 0) return null;
+              const leftIndex = index;
+              const rightIndex = index + 1;
+  
               return (
                 <div
                   key={index}
@@ -177,7 +191,7 @@ const FlipBook: React.FC = () => {
                     zIndex: index === currentPage ? "9999" : "9998",
                   }}
                 >
-                  {/* ✅ Left Page */}
+                  {/* Left Page */}
                   <div className="page-side front w-full h-full flex items-center justify-center">
                     {adjustedEntries[leftIndex] ? (
                       <DiaryCard key={`left-${leftIndex}`} {...adjustedEntries[leftIndex]} />
@@ -204,58 +218,7 @@ const FlipBook: React.FC = () => {
                         painData={calculatePainData()}
                       />
                     ) : (
-                      formattedEntries[leftPage] && (
-                        <DiaryCard
-                          date={formattedEntries[leftPage]?.date ?? ""}
-                          time={formattedEntries[leftPage]?.time ?? ""}
-                          activity={formattedEntries[leftPage]?.activity ?? ""}
-                          symptom={formattedEntries[leftPage]?.symptom ?? ""}
-                          painLevel={formattedEntries[leftPage]?.painScore ?? 0}
-                          meals={formattedEntries[leftPage]?.meals ?? { 
-                            breakfast: formattedEntries[leftPage]?.breakfast, 
-                            lunch: formattedEntries[leftPage]?.lunch, 
-                            dinner: formattedEntries[leftPage]?.dinner 
-                          }}
-                        />
-                      )
-                    )}
-                  </div>
-
-                  {/* ✅ Right Page */}
-                  <div className="page-side back w-full h-full flex items-center justify-center">
-                    {isLastPage ? (
-                      <div className="chart-container">
-                        <ResponsiveContainer width="100%" height={300}>
-                          <BarChart data={calculatePainData()}>
-                            <XAxis dataKey="month" />
-                            <YAxis domain={[0, 10]} />
-                            <Tooltip />
-                            <Bar dataKey="averagePain" fill="#ff7f50" />
-                          </BarChart>
-                        </ResponsiveContainer>
-                        <h3>
-                          สุขภาพ{" "}
-                          {calculatePainData().reduce((sum, d) => sum + d.averagePain, 0) / calculatePainData().length < 5
-                            ? "😊 ดีขึ้นแล้ว!"
-                            : "😟 ต้องดูแลตัวเองเพิ่ม!"}
-                        </h3>
-                      </div>
-                    ) : (
-                      formattedEntries[rightPage] && (
-                        <DiaryCard
-                          key={`right-${rightPage}`}
-                          date={formattedEntries[rightPage]?.date ?? ""}
-                          time={formattedEntries[rightPage]?.time ?? ""}
-                          activity={formattedEntries[rightPage]?.activity ?? ""}
-                          symptom={formattedEntries[rightPage]?.symptom ?? ""}
-                          painLevel={formattedEntries[rightPage]?.painScore ?? 0}
-                          meals={formattedEntries[rightPage]?.meals ?? { 
-                            breakfast: formattedEntries[rightPage]?.breakfast, 
-                            lunch: formattedEntries[rightPage]?.lunch, 
-                            dinner: formattedEntries[rightPage]?.dinner 
-                          }}
-                        />
-                      )
+                      <div className="empty-page">Empty Page</div>
                     )}
                   </div>
                 </div>
