@@ -31,30 +31,6 @@ export default function ConsultPage() {
     return JSON.parse(localStorage.getItem("messages") || "[]") || [];
   });
 
-  const postConsult = async () => {
-    try {
-      const response = await fetch(`http://localhost:1234/consults/${id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: {
-          patient: 1,
-          consultId: 0,
-          question: "",
-          answer: "",
-          reply: "",
-        },
-      });
-
-      if (response.status === 404) {
-        console.log("Cannot POST Consult");
-        setMessages([]);
-        return;
-      }
-    } catch (error) {
-      console.error("Error fetching diary:", error);
-    }
-  };
-
   useEffect(() => {
     localStorage.setItem("chats", JSON.stringify(chats));
   }, [chats]);

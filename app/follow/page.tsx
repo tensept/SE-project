@@ -1,11 +1,32 @@
+// (03:46) เหลือดึง CheckedBox กับแผนภูมิมาแสดง
+
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import "../follow/flipbook.css";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import DiaryCard from "../components/DiaryCard";
 import SummaryCard from "../components/SummaryCard";
 import ChartCard from "../components/ChartCard";
+<<<<<<< HEAD
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+=======
+
+interface MessageProps {
+  date: string;
+  time: string;
+  activity: string;
+  symptom: string;
+  painLevel: number;
+  breakfast: string;
+  lunch: string;
+  dinner: string;
+  food: boolean[];
+  patient: {
+    name: string;
+  };
+}
+>>>>>>> 5d2e05e79a56747bd84e44b2da5264d5bc9856df
 
 interface DiaryEntry {
   date: string;
@@ -22,16 +43,52 @@ interface DiaryEntry {
 }
 
 const FlipBook: React.FC = () => {
+<<<<<<< HEAD
   const userInfo = {
     profilePic: "/Jud.jpg",
     name: "John Doe",
     age: 30,
+=======
+  const [messages, setMessages] = useState<MessageProps[]>([]);
+  
+  const fetchAllDiary = async () => {
+    try {
+      const response = await fetch(`http://localhost:1234/diaries/1`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (response.status === 404) {
+        console.log("No diary found for the date");
+        setMessages([]);
+        return;
+      }
+      const data = await response.json();
+      setMessages(data);
+      console.log("data", data);
+      console.log("messages", messages);
+    } catch (error) {
+      console.error("Error fetching diary:", error);
+    }
+    
+  };
+
+  useEffect(() => {
+      fetchAllDiary();
+    }, []);
+
+  const userInfo = {
+    profilePic: "/Jud.jpg",
+    name: messages.length > 0 ? messages[0].patient.name : "Unknown",
+    age: messages.length > 0 ? messages[0].patient.age : -1,
+>>>>>>> 5d2e05e79a56747bd84e44b2da5264d5bc9856df
     gender: "Male",
     weight: "70 kg",
     height: "175 cm",
-    bloodPressure: "120/80",
+    bloodPressure: messages.length > 0 ? messages[0].patient.HN : 0,
   };
 
+<<<<<<< HEAD
   const entries: (DiaryEntry | null)[] = [
       // ✅ November 2024
       { "date": "05 November 2024", "time": "6:45 AM", "activity": "Jogging", "symptom": "Slight Knee Pain", "painLevel": 2, "meals": { "breakfast": "Omelet", "lunch": "Grilled Chicken", "dinner": "Soup" }, "selectedFoods": ["Omelet", "Grilled Chicken"] },  
@@ -52,13 +109,52 @@ const FlipBook: React.FC = () => {
       
     
   const [selectedFoods, setSelectedFoods] = useState<string[]>([]); // ✅ เก็บค่าที่บันทึกแล้ว
+=======
+  const foods = [
+    "ชา",
+    "กาแฟ",
+    "น้ำเย็น",
+    "บุหรี่",
+    "เหล้า",
+    "เบียร์",
+    "ข้าวเหนียว",
+    "อาหารหมักดอง",
+    "ไข่ไก่",
+    "ปลาเค็ม",
+    "ปลาร้า",
+    "ไก่",
+    "หมู",
+    "วัว",
+    "ปลาไม่มีเกล็ด",
+    "เครื่องในสัตว์",
+    "อาหารทะเล",
+    "เส้นก๋วยเตี๋ยว",
+    "อาหารแปรรูป",
+    "มาม่า",
+    "ปลากระป๋อง",
+  ];
+>>>>>>> 5d2e05e79a56747bd84e44b2da5264d5bc9856df
 
+  const entries: (DiaryEntry | null)[] = messages.map((message) => ({
+    date: message.date,
+    time: message.time,
+    activity: message.activity,
+    symptom: message.symptom,
+    painLevel: message.painScore,
+    meals: {
+      breakfast: message.breakfast,
+      lunch: message.lunch,
+      dinner: message.dinner,
+    },
+    selectedFoods: [],
+  }));
+      
   const adjustedEntries = [...entries];
 
   // เช็คว่าจำนวน entries เป็น "คู่" หรือไม่
   const isEven = adjustedEntries.length % 2 === 0;
   
-  // ถ้าเป็นคู่ → เพิ่ม `null` ชั่วคราว
+  // ถ้าเป็นคู่ → เพิ่ม null ชั่วคราว
   if (isEven) {
     adjustedEntries.unshift(null);
   }

@@ -19,6 +19,8 @@ const FoodCheckbox: React.FC<FoodCheckboxProps> = ({ selectedFoods, setSelectedF
     } else {
       setSelectedFoods([...selectedFoods, food]);
     }
+
+    console.log("selected: ",selectedFoods);
   };
 
   return (
