@@ -12,12 +12,10 @@ const DiaryPage = () => {
   const [breakfastNote, setBreakfastNote] = useState("");
   const [lunchNote, setLunchNote] = useState("");
   const [dinnerNote, setDinnerNote] = useState("");
-  
-  const [symptomImage, setSymptomImage] = useState<string | null>("");
-  const [breakfastImage, setBreakfastImage] = useState("");
-  const [lunchImage, setLunchImage] = useState("");
-  const [dinnerImage, setDinnerImage] = useState("");
-  
+  const [symptomImage, setSymptomImage] = useState<string>("");
+  const [breakfastImage, setBreakfastImage] = useState<string>("");
+  const [lunchImage, setLunchImage] = useState<string>("");
+  const [dinnerImage, setDinnerImage] = useState<string>("");
   const [diaryID, setDiaryID] = useState(null);
   const [checkedFoods, setCheckedFoods] = useState(false);
 
@@ -73,6 +71,40 @@ const DiaryPage = () => {
       if (!path) {
         // throw new Error("BACK_END environment variable is not defined");
         path = "http://localhost:1234";
+    try {
+      console.log("Posting patient to:", path);
+      const response = await fetch(path + "/patients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          patientId: 3,
+          name: "John Doe",
+          age: 30,
+          citizenID: "1234567890123",
+        }),
+      });
+
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("Data fetched:", result);
+
+        const { id, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
+        setDiaryID(id);
+        console.log(diaryID);
+        setActivity(activity);
+        setSymptom(symptom);
+        setPainLevel(painScore);
+        setBreakfastNote(breakfast);
+        setLunchNote(lunch);
+        setDinnerNote(dinner);
+        setCheckedFoods(food);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
 
       try {
@@ -102,6 +134,56 @@ const DiaryPage = () => {
     // postPatient();
     fetchDiary();
   }, []);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      const path = process.env.BACK_END || "http://localhost:1234";
+      try {
+        console.log("Fetching data from:", path);
+
+        const response = await fetch(`${path}/images/${diaryID}`, {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("Data fetched:", result);
+
+        for (const image of result) {
+          switch (image.label) {
+            case "symptom": {
+              setSymptomImage(image.url);
+              break;
+            }
+            case "breakfast": {
+              setBreakfastImage(image.url);
+              break;
+            }
+            case "lunch": {
+              setLunchImage(image.url);
+              break;
+            }
+            case "dinner": {
+              setDinnerImage(image.url);
+              break;
+            }
+            default: {
+              console.log(`Unknown label: ${image.label}`);
+            }
+          }
+        }
+        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (diaryID) {
+      fetchImage();
+    }
+  }, [diaryID])
 
   const dateFromPath = pathname.split("/").pop(); // ดึงวันที่จาก path
 
@@ -191,6 +273,60 @@ const DiaryPage = () => {
     }
   };
 
+  
+  const uploadImage = async () => {
+    const path = process.env.BACK_END || "http://localhost:1234";
+  
+    const imageUrls = [
+      { url: symptomImage, filename: "symptom" },
+      { url: breakfastImage, filename: "breakfast" },
+      { url: lunchImage, filename: "lunch" },
+      { url: dinnerImage, filename: "dinner" },
+    ];
+  
+    const formData = new FormData();
+  
+    for (const { url, filename } of imageUrls) {
+      if (url) {
+        try {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const file = new File([blob], `${filename}.jpg`, { type: blob.type });
+          formData.append("images", file);
+        } catch (error) {
+          console.error("Error converting Blob URL to File:", error);
+          alert("Failed to process image.");
+          return;
+        }
+      } else {
+        formData.append("images", "");
+      }
+    }
+  
+    console.log("FormData before sending:");
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+  
+    try {
+      const response = await fetch(`${path}/images/${diaryID}`, {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log("Images uploaded:", result);
+      alert("Images updated successfully!");
+    } catch (error) {
+      console.error("Error updating images:", error);
+      alert("Failed to update images!");
+    }
+  };  
+
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
     setImage: React.Dispatch<React.SetStateAction<string | null>>
@@ -201,7 +337,7 @@ const DiaryPage = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log("Symptom:", symptom);
     console.log("Pain Level:", painLevel);
     console.log("Breakfase Note:", breakfastNote);
@@ -209,8 +345,10 @@ const DiaryPage = () => {
     console.log("Dinner Note:", dinnerNote);
     if (diaryID) {
       updateDiary();
+      uploadImage();
     } else {
-      createDiary();
+      await createDiary();
+      uploadImage();
       alert("Diary saved successfully!");
     }
   };
