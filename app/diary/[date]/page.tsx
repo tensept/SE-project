@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+
 const DiaryPage = () => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -17,14 +18,14 @@ const DiaryPage = () => {
   const [lunchImage, setLunchImage] = useState<string>("");
   const [dinnerImage, setDinnerImage] = useState<string>("");
   const [diaryID, setDiaryID] = useState(null);
-  const [checkedFoods, setCheckedFoods] = useState(false);
+  const [checkedFoods, setCheckedFoods] = useState((Array(21).fill(false)));
 
   useEffect(() => {
     const fetchDiary = async () => {
       const path = process.env.NEXT_PUBLIC_BACK_END;
 
       try {
-        console.log("Fetching data from:", path);
+        console.log("Fetching data from:", process.env.BACK_END);
 
         const response = await fetch(`${path}/diaries/2/${dateFromPath}`, {
           method: "GET", // Explicitly specify the GET method
@@ -82,11 +83,33 @@ const DiaryPage = () => {
         }),
       })
       } catch (error) {
-        console.error("Error post patient:", error);
-      };
-    };
+        console.error("Error fetching data:", error);
+      }
 
-    postPatient();
+      try {
+        console.log("Posting patient to:", path);
+        const response = await fetch(path + "/patients", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            patientId: 2,
+            name: "John Doe",
+            age: 30,
+            citizenID: "1234567890123",
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("Data posted:", result);
+      } catch (error) {
+        console.error("Error posting data:", error);
+      }
+    }
+    // postPatient();
     fetchDiary();
   }, []);
 
