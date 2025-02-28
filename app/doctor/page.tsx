@@ -16,8 +16,11 @@ const MessageItem: React.FC<MessageProps & { markAsRead: (id: number) => void, r
   // const router = useRouter();
 
   const isReaded = async () => {
+
+  const path = process.env.NEXT_PUBLIC_BACK_END;
+
     try {
-      const response = await fetch(`http://localhost:1234/diaries/${id}`, {
+      const response = await fetch(`${path}/diaries/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isRead: true }),
@@ -116,8 +119,11 @@ const HealthDiaryMessages: React.FC = () => {
   const date_for_api = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
   const fetchDiary = async () => {
+
+    const path = process.env.NEXT_PUBLIC_BACK_END;
+
     try {
-      const response = await fetch(`http://localhost:1234/diaries/by-date/${date_for_api}`, {
+      const response = await fetch(`${path}/diaries/by-date/${date_for_api}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });

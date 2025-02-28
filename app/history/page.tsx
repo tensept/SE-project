@@ -27,11 +27,7 @@ const SymptomTracker = () => {
 
   useEffect(() => {
     const fetchDiary = async () => {
-      let path = process.env.BACK_END;
-
-      if (!path) {
-        path = "http://localhost:1234";
-      }
+      const path = process.env.NEXT_PUBLIC_BACK_END;
 
       try {
         console.log("Fetching data from:", path);

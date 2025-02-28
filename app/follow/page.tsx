@@ -42,8 +42,11 @@ const FlipBook: React.FC = () => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   
   const fetchAllDiary = async () => {
+
+    const path = process.env.NEXT_PUBLIC_BACK_END;
+
     try {
-      const response = await fetch(`http://localhost:1234/diaries/1`, {
+      const response = await fetch(`${path}/diaries/by-patient/2`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -55,8 +58,8 @@ const FlipBook: React.FC = () => {
       }
       const data = await response.json();
       setMessages(data);
-      console.log("data", data);
-      console.log("messages", messages);
+      console.log("fetch data", data);
+      console.log("fetch messages", messages);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }
@@ -101,7 +104,7 @@ const FlipBook: React.FC = () => {
     "ปลากระป๋อง",
   ];
 
-  const entries: (DiaryEntry | null)[] = messages.map((message) => ({
+  const entries: (DiaryEntry | null)[] = Array.isArray(messages) ? messages.map((message) => ({
     date: message.date,
     time: message.time,
     activity: message.activity,
@@ -113,8 +116,8 @@ const FlipBook: React.FC = () => {
       dinner: message.dinner,
     },
     selectedFoods: [],
-  }));
-      
+  })) : [];
+  
   const adjustedEntries = [...entries];
 
   // เช็คว่าจำนวน entries เป็น "คู่" หรือไม่
