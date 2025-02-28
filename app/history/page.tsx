@@ -1,26 +1,19 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/compat/router";
 
 const SymptomTracker = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  console.log(id);
   const [painLevel, setPainLevel] = useState(2);
   const [diaryID, setDiaryID] = useState(null);
   const [symptom, setSymptom] = useState("");
-  const pathname = usePathname(); // ดึง path ปัจจุบัน เช่น "/diary/2025-01-06"
   const [currentDate, setCurrentDate] = useState(new Date());
   const [breakfastNote, setBreakfastNote] = useState("");
   const [lunchNote, setLunchNote] = useState("");
   const [dinnerNote, setDinnerNote] = useState("");
-
-  const dateFromPath = pathname.split("/")[2]; // ดึงวันที่จาก path
-  const patientId = pathname.split("/")[3];
-
-  useEffect(() => {
-  
-    if (dateFromPath) {
-      setCurrentDate(new Date(dateFromPath)); // แปลงวันที่จาก string เป็น Date object
-    }
-  }, [dateFromPath]);
 
   const formatDate = (dateString: string | undefined): string => {
     if (!dateString) return "Invalid date"; // หรือค่าดีฟอลต์ที่เหมาะสม

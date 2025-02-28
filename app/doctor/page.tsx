@@ -1,6 +1,7 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/compat/router";
 
 interface MessageProps {
   sender: string;
@@ -11,8 +12,8 @@ interface MessageProps {
   patientId: number;
 }
 
-const MessageItem: React.FC<MessageProps & { markAsRead: (id: number) => void }> = ({ sender, time, isRead, id, date, patientId, markAsRead }) => {
-  const router = useRouter();
+const MessageItem: React.FC<MessageProps & { markAsRead: (id: number) => void, router: any } > = ({ sender, time, isRead, id, date, patientId, markAsRead, router }) => {
+  // const router = useRouter();
 
   const isReaded = async () => {
     try {
@@ -37,7 +38,10 @@ const MessageItem: React.FC<MessageProps & { markAsRead: (id: number) => void }>
     if (!isRead) {
       await isReaded();
     }
-    router.push(`/history`);
+    router.push({
+      pathname: `/history`,
+      query: { id }     
+    });
   };
 
   return (
@@ -69,6 +73,8 @@ const HealthDiaryMessages: React.FC = () => {
   const [date, setDate] = useState(new Date());
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [isDateChanged, setIsDateChanged] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     fetchDiary();
@@ -180,6 +186,7 @@ const HealthDiaryMessages: React.FC = () => {
               date={message.date}
               patientId={message.patientId}
               markAsRead={markMessageAsRead} // ✅ ส่งฟังก์ชันไปยัง MessageItem
+              router={router}
             />
           ))}
         </div>
