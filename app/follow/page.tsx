@@ -134,7 +134,7 @@ const FlipBook: React.FC = () => {
     todayIndex % 2 === 0 ? todayIndex : Math.max(todayIndex - 1, 0)
   );
   
-  const canGoPrevious = currentPage > 2;
+  const canGoPrevious = currentPage > 1;
   const canGoNext = currentPage < chartPageIndex;
   const calculatePainData = () => {
     const monthlyData: { [key: string]: { total: number; days: number } } = {};
