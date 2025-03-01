@@ -22,7 +22,7 @@ const SymptomTracker = () => {
     const fetchDiary = async () => {
       try {
         const path = process.env.NEXT_PUBLIC_BACK_END;
-        const response = await fetch(`${path}/diaries/${diaryId}`, {
+        const response = await fetch(`${path}/diaries/by-diary/${diaryId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -135,7 +135,10 @@ const SymptomTracker = () => {
           </div>
         </div>
         <div className="ml-auto">
-          <button className="px-4 py-2 bg-pink-200 text-gray-800 rounded-full flex items-center">
+            <button
+            className="px-4 py-2 bg-pink-200 text-gray-800 rounded-full flex items-center"
+            onClick={() => window.location.href = "/doctor"}
+            >
             <svg
               className="mr-2"
               width="16"
@@ -145,22 +148,22 @@ const SymptomTracker = () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M19 12H5"
-                stroke="#333"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              d="M19 12H5"
+              stroke="#333"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               />
               <path
-                d="M12 19L5 12L12 5"
-                stroke="#333"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              d="M12 19L5 12L12 5"
+              stroke="#333"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               />
             </svg>
             Back to List
-          </button>
+            </button>
         </div>
       </div>
 
