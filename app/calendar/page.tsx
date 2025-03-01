@@ -24,9 +24,12 @@ const Calendar: React.FC = () => {
 
   // Fetch events from the API
   const getEvent = async () => {
+
+  const path = process.env.NEXT_PUBLIC_BACK_END;
+
     try {
       const response = await fetch(
-        `http://localhost:1234/events?patientId=2&month=${currentMonth+1}&year=${currentYear}`,
+        `${path}/events?patientId=2&month=${currentMonth+1}&year=${currentYear}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -62,8 +65,11 @@ const Calendar: React.FC = () => {
   };
 
   const postEvent = async (eventTitle: string, eventDate: string, patientId: number) => {
+
+    const path = process.env.NEXT_PUBLIC_BACK_END;
+
     try {
-      const response = await fetch(`http://localhost:1234/events`, {
+      const response = await fetch(`${path}/events`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -106,8 +112,11 @@ const Calendar: React.FC = () => {
 
   // เหลือ Method Delete ที่ยีงใช้ไม่ได้
   const deleteEvent = async (eventId: number) => {
+
+    const path = process.env.NEXT_PUBLIC_BACK_END;
+
     try {
-      const response = await fetch(`http://localhost:1234/events/${eventId}`, {
+      const response = await fetch(`${path}/events/${eventId}`, {
         method: "DELETE",
       });
   
@@ -181,7 +190,8 @@ const Calendar: React.FC = () => {
       };
       console.log("sent_event: ", sent_event);
       calendarApi.addEvent(newEvent); // Add event to FullCalendar
-      postEvent(newEvent.title,newEvent.start.toISOString(),2);
+      console.log('Event Start: ', newEvent.end.toISOString());
+      postEvent(newEvent.title,newEvent.end.toISOString(),2);
       handleCloseDialog();
     }
   };
@@ -225,7 +235,7 @@ const Calendar: React.FC = () => {
                   {event.title}
                   <br />
                   <label className="text-slate-950">
-                    {formatDate(event.start!, {
+                    {formatDate(event.end-1!, {
                       year: "numeric",
                       month: "short",
                       day: "numeric",

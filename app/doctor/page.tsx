@@ -1,4 +1,4 @@
-"use client"; // Ensure the component is rendered on the client-side
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useDoctorContext } from "./DoctorContext";
@@ -7,7 +7,7 @@ import MessageItem from "../components/MessageItem";
 const Page: React.FC = () => {
   const { messages, date, setDate, markMessageAsRead, setDiaryId } = useDoctorContext();
   const [isDateChanged, setIsDateChanged] = useState(false);
-
+  
   const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
   const handlePreviousDate = () => {

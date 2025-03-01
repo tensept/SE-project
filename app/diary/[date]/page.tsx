@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+
 const DiaryPage = () => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -17,7 +18,7 @@ const DiaryPage = () => {
   const [lunchImage, setLunchImage] = useState<string>("");
   const [dinnerImage, setDinnerImage] = useState<string>("");
   const [diaryID, setDiaryID] = useState(null);
-  const [checkedFoods, setCheckedFoods] = useState(false);
+  const [checkedFoods, setCheckedFoods] = useState((Array(21).fill(false)));
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -82,11 +83,33 @@ const DiaryPage = () => {
         }),
       })
       } catch (error) {
-        console.error("Error post patient:", error);
-      };
-    };
+        console.error("Error fetching data:", error);
+      }
 
-    postPatient();
+      try {
+        console.log("Posting patient to:", path);
+        const response = await fetch(path + "/patients", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            patientId: 2,
+            name: "John Doe",
+            age: 30,
+            citizenID: "1234567890123",
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        console.log("Data posted:", result);
+      } catch (error) {
+        console.error("Error posting data:", error);
+      }
+    }
+    // postPatient();
     fetchDiary();
   }, []);
 
@@ -94,8 +117,8 @@ const DiaryPage = () => {
     const fetchImage = async () => {
       const path = process.env.NEXT_PUBLIC_BACK_END;
       try {
-        console.log("Fetching data from:", path);
-
+        console.log("Fetching immage from:", path);
+        console.log("diaryID: ", diaryID);
         const response = await fetch(`${path}/images/${diaryID}`, {
           method: "GET",
         });
@@ -239,16 +262,16 @@ const DiaryPage = () => {
   
   const uploadImage = async () => {
     const path = process.env.NEXT_PUBLIC_BACK_END;
-  
+
     const imageUrls = [
       { url: symptomImage, filename: "symptom" },
       { url: breakfastImage, filename: "breakfast" },
       { url: lunchImage, filename: "lunch" },
       { url: dinnerImage, filename: "dinner" },
     ];
-  
+
     const formData = new FormData();
-  
+
     for (const { url, filename } of imageUrls) {
       if (url) {
         try {
@@ -265,22 +288,29 @@ const DiaryPage = () => {
         formData.append("images", "");
       }
     }
-  
-    console.log("FormData before sending:");
+
+    console.log("FormData before sending:", formData);
     for (const [key, value] of formData.entries()) {
       console.log(key, value);
     }
-  
+
+    if (!diaryID) {
+      console.error("Diary ID is null. Cannot upload images.");
+      alert("Diary ID is null. Cannot upload images.");
+      return;
+    }
+
     try {
+      console.log("DiaryID: ", diaryID);
       const response = await fetch(`${path}/images/${diaryID}`, {
         method: "POST",
         body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const result = await response.json();
       console.log("Images uploaded:", result);
       alert("Images updated successfully!");
@@ -288,7 +318,7 @@ const DiaryPage = () => {
       console.error("Error updating images:", error);
       alert("Failed to update images!");
     }
-  };  
+  };
 
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
