@@ -1,324 +1,53 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDiaryContext } from './DiaryContext';
 import { useRouter, usePathname } from "next/navigation";
 
 const DiaryPage = () => {
   const router = useRouter();
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const pathname = usePathname(); // ดึง path ปัจจุบัน เช่น "/diary/2025-01-06"
-  const [activity, setActivity] = useState("");
-  const [symptom, setSymptom] = useState("");
-  const [painLevel, setPainLevel] = useState(1);
-  const [breakfastNote, setBreakfastNote] = useState("");
-  const [lunchNote, setLunchNote] = useState("");
-  const [dinnerNote, setDinnerNote] = useState("");
-  const [symptomImage, setSymptomImage] = useState<string>("");
-  const [breakfastImage, setBreakfastImage] = useState<string>("");
-  const [lunchImage, setLunchImage] = useState<string>("");
-  const [dinnerImage, setDinnerImage] = useState<string>("");
-  const [diaryID, setDiaryID] = useState(null);
-  const [checkedFoods, setCheckedFoods] = useState((Array(21).fill(false)));
+  const {
+    currentDate,
+    setCurrentDate,
+    activity,
+    setActivity,
+    symptom,
+    setSymptom,
+    painLevel,
+    setPainLevel,
+    breakfastNote,
+    setBreakfastNote,
+    lunchNote,
+    setLunchNote,
+    dinnerNote,
+    setDinnerNote,
+    symptomImage,
+    setSymptomImage,
+    breakfastImage,
+    setBreakfastImage,
+    lunchImage,
+    setLunchImage,
+    dinnerImage,
+    setDinnerImage,
+    diaryID,
+    checkedFoods,
+    setCheckedFoods,
+    createDiary,
+    updateDiary,
+    uploadImage,
+  } = useDiaryContext();
+  console.log(diaryID);
 
-  useEffect(() => {
-    const fetchDiary = async () => {
-      const path = process.env.NEXT_PUBLIC_BACK_END;
-
-      try {
-        console.log("Fetching data from:", path);
-
-        const response = await fetch(`${path}/diaries/2/${dateFromPath}`, {
-          method: "GET", // Explicitly specify the GET method
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        console.log("Data fetched:", result);
-
-        const { id, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
-        setDiaryID(id);
-        setActivity(activity || "");
-        setSymptom(symptom || "");
-        setPainLevel(painScore || 1);
-        setBreakfastNote(breakfast || "");
-        setLunchNote(lunch || "");
-        setDinnerNote(dinner || "");
-        setCheckedFoods(food);
-
-        console.log("id: ",id);
-        const imageResponse = await fetch(`${path}/images/${id}`, {
-          method: "GET", // Explicitly specify the GET method
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const result2 = await imageResponse.json();
-        console.log("Data fetched2:", result2);
-
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    // Demo POST patient
-    const postPatient = async () => {
-      const path = process.env.NEXT_PUBLIC_BACK_END;
-
-      try {
-      console.log("Posting patient to:", path);
-      const response = await fetch(path + "/patients", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: 2,
-          name: "John Doe",
-          age: 30,
-        }),
-      })
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-
-      try {
-        console.log("Posting patient to:", path);
-        const response = await fetch(path + "/patients", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            patientId: 2,
-            name: "John Doe",
-            age: 30,
-            citizenID: "1234567890123",
-          }),
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        console.log("Data posted:", result);
-      } catch (error) {
-        console.error("Error posting data:", error);
-      }
-    }
-    // postPatient();
-    fetchDiary();
-  }, []);
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      const path = process.env.NEXT_PUBLIC_BACK_END;
-      try {
-        console.log("Fetching immage from:", path);
-        console.log("diaryID: ", diaryID);
-        const response = await fetch(`${path}/images/${diaryID}`, {
-          method: "GET",
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        console.log("Data fetched:", result);
-
-        for (const image of result) {
-          switch (image.label) {
-            case "symptom": {
-              setSymptomImage(image.url);
-              break;
-            }
-            case "breakfast": {
-              setBreakfastImage(image.url);
-              break;
-            }
-            case "lunch": {
-              setLunchImage(image.url);
-              break;
-            }
-            case "dinner": {
-              setDinnerImage(image.url);
-              break;
-            }
-            default: {
-              console.log(`Unknown label: ${image.label}`);
-            }
-          }
-        }
-        
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    if (diaryID) {
-      fetchImage();
-    }
-  }, [diaryID])
-
-  const dateFromPath = pathname.split("/").pop(); // ดึงวันที่จาก path
-
+  const pathname = usePathname();
+  const dateFromPath = pathname.split("/").pop();
+  
   useEffect(() => {
     if (dateFromPath) {
-      setCurrentDate(new Date(dateFromPath)); // แปลงวันที่จาก string เป็น Date object
+      setCurrentDate(new Date(dateFromPath));
+      console.log("dateFromPath: " + dateFromPath);
+      console.log("currentDate: " + currentDate);
     }
-  }, []);
-
-  const createDiary = async () => {
-    const path = process.env.NEXT_PUBLIC_BACK_END;
-
-    try {
-      console.log("Posting data to:", path);
-
-      const response = await fetch(path + "/diaries", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          patientId: 2,
-          date: dateFromPath,
-          activity: activity,
-          symptom: symptom,
-          painScore: painLevel,
-          breakfast: breakfastNote,
-          lunch: lunchNote,
-          dinner: dinnerNote,
-          food: checkedFoods,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const result = await response.json();
-      console.log("Data posted:", result);
-
-      const { id } = result;
-      setDiaryID(id);
-
-      const imageUpload = await fetch(`${path}/images/${id}`, {
-        method: "POST", // Explicitly specify the GET method
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const result2 = await imageUpload.json();
-      console.log("Data upload2:", result2);
-
-    } catch (error) {
-      console.error("Error posting data:", error);
-    }
-  };
-
-  const updateDiary = async () => {
-    // accept id as a parameter
-    const path = process.env.NEXT_PUBLIC_BACK_END;
-
-    console.log({
-      patientId: 2,
-      date: dateFromPath,
-      activity: activity,
-      symptom: symptom,
-      painScore: painLevel,
-      breakfast: breakfastNote,
-      lunch: lunchNote,
-      dinner: dinnerNote,
-      food: checkedFoods,
-    })
-
-    const response = await fetch(`${path}/diaries/${diaryID}`, {
-      // Include id in the URL
-      method: "PATCH", // Use PATCH instead of PUT
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        patientId: 2,
-        date: dateFromPath,
-        activity: activity,
-        symptom: symptom,
-        painScore: painLevel,
-        breakfast: breakfastNote,
-        lunch: lunchNote,
-        dinner: dinnerNote,
-        food: checkedFoods,
-      }),
-    });
-
-    if (response.ok) {
-      alert("Diary updated successfully!");
-    } else {
-      alert("Failed to update diary!");
-    }
-  };
-
-  
-  const uploadImage = async () => {
-    const path = process.env.NEXT_PUBLIC_BACK_END;
-
-    const imageUrls = [
-      { url: symptomImage, filename: "symptom" },
-      { url: breakfastImage, filename: "breakfast" },
-      { url: lunchImage, filename: "lunch" },
-      { url: dinnerImage, filename: "dinner" },
-    ];
-
-    const formData = new FormData();
-
-    for (const { url, filename } of imageUrls) {
-      if (url) {
-        try {
-          const response = await fetch(url);
-          const blob = await response.blob();
-          const file = new File([blob], `${filename}.jpg`, { type: blob.type });
-          formData.append("images", file);
-        } catch (error) {
-          console.error("Error converting Blob URL to File:", error);
-          alert("Failed to process image.");
-          return;
-        }
-      } else {
-        formData.append("images", "");
-      }
-    }
-
-    console.log("FormData before sending:", formData);
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
-    if (!diaryID) {
-      console.error("Diary ID is null. Cannot upload images.");
-      alert("Diary ID is null. Cannot upload images.");
-      return;
-    }
-
-    try {
-      console.log("DiaryID: ", diaryID);
-      const response = await fetch(`${path}/images/${diaryID}`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("Images uploaded:", result);
-      alert("Images updated successfully!");
-    } catch (error) {
-      console.error("Error updating images:", error);
-      alert("Failed to update images!");
-    }
-  };
+  }, [dateFromPath, setCurrentDate]);
 
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -342,7 +71,6 @@ const DiaryPage = () => {
     } else {
       await createDiary();
       uploadImage();
-      alert("Diary saved successfully!");
     }
   };
 
