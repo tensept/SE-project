@@ -14,25 +14,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/app/calendar/ui/dialog";
+import { get } from "http";
 
 const Calendar: React.FC = () => {
-  const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
+  const [currentEvents, setCurrentEvents] = useState<{ id: any; title: any; start: any; end: any; allDay: boolean; }[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [newEventTitle, setNewEventTitle] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<DateSelectArg | null>(null);
   const router = useRouter();
 
+  const getAuthToken = () => localStorage.getItem("authToken"); // Retrieve the token from localStorage
+
   // Fetch events from the API
-  const getEvent = async () => {
+  const getEvent = async (month: number, year: number) => {
 
   const path = process.env.NEXT_PUBLIC_BACK_END;
 
     try {
+      const authToken = getAuthToken(); // Get the auth token
       const response = await fetch(
-        `${path}/events?patientId=2&month=${currentMonth+1}&year=${currentYear}`,
+        `${path}/events?month=${month+1}&year=${year}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`,
+          },
         }
       );
 
@@ -40,8 +47,8 @@ const Calendar: React.FC = () => {
         console.log("No diary found for the date");
         return;
       }
-      console.log("cm: ",currentMonth);
-      console.log("cy: ",currentYear);
+      console.log("cm: ",month);
+      console.log("cy: ",year);
 
       const data = await response.json();
       console.log("Data:", data);
@@ -65,18 +72,21 @@ const Calendar: React.FC = () => {
     }
   };
 
-  const postEvent = async (eventTitle: string, eventDate: string, patientId: number) => {
+  const postEvent = async (eventTitle: string, eventDate: string) => {
 
     const path = process.env.NEXT_PUBLIC_BACK_END;
+    const authToken = getAuthToken();
 
     try {
       const response = await fetch(`${path}/events`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`, 
+          },
         body: JSON.stringify({
           event: eventTitle,
           date: eventDate,
-          patientId: patientId, // Ensure patientId is provided if required by your backend
         }),
       });
   
@@ -104,7 +114,6 @@ const Calendar: React.FC = () => {
         allDay: true,
       };
   
-      setCurrentEvents((prevEvents) => [...prevEvents, formattedEvent]); // Update state
       console.log("Updated Events: ", currentEvents);
     } catch (error) {
       console.error("Error posting event:", error);
@@ -115,10 +124,15 @@ const Calendar: React.FC = () => {
   const deleteEvent = async (eventId: number) => {
 
     const path = process.env.NEXT_PUBLIC_BACK_END;
+    const authToken = getAuthToken();
 
     try {
       const response = await fetch(`${path}/events/${eventId}`, {
         method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`, 
+          },
       });
   
       if (!response.ok) {
@@ -138,14 +152,8 @@ const Calendar: React.FC = () => {
   };
   
   useEffect(() => {
-    getEvent(); // Fetch events when component mounts
+    getEvent(currentMonth, currentYear); // Fetch events when component mounts
   }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("events", JSON.stringify(currentEvents));
-    }
-  }, [currentEvents]);
 
   const handleDateClick = (selected: DateSelectArg) => {
     setSelectedDate(selected);
@@ -183,18 +191,27 @@ const Calendar: React.FC = () => {
         allDay: selectedDate.allDay,
       };
 
+      setCurrentEvents((prevEvents) => [...prevEvents, newEvent]); // Update state
+
       // Send the event to your API (or handle locally)
       const sent_event = {
-        patientId: 2,
         date: newEvent.start.toISOString(),
         event: newEvent.title,
       };
       console.log("sent_event: ", sent_event);
       calendarApi.addEvent(newEvent); // Add event to FullCalendar
       console.log('Event Start: ', newEvent.end.toISOString());
-      postEvent(newEvent.title,newEvent.end.toISOString(),2);
+      postEvent(newEvent.title,newEvent.end.toISOString());
       handleCloseDialog();
     }
+  };
+
+  const onChangeMonth = (dateInfo: any) => {
+    // Extracting the month and year
+    const month = dateInfo.view.currentStart.getMonth(); // Get the current month (0-11)
+    const year = dateInfo.view.currentStart.getFullYear(); // Get the current year
+
+    getEvent(month, year);
   };
 
   const navigateToDiary = () => {
@@ -206,7 +223,7 @@ const Calendar: React.FC = () => {
 
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
-  const filteredEvents = currentEvents.filter((event: EventApi) => {
+  const filteredEvents = currentEvents.filter((event: { id: any; title: any; start: any; end: any; allDay: boolean; }) => {
     const eventMonth = new Date(event.start!).getMonth();
     return eventMonth === currentMonth;
   });
@@ -228,7 +245,7 @@ const Calendar: React.FC = () => {
               </div>
             )}
             {sortedEvents.length > 0 &&
-              sortedEvents.map((event: EventApi) => (
+              sortedEvents.map((event: { id: any; title: any; start: any; end: any; allDay: boolean }) => (
                 <li
                   className="border border-pink-200 shadow px-4 py-2 rounded-md text-pink-800"
                   key={event.id}
@@ -236,14 +253,14 @@ const Calendar: React.FC = () => {
                   {event.title}
                   <br />
                   <label className="text-slate-950">
-                    {formatDate(event.end-1!, {
+                    {formatDate(event.end - 1, {
                       year: "numeric",
                       month: "short",
                       day: "numeric",
                     })}
                   </label>
                 </li>
-              ))}
+            ))};
           </ul>
         </div>
 
@@ -264,6 +281,7 @@ const Calendar: React.FC = () => {
             select={handleDateClick}
             eventClick={handleEventClick}
             events={currentEvents} // Set events state as the source
+            datesSet={onChangeMonth} // Listen to month change
           />
         </div>
       </div>
@@ -288,28 +306,28 @@ const Calendar: React.FC = () => {
               required
               className="border border-pink-200 p-3 rounded-md text-lg text-center"
             />
-            <p className="mt-2 text-sm text-black font-bold text-center">
+            <div className="mt-2 text-sm text-black font-bold text-center">
               📌 ข้อควรปฏิบัติ
-            </p>
-            <p className="mt-2 text-sm text-black-500 font-bold">
-              <p className="mt-2 text-sm text-black-500 font-bold">
+            </div>
+            <div className="mt-2 text-sm text-black-500 font-bold">
+              <div className="mt-2 text-sm text-black-500 font-bold">
                 ✔️อาหารที่ทานได้ : ปลามีเกล็ด ข้าว ลูกเดือย กล้วยน้ำว้า
                 มะละกอสุก ผักปลอดสารพิษ น้ำนมจากพืช น้ำไม่เย็น
-              </p>
-              <p className="mt-5 text-sm text-black-500 font-bold">
+              </div>
+              <div className="mt-5 text-sm text-black-500 font-bold">
                 ❌อาหารแสลง : ชา กาแฟ น้ำเย็น น้ำแข็ง บุหรี่ เหล้า เบียร์
                 ข้าวเหนียว ไข่ไก่ ไก่ หมู วัว ปลาไม่มีเกล็ด อาหารหมักดอง ปลาเต็ม
                 ปลาร้า มาม่า อาหารทะเล เครื่องในสัตว์ เส้นก๋วยเตียว อาหารแปรรูป
                 ปลากระป๋อง
-              </p>
-              <p className="mt-5 text-sm text-black-100 font-bold">
+              </div>
+              <div className="mt-5 text-sm text-black-100 font-bold">
                 🧘ไหว้พระ สวดมนต์ ทำสมาธิ กรวดน้ำให้เจ้ากรรมนายเวร
                 ใส่บาตรทุกวันพระ ข้าว 1 ถ้วย กล้วย 1 ทวี
                 และเงินตามกำลังวังวันเกิด จันทร์ 15 บาท, อังคาร 8 บาท,
                 วันพุธ(กลางวัน) 17 บาท, วันพุธ (กลางคืน) 12 บาท, พฤหัสบดี 19
                 บาท, ศุกร์ 21 บาท, เสาร์ 10 บาท, อาทิตย์ 6 บาท
-              </p>
-            </p>
+              </div>
+            </div>
             <div className="flex justify-center space-x-4 mt-4">
               <button
                 type="submit"

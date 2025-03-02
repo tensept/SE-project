@@ -62,7 +62,6 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   const getAuthToken = () => localStorage.getItem("authToken"); // Retrieve the token from localStorage
 
   useEffect(() => {
-    // Fetch diary data
     const fetchDiary = async () => {
       try {
         const authToken = getAuthToken(); // Get the auth token
@@ -205,7 +204,6 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
           "Authorization": `Bearer ${authToken}`, // Add the token to the headers
         },
         body: JSON.stringify({
-          patientId: 2,
           date: currentDate.toISOString().split("T")[0],
           activity,
           symptom,
@@ -239,7 +237,6 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
           "Authorization": `Bearer ${authToken}`, // Add the token to the headers
         },
         body: JSON.stringify({
-          patientId: 2,
           date: currentDate.toISOString().split("T")[0],
           activity,
           symptom,
