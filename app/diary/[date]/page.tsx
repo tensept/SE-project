@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useDiaryContext } from './DiaryContext';
+import { useDiary as useDiaryContext } from "../../contexts/DiaryContext";
 import { useRouter, usePathname } from "next/navigation";
 
 const DiaryPage = () => {
@@ -40,7 +40,7 @@ const DiaryPage = () => {
 
   const pathname = usePathname();
   const dateFromPath = pathname.split("/").pop();
-  
+
   useEffect(() => {
     if (dateFromPath) {
       setCurrentDate(new Date(dateFromPath));

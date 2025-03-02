@@ -59,14 +59,18 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   const [checkedFoods, setCheckedFoods] = useState<boolean[]>(Array(21).fill(false));
   const path = process.env.NEXT_PUBLIC_BACK_END;
 
+  const getAuthToken = () => localStorage.getItem("authToken"); // Retrieve the token from localStorage
+
   useEffect(() => {
     // Fetch diary data
     const fetchDiary = async () => {
       try {
-        const response = await fetch(`${path}/diaries/2/${currentDate.toISOString().split("T")[0]}`, {
+        const authToken = getAuthToken(); // Get the auth token
+        const response = await fetch(`${path}/diaries/entry/${currentDate.toISOString().split("T")[0]}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`, // Add the token to the headers
           },
         });
 
@@ -87,18 +91,21 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
         console.log("Error fetching data:", error);
       }
     };
-  
+
     fetchDiary();
   }, [currentDate]);
-  
+
   useEffect(() => {
     const fetchImage = async () => {
-      const path = process.env.NEXT_PUBLIC_BACK_END;
+      const authToken = getAuthToken(); // Get the auth token
       try {
-        console.log("Fetching immage from:", path);
+        console.log("Fetching image from:", path);
         console.log("diaryID: ", diaryID);
         const response = await fetch(`${path}/images/${diaryID}`, {
           method: "GET",
+          headers: {
+            "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+          },
         });
 
         if (!response.ok) {
@@ -140,12 +147,13 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
       fetchImage();
       uploadImage();
     }
-  }, [diaryID])
+  }, [diaryID]);
 
   // Upload images for the diary
   const uploadImage = useCallback(async () => {
     if (!diaryID) return;
 
+    const authToken = getAuthToken(); // Get the auth token
     const imageUrls = [
       { url: symptomImage, filename: "symptom" },
       { url: breakfastImage, filename: "breakfast" },
@@ -166,6 +174,9 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
     try {
       const response = await fetch(`${path}/images/${diaryID}`, {
         method: "POST",
+        headers: {
+          "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+        },
         body: formData,
       });
 
@@ -185,11 +196,13 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
 
   // Create a new diary entry
   const createDiary = useCallback(async () => {
+    const authToken = getAuthToken(); // Get the auth token
     try {
-      const response = await fetch(`${path}/diaries`, {
+      const response = await fetch(`${path}/diaries/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`, // Add the token to the headers
         },
         body: JSON.stringify({
           patientId: 2,
@@ -216,12 +229,14 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   // Update an existing diary entry
   const updateDiary = useCallback(async () => {
     if (!diaryID) return;
+    const authToken = getAuthToken(); // Get the auth token
 
     try {
-      const response = await fetch(`${path}/diaries/${diaryID}`, {
+      const response = await fetch(`${path}/diaries/update/${diaryID}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`, // Add the token to the headers
         },
         body: JSON.stringify({
           patientId: 2,
@@ -242,65 +257,52 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
         alert("Failed to update diary!");
       }
     } catch (error) {
-      console.error("Error updating diary:", error);
+      console.error("Error updating data:", error);
     }
-  }, [
-    activity,
-    breakfastNote,
-    checkedFoods,
-    currentDate,
-    dinnerNote,
-    lunchNote,
-    painLevel,
-    symptom,
-    diaryID,
-    path,
-  ]);
+  }, [diaryID, path, currentDate, activity, symptom, painLevel, breakfastNote, lunchNote, dinnerNote, checkedFoods]);
 
   return (
-    <DiaryContext.Provider
-      value={{
-        currentDate,
-        setCurrentDate,
-        activity,
-        setActivity,
-        symptom,
-        setSymptom,
-        painLevel,
-        setPainLevel,
-        breakfastNote,
-        setBreakfastNote,
-        lunchNote,
-        setLunchNote,
-        dinnerNote,
-        setDinnerNote,
-        symptomImage,
-        setSymptomImage,
-        breakfastImage,
-        setBreakfastImage,
-        lunchImage,
-        setLunchImage,
-        dinnerImage,
-        setDinnerImage,
-        diaryID,
-        setDiaryID,
-        checkedFoods,
-        setCheckedFoods,
-        createDiary,
-        updateDiary,
-        uploadImage,
-      }}
-    >
+    <DiaryContext.Provider value={{
+      currentDate,
+      setCurrentDate,
+      activity,
+      setActivity,
+      symptom,
+      setSymptom,
+      painLevel,
+      setPainLevel,
+      breakfastNote,
+      setBreakfastNote,
+      lunchNote,
+      setLunchNote,
+      dinnerNote,
+      setDinnerNote,
+      symptomImage,
+      setSymptomImage,
+      breakfastImage,
+      setBreakfastImage,
+      lunchImage,
+      setLunchImage,
+      dinnerImage,
+      setDinnerImage,
+      diaryID,
+      setDiaryID,
+      checkedFoods,
+      setCheckedFoods,
+      createDiary,
+      updateDiary,
+      uploadImage
+    }}>
       {children}
     </DiaryContext.Provider>
   );
 };
 
-// Custom hook for consuming context
-export const useDiaryContext = (): DiaryContextType => {
+// Custom hook to use the Diary context
+export const useDiary = (): DiaryContextType => {
   const context = useContext(DiaryContext);
   if (!context) {
-    throw new Error("useDiaryContext must be used within a DiaryProvider");
+    throw new Error("useDiary must be used within a DiaryProvider");
   }
   return context;
 };

@@ -6,7 +6,6 @@ interface Message {
   isRead: boolean;
   id: number;
   date: string;
-  patientId: number;
 }
 
 interface DoctorContextProps {
@@ -81,7 +80,6 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             isRead: message.isRead,
             id: message.id,
             date: formattedDate,
-            patientId: message.patient?.id || 0,
           }))
         );
       } catch (error) {
