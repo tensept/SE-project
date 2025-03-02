@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useDoctorContext } from "../DoctorContext";
+import { useDoctorContext } from "../../contexts/DoctorContext";
 
 const SymptomTracker = () => {
   const { diaryId } = useDoctorContext();
@@ -35,7 +35,17 @@ const SymptomTracker = () => {
         const result = await response.json();
         console.log("Data fetched:", result);
 
-        const { date, patient, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
+        const {
+          date,
+          patient,
+          activity,
+          symptom,
+          painScore,
+          breakfast,
+          lunch,
+          dinner,
+          food,
+        } = result;
 
         setDate(date);
         setPatient(patient.name);
@@ -46,14 +56,11 @@ const SymptomTracker = () => {
         setLunchNote(lunch);
         setDinnerNote(dinner);
         setCheckedFoods(food);
-
-        
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    
     const fetchImage = async () => {
       const path = process.env.NEXT_PUBLIC_BACK_END;
       try {
@@ -92,7 +99,6 @@ const SymptomTracker = () => {
             }
           }
         }
-        
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -101,7 +107,7 @@ const SymptomTracker = () => {
     fetchDiary();
     fetchImage();
   }, [diaryId]);
- 
+
   return (
     <div className="flex flex-col min-h-screen bg-pink-50">
       {/* Header */}

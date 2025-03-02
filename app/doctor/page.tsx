@@ -1,14 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useDoctorContext } from "./DoctorContext";
+import { useDoctorContext } from "../contexts/DoctorContext";
 import MessageItem from "../components/MessageItem";
 
 const Page: React.FC = () => {
-  const { messages, date, setDate, markMessageAsRead, setDiaryId } = useDoctorContext();
+  const { messages, date, setDate, markMessageAsRead, setDiaryId } =
+    useDoctorContext();
   const [isDateChanged, setIsDateChanged] = useState(false);
-  
-  const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+  const formattedDate = `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}`;
 
   const handlePreviousDate = () => {
     const newDate = new Date(date);
@@ -25,7 +28,7 @@ const Page: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(date)
+    console.log(date);
     if (isDateChanged) {
       setIsDateChanged(false);
     }
@@ -69,7 +72,6 @@ const Page: React.FC = () => {
               isRead={message.isRead}
               id={message.id}
               date={message.date}
-              patientId={message.patientId}
               markAsRead={markMessageAsRead} // Send function to MessageItem
               onClick={setDiaryId}
             />

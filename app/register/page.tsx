@@ -3,14 +3,14 @@
 import { UserProvider } from "../contexts/UserContext";
 import UsernamePasswordForm from "../components/UsernamePasswordForm";
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
   return (
     <UserProvider>
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <UsernamePasswordForm mode="login" />
+        <UsernamePasswordForm mode="register" />
       </div>
     </UserProvider>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
