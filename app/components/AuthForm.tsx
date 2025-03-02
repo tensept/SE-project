@@ -1,39 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "../contexts/UserContext";
 
-interface FormProps {
+interface AuthFormProps {
   mode: "login" | "register";
+  userType: "patient" | "doctor"; // Determines if it's for patients or doctors
 }
 
-const UsernamePasswordForm: React.FC<FormProps> = ({ mode }) => {
+const AuthForm: React.FC<AuthFormProps> = ({ mode, userType }) => {
   const { setUser, setToken } = useUser();
   const [error, setError] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [identifier, setIdentifier] = useState<string>(""); // Username or Email
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    setUsername(""); // Reset username and password when mode changes
+    setIdentifier(""); 
     setPassword("");
   }, [mode]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    const url = mode === "login" ? "http://localhost:1234/patientAuth/login" : "http://localhost:1234/patientAuth/register";
-    const method = mode === "login" ? "POST" : "POST"; // Use POST for both
-
+    const path = process.env.NEXT_PUBLIC_BACK_END;
+    const url = `${path}/${userType}Auth/${mode}`;
+    
     try {
       const response = await fetch(url, {
-        method,
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          [userType === "doctor" ? "email" : "username"]: identifier, 
+          password,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Invalid username or password");
+        throw new Error("Invalid credentials");
       }
 
       const data = await response.json();
@@ -41,7 +45,7 @@ const UsernamePasswordForm: React.FC<FormProps> = ({ mode }) => {
       setToken(data.access_token);
       setUser(data.profile);
 
-      setError(""); // Clear any previous errors
+      setError("");
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -51,18 +55,20 @@ const UsernamePasswordForm: React.FC<FormProps> = ({ mode }) => {
 
   return (
     <div className="w-full max-w-md">
-      <h2 className="text-2xl font-semibold text-center mb-4">{mode === "login" ? "Login" : "Register"}</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4">
+        {mode === "login" ? "Login" : "Register"} as {userType}
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="username" className="block text-sm font-medium">
-            Username
+          <label htmlFor="identifier" className="block text-sm font-medium">
+            {userType === "doctor" ? "Email" : "Username"}
           </label>
           <input
-            type="text"
-            id="username"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type={userType === "doctor" ? "email" : "text"}
+            id="identifier"
+            name="identifier"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
           />
@@ -90,11 +96,11 @@ const UsernamePasswordForm: React.FC<FormProps> = ({ mode }) => {
           disabled={loading}
           className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         >
-          {loading ? `${mode === "login" ? "Logging in..." : "Registering..."}` : mode === "login" ? "Login" : "Register"}
+          {loading ? (mode === "login" ? "Logging in..." : "Registering...") : mode === "login" ? "Login" : "Register"}
         </button>
       </form>
     </div>
   );
 };
 
-export default UsernamePasswordForm;
+export default AuthForm;

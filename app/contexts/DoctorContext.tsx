@@ -66,7 +66,15 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
       try {
         console.log("date: " + formattedDate);
-        const response = await fetch(`http://localhost:1234/diaries/by-date/${formattedDate}`);
+        const path = process.env.NEXT_PUBLIC_BACK_END;
+        const authToken = localStorage.getItem("authToken");
+        const response = await fetch(`${path}/diaries/by-date/${formattedDate}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+          },
+        });
         console.log("result: " + response);
         if (!response.ok) {
           setMessages([]);

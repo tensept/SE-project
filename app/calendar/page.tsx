@@ -45,9 +45,10 @@ const Calendar: React.FC = () => {
 
       const data = await response.json();
       console.log("Data:", data);
+      const safeData = Array.isArray(data) ? data : [];
 
       // Format API data into FullCalendar format
-      const formattedEvents = data.map(
+      const formattedEvents = safeData.map(
         (event: { id: number; date: string; event: string }) => ({
           id: event.id.toString(), // Ensure the ID is a string
           title: event.event,

@@ -18,19 +18,23 @@ const SymptomTracker = () => {
   const [dinnerImage, setDinnerImage] = useState<string>("");
   const [checkedFoods, setCheckedFoods] = useState([]);
 
+  const getAuthToken = () => localStorage.getItem("authToken");
+
   useEffect(() => {
     const fetchDiary = async () => {
       try {
+        const authToken = getAuthToken();
         const path = process.env.NEXT_PUBLIC_BACK_END;
-        const response = await fetch(`${path}/diaries/by-diary/${diaryId}`, {
+        const response = await fetch(`${path}/diaries/details/${diaryId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          return;
         }
         const result = await response.json();
         console.log("Data fetched:", result);
@@ -66,12 +70,17 @@ const SymptomTracker = () => {
       try {
         console.log("Fetching data from:", path);
 
+        const authToken = getAuthToken();
         const response = await fetch(`${path}/images/${diaryId}`, {
           method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`,
+          },
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          return;
         }
         const result = await response.json();
         console.log("Data fetched:", result);

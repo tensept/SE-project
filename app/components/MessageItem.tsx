@@ -16,7 +16,8 @@ const MessageItem: React.FC<MessageProps & { markAsRead: (id: number) => void, o
 
   const isReaded = async () => {
     try {
-      const response = await fetch(`http://localhost:1234/diaries/${id}`, {
+      const path = process.env.NEXT_PUBLIC_BACK_END;
+      const response = await fetch(`${path}/diaries/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isRead: true }),

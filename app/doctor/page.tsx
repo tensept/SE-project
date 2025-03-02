@@ -5,8 +5,7 @@ import { useDoctorContext } from "../contexts/DoctorContext";
 import MessageItem from "../components/MessageItem";
 
 const Page: React.FC = () => {
-  const { messages, date, setDate, markMessageAsRead, setDiaryId } =
-    useDoctorContext();
+  const { messages, date, setDate, markMessageAsRead, setDiaryId } = useDoctorContext();
   const [isDateChanged, setIsDateChanged] = useState(false);
 
   const formattedDate = `${date.getFullYear()}-${
