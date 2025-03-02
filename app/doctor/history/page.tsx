@@ -17,6 +17,7 @@ const SymptomTracker = () => {
   const [lunchImage, setLunchImage] = useState<string>("");
   const [dinnerImage, setDinnerImage] = useState<string>("");
   const [checkedFoods, setCheckedFoods] = useState([]);
+  const [createdAt ,setCreatedAt] = useState();
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -35,7 +36,7 @@ const SymptomTracker = () => {
         const result = await response.json();
         console.log("Data fetched:", result);
 
-        const { date, patient, activity, symptom, painScore, breakfast, lunch, dinner, food } = result;
+        const { date, patient, activity, symptom, painScore, breakfast, lunch, dinner, food, createdAt } = result;
 
         setDate(date);
         setPatient(patient.name);
@@ -46,7 +47,7 @@ const SymptomTracker = () => {
         setLunchNote(lunch);
         setDinnerNote(dinner);
         setCheckedFoods(food);
-
+        setCreatedAt(createdAt);
         
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -129,8 +130,6 @@ const SymptomTracker = () => {
             <h1 className="font-medium text-lg text-black">{patient}</h1>
             <p className="text-sm text-gray-500">
               {date}
-              <br />
-              5:48 PM
             </p>
           </div>
         </div>
@@ -185,21 +184,17 @@ const SymptomTracker = () => {
           <h2 className="text-lg font-medium mb-3">Pain Status</h2>
           <div className="mb-1">
             <div className="relative w-full h-3 bg-pink-200 rounded-full">
-              <div
-                className="absolute -top-1.5 w-6 h-6 bg-pink-400 rounded-full shadow-md"
-                style={{ left: `calc(${(painLevel - 0.33) * 10}% - 10px)` }}
-              ></div>
-            </div>
-          </div>
-          <div className="flex justify-between text-sm text-gray-600 px-1">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-              <span
-                key={num}
-                className="cursor-pointer"
-                // onClick={() => setPainLevel(num)}
-              >
-                {num}
-              </span>
+            <div
+            className="absolute -top-1.5 w-6 h-6 bg-pink-400 rounded-full shadow-md transition-transform"
+            style={{ left: `calc(${(painLevel - 1) * (100 / 9)}% + ${(painLevel - 5) * 0.5}px)`, transform: "translateX(-50%)" }}
+          ></div>
+        </div>
+      </div>
+      <div className="flex justify-between text-sm text-gray-600 px-1 w-full">
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+          <span key={num} className="cursor-pointer">
+            {num}
+          </span>
             ))}
           </div>
         </div>

@@ -16,8 +16,7 @@ interface ChartCardProps {
 }
 
 const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
-  const avgPain =
-    painData.reduce((sum, d) => sum + d.averagePain, 0) / painData.length || 0;
+  const avgPain = painData.reduce((sum, d) => sum + d.averagePain, 0) / painData.length || 0; // Calculate average pain all months
   const isHealthy = avgPain < 50;
   const emoji = isHealthy ? "😊" : "😟";
   const message = isHealthy

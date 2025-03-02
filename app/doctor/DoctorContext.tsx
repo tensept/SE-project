@@ -59,7 +59,7 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       localStorage.setItem("date", date.toISOString());
     }
   }, [date]);
-
+ 
   // Trigger fetchDiary when `date` changes
   useEffect(() => {
     const fetchDiary = async () => {
@@ -98,8 +98,9 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   return (
-    <DoctorContext.Provider value={{ messages, date, setDate, markMessageAsRead, diaryId, setDiaryId }}>
+    <DoctorContext.Provider value={{ messages, date, setDate, markMessageAsRead, diaryId, setDiaryId}}>
       {children}
     </DoctorContext.Provider>
+  
   );
 };
