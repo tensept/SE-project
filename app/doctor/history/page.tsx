@@ -41,7 +41,7 @@ const SymptomTracker = () => {
 
         const {
           date,
-          patient,
+          patientName,
           activity,
           symptom,
           painScore,
@@ -52,7 +52,7 @@ const SymptomTracker = () => {
         } = result;
 
         setDate(date);
-        setPatient(patient.name);
+        setPatient(patientName);
         setActivity(activity);
         setSymptom(symptom);
         setPainLevel(painScore);

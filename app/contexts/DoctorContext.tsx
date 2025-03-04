@@ -82,8 +82,8 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
         const data = await response.json();
         setMessages(
-          data.map((message: { patient: { name: string; id: number; }; createdAt: string | number | Date; isRead: boolean; id: number; }) => ({
-            sender: message.patient?.name || "Unknown",
+          data.map((message: { patientName: string; createdAt: string | number | Date; isRead: boolean; id: number; }) => ({
+            sender: message.patientName || "Unknown",
             time: new Date(message.createdAt).toLocaleString(),
             isRead: message.isRead,
             id: message.id,

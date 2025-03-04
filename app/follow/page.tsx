@@ -19,9 +19,9 @@ interface MessageProps {
   lunch: string;
   dinner: string;
   food: boolean[];
-  patient: {
-    name: string;
-  };
+  patientName: string;
+  patientAge: string;
+  patientHN: string;
 }
 
 interface DiaryEntry {
@@ -44,11 +44,15 @@ const FlipBook: React.FC = () => {
   const fetchAllDiary = async () => {
 
     const path = process.env.NEXT_PUBLIC_BACK_END;
+    const authToken = localStorage.getItem("authToken");
 
     try {
-      const response = await fetch(`${path}/diaries/by-patient/2`, {
+      const response = await fetch(`${path}/diaries/by-patient`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
+        }
       });
   
       if (response.status === 404) {
@@ -70,14 +74,16 @@ const FlipBook: React.FC = () => {
       fetchAllDiary();
     }, []);
 
+  console.log(messages);
+
   const userInfo = {
     profilePic: "/Jud.jpg",
-    name: messages.length > 0 ? messages[0].patient.name : "Unknown",
-    age: messages.length > 0 ? messages[0].patient.age : -1,
+    name: messages.length > 0 ? messages[0].patientName : "Unknown",
+    age: messages.length > 0 ? messages[0].patientAge : -1,
     gender: "Male",
     weight: "70 kg",
     height: "175 cm",
-    bloodPressure: messages.length > 0 ? messages[0].patient.HN : 0,
+    bloodPressure: messages.length > 0 ? messages[0].patientHN : 0,
   };
 
   const foods = [

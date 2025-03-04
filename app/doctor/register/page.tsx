@@ -1,16 +1,31 @@
-"use client"; // Required for Next.js App Router (if using pages, remove this)
+'use client';
 
-import { UserProvider } from "../../contexts/UserContext";
-import AuthForm from "../../components/AuthForm";
+import React from 'react';
+import GenericForm from '../../components/GenericForm';
 
-const RegisterPage: React.FC = () => {
+const DoctorRegisterPage: React.FC = () => {
+  const requestPath = '/doctorAuth/register';
+  const bodyArguments = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    specialization: '',
+    phone: '',
+  };
+
+  const handleSuccess = (data: {access_token: string}) => {
+    localStorage.setItem('authToken', data.access_token);
+  };
+
   return (
-    <UserProvider>
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <AuthForm mode="register" userType="doctor" />
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="w-full max-w-md p-6 bg-white shadow-lg rounded-lg">
+        <h1 className="text-2xl font-semibold text-center mb-4">Doctor Registration</h1>
+        <GenericForm requestPath={requestPath} bodyArguments={bodyArguments} onSuccess={handleSuccess} />
       </div>
-    </UserProvider>
+    </div>
   );
 };
 
-export default RegisterPage;
+export default DoctorRegisterPage;

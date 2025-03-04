@@ -1,16 +1,27 @@
-"use client"; // Required for Next.js App Router (if using pages, remove this)
+'use client';
 
-import { UserProvider } from "../contexts/UserContext";
-import AuthForm from "../components/AuthForm";
+import React from 'react';
+import GenericForm from '../components/GenericForm';
 
-const LoginPage: React.FC = () => {
+const PatientLoginPage: React.FC = () => {
+  const requestPath = '/patientAuth/login';
+  const bodyArguments = {
+    citizenID: '',
+    password: '',
+  };
+
+  const handleSuccess = (data: {access_token: string}) => {
+    localStorage.setItem('authToken', data.access_token);
+  };
+
   return (
-    <UserProvider>
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <AuthForm mode="login" userType="patient" />
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="w-full max-w-md p-6 bg-white shadow-lg rounded-lg">
+        <h1 className="text-2xl font-semibold text-center mb-4">Patient Login</h1>
+        <GenericForm requestPath={requestPath} bodyArguments={bodyArguments} onSuccess={handleSuccess} />
       </div>
-    </UserProvider>
+    </div>
   );
 };
 
-export default LoginPage;
+export default PatientLoginPage;
