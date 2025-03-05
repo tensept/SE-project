@@ -47,7 +47,7 @@ const DiaryPage = () => {
       console.log("dateFromPath: " + dateFromPath);
       console.log("currentDate: " + currentDate);
     }
-  }, [dateFromPath, setCurrentDate]);
+  }, [dateFromPath]);
 
   const handleImageUpload = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -388,56 +388,46 @@ const DiaryPage = () => {
       {/* Pain Status Section */}
       {/* ... (ยังมีเนื้อหาสำหรับ Pain และ Meal Section ที่คล้ายกัน) */}
       <section
+      style={{
+        backgroundColor: "white",
+        borderRadius: "10px",
+        padding: "20px",
+        marginBottom: "20px",
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <h2 style={{ color: "#000000", fontSize: "18px" }}>
+        ระดับความเจ็บปวด
+      </h2>
+      <div
         style={{
-          backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "20px",
-          marginBottom: "20px",
-          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+          display: "grid",
+          gridTemplateColumns: "repeat(5, 1fr)",
+          gap: "10px",
+          marginTop: "10px",
         }}
       >
-        <h2 style={{ color: "#000000", fontSize: "18px" }}>ระดับความเจ็บปวด</h2>
-        <div
-          style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
-        >
-          <span style={{ marginRight: "10px", color: "#d81b60" }}>1</span>
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={painLevel}
-            onChange={(e) => setPainLevel(Number(e.target.value))}
+        {Array.from({ length: 10 }, (_, i) => (
+          <div
+            key={i + 1}
+            onClick={() => setPainLevel(i + 1)}
             style={{
-              flex: 1,
-              accentColor: getPainColor(painLevel),
+              cursor: "pointer",
+              textAlign: "center",
+              padding: "15px",
+              borderRadius: "8px",
+              backgroundColor: painLevel === i + 1 ? "#d81b60" : "#f0f0f0",
+              color: painLevel === i + 1 ? "white" : "black",
+              transition: "0.3s",
             }}
-          />
-          <span style={{ marginLeft: "10px", color: "#d81b60" }}>10</span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "10px",
-            fontSize: "16px",
-          }}
-        >
-          {Array.from({ length: 10 }, (_, i) => (
-            <div
-              key={i + 1}
-              style={{
-                textAlign: "center",
-                width: "10%",
-                color: painLevel === i + 1 ? "#d81b60" : "#000",
-              }}
-            >
-              {i + 1}
-              <br />
-              {painEmojis[i]}
-            </div>
-          ))}
-        </div>
-      </section>
+          >
+            {i + 1}
+            <br />
+            {painEmojis[i]}
+          </div>
+        ))}
+      </div>
+    </section>
 
       <section>
         <h2 style={{ color: "#000000", fontSize: "18px" }}>
@@ -712,7 +702,7 @@ const DiaryPage = () => {
         }}
       >
         <h2 style={{ color: "#000000", fontSize: "18px" }}>
-          หากรับประทานอาหารที่แพทย์สั่งห้ามให้ ✅ ถูกที่หน้าข้อความ
+          หากรับประทานอาหารดังต่อไปนี้ให้ ✅ ถูกที่หน้าข้อความ
         </h2>
         {/* check box */}
         {checkedBoxFoods()}

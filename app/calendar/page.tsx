@@ -8,6 +8,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { DateSelectArg } from "@fullcalendar/core";
+import "./calendar.css";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,8 @@ const Calendar: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [newEventTitle, setNewEventTitle] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<DateSelectArg | null>(null);
+  const [markedDates1, setMarkedDates1] = useState<string[]>([]);
+
   const router = useRouter();
 
   const getAuthToken = () => localStorage.getItem("authToken"); // Retrieve the token from localStorage
@@ -43,6 +46,14 @@ const Calendar: React.FC = () => {
         }
       );
 
+      const res2 = await fetch(`${path}/diaries/by-month?month=${month+1}&year=${year}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
+        },
+      });
+
       if (response.status === 404) {
         console.log("No diary found for the date");
         return;
@@ -51,7 +62,9 @@ const Calendar: React.FC = () => {
       console.log("cy: ",year);
 
       const data = await response.json();
+      const data2 = await res2.json();
       console.log("Data:", data);
+      console.log("Data2:", data2);
       const safeData = Array.isArray(data) ? data : [];
 
       // Format API data into FullCalendar format
@@ -65,7 +78,10 @@ const Calendar: React.FC = () => {
         })
       );
 
+      const formattedMarkedDates = data2.map((event: { date: string }) => event.date);
+
       setCurrentEvents(formattedEvents); // Update state with the events
+      setMarkedDates1(formattedMarkedDates);
       console.log("CE: ",currentEvents);
     } catch (error) {
       console.error("Error fetching diary:", error);
@@ -260,7 +276,7 @@ const Calendar: React.FC = () => {
                     })}
                   </label>
                 </li>
-            ))};
+            ))}
           </ul>
         </div>
 
@@ -269,19 +285,26 @@ const Calendar: React.FC = () => {
             height={"85vh"}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
-              left: "prev,next",
+              left: "",
               center: "title",
-              right: "dayGridMonth,timeGridWeek,timeGridDay",
             }}
+            eventColor="#F472B6"
             initialView="dayGridMonth"
             editable={true}
             selectable={true}
             selectMirror={true}
             dayMaxEvents={true}
+            showNonCurrentDates={false}
+            dayCellClassNames={(arg) => {
+              const localDate = arg.date.toLocaleDateString('en-CA');  // 'en-CA' ensures YYYY-MM-DD format
+              const markedDates = markedDates1;
+              return markedDates.includes(localDate) ? "marked-day" : "";
+            }}
             select={handleDateClick}
             eventClick={handleEventClick}
             events={currentEvents} // Set events state as the source
             datesSet={onChangeMonth} // Listen to month change
+            // buttonIcons=
           />
         </div>
       </div>

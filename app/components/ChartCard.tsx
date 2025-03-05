@@ -16,8 +16,11 @@ interface ChartCardProps {
 }
 
 const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
-  const avgPain =
-    painData.reduce((sum, d) => sum + d.averagePain, 0) / painData.length || 0;
+  console.log("painData", painData);
+  const currentMonth = new Date().getMonth();
+  console.log("currentMonth", currentMonth);
+  const avgPain = painData[currentMonth+1].averagePain;
+  console.log("avgPain", avgPain.toFixed(1));
   const isHealthy = avgPain < 50;
   const emoji = isHealthy ? "😊" : "😟";
   const message = isHealthy
