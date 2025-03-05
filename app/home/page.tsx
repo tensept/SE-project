@@ -2,14 +2,6 @@
 "use client";
 import React from "react";
 
-import { Noto_Sans_Thai } from "next/font/google";
-
-const notoSansThai = Noto_Sans_Thai({
-  weight: ["400", "700"], // Choose font weights
-  subsets: ["thai", "latin"], // Ensure Thai characters load
-  display: "swap",
-});
-
 const HealthDiaryLandingPage = () => {
   return (
     <div className="min-h-screen bg-[#fef7ff]">
@@ -78,11 +70,11 @@ const HealthDiaryLandingPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* คอลัมน์ซ้าย */}
               <div className="space-y-6">
-                <div className="flex items-center gap-4" data-noto="something">
+                <div className="flex items-center gap-4">
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className={`${notoSansThai.className} text-lg`}>บันทึกอาหารที่กิน</span>
+                  <span className="noto-sans-thai text-lg">บันทึกอาหารที่กิน</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
