@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { formatDate, EventClickArg } from "@fullcalendar/core";
+import { EventClickArg } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -11,7 +14,6 @@ import { DateSelectArg } from "@fullcalendar/core";
 import "./calendar.css";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -84,13 +86,9 @@ const Calendar: React.FC = () => {
         console.log("No diary found for the date");
         return;
       }
-      console.log("cm: ", month);
-      console.log("cy: ", year);
 
       const data = await response.json();
       const data2 = await res2.json();
-      console.log("Data:", data);
-      console.log("Data2:", data2);
       const safeData = Array.isArray(data) ? data : [];
 
       // Format API data into FullCalendar format
@@ -104,7 +102,7 @@ const Calendar: React.FC = () => {
         })
       );
 
-      const safeData2 = Array.isArray(data2) ? data : [];
+      const safeData2 = Array.isArray(data2) ? data2 : [];
 
       const formattedMarkedDates = safeData2.map(
         (event: { date: string }) => event.date
@@ -112,7 +110,6 @@ const Calendar: React.FC = () => {
 
       setCurrentEvents(formattedEvents); // Update state with the events
       setMarkedDates1(formattedMarkedDates);
-      console.log("CE: ", currentEvents);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }
@@ -144,13 +141,7 @@ const Calendar: React.FC = () => {
         return;
       }
 
-      console.log("cm: ", currentMonth);
-      console.log("cy: ", currentYear);
-
       const data = await response.json();
-      console.log("Data:", data);
-
-      console.log("Updated Events: ", currentEvents);
     } catch (error) {
       console.error("Error posting event:", error);
     }
@@ -187,7 +178,9 @@ const Calendar: React.FC = () => {
   };
 
   useEffect(() => {
-    getEvent(currentMonth, currentYear);
+    if (currentMonth !== null && currentYear !== null) {
+      getEvent(currentMonth, currentYear);
+    }
   }, [currentMonth, currentYear]);
 
   const handleDateClick = (selected: DateSelectArg) => {
@@ -225,7 +218,7 @@ const Calendar: React.FC = () => {
         end: selectedDate.end,
         allDay: selectedDate.allDay,
       };
-
+      console.log("newEvent: ", newEvent);
       setCurrentEvents((prevEvents) => [...prevEvents, newEvent]); // Update state
 
       // Send the event to your API (or handle locally)
@@ -260,9 +253,6 @@ const Calendar: React.FC = () => {
     );
   }, [currentMonth, currentYear]);
 
-  const [selectedEvent, setSelectedEvent] = React.useState<{ id: any; title: any; start: any; end: any; allDay: boolean } | null>(null);
-
-
   return (
     <div style={{ backgroundColor: "#F9F9F9", minHeight: "100vh" }}>
       <div className="flex w-full px-10 justify-start items-start gap-8 ">
@@ -276,7 +266,13 @@ const Calendar: React.FC = () => {
                 ยังไม่มีกิจกรรมในตอนนี้
               </div>
             )}
-            <EventList sortedEvents={sortedEvents} />
+            <EventList sortedEvents={sortedEvents} handleDelete={(eventId: number) => {
+              deleteEvent(eventId).then(() => {
+                console.log("Event deleted:", eventId);
+              }).catch((error) => {
+                console.error("Error deleting event:", error);
+              });
+            }} />
           </ul>
         </div>
 
@@ -350,8 +346,8 @@ const Calendar: React.FC = () => {
               </div>
               <div className="mt-5 text-sm text-black-500 font-bold">
                 ❌อาหารแสลง : ชา กาแฟ น้ำเย็น น้ำแข็ง บุหรี่ เหล้า เบียร์
-                ข้าวเหนียว ไข่ไก่ ไก่ หมู วัว ปลาไม่มีเกล็ด อาหารหมักดอง ปลาเค็ม
-                ปลาร้า มาม่า อาหารทะเล เครื่องในสัตว์ เส้นก๋วยเตียว อาหารแปรรูป
+                ข้าวเหนียว ไก่ ไข่ไก่ หมู วัว ปลาไม่มีเกล็ด อาหารหมักดอง ปลาเค็ม
+                ปลาร้า มาม่า อาหารทะเล เครื่องในสัตว์ เส้นก๋วยเตี๋ยว อาหารแปรรูป
                 ปลากระป๋อง
               </div>
               <div className="mt-5 text-sm text-black-100 font-bold">

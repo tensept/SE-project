@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+
 import Image from "next/image";
 import "../components/summary.css";
 interface SummaryCardProps {
@@ -24,7 +17,7 @@ interface SummaryCardProps {
 
 const SummaryCard: React.FC<SummaryCardProps> = ({ user, painData }) => {
   const avgPain =
-    painData.reduce((sum, d) => sum + d.averagePain, 0) / painData.length || 0;
+    Array.isArray(painData) ? painData.reduce((sum, d) => sum + d.averagePain, 0) / painData.length : 0;
   const isHealthy = avgPain < 50;
   const emoji = isHealthy ? "😊" : "😟";
   const message = isHealthy

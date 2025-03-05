@@ -43,7 +43,6 @@ const FlipBook: React.FC = () => {
   const [painData, setPainData] = useState<{ month: string; averagePain: number }[]>([]);
   
   const fetchAllDiary = async () => {
-
     const path = process.env.NEXT_PUBLIC_BACK_END;
     const getToken = (): string | null => {
       const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
@@ -66,13 +65,13 @@ const FlipBook: React.FC = () => {
         return;
       }
       const data = await response.json();
-      setMessages(data);
-      console.log("fetch data", data);
+      const sortedData = data.sort((a: MessageProps, b: MessageProps) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      setMessages(sortedData);
+      console.log("fetch data", sortedData);
       console.log("fetch messages", messages);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }
-    
   };
 
   const fetchPainData = async () => {

@@ -1,16 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useEffect } from "react";
 import { useDiary as useDiaryContext } from "../../contexts/DiaryContext";
 import { useRouter, usePathname } from "next/navigation";
-
-import { Noto_Sans_Thai } from "next/font/google";
-
-const notoSansThai = Noto_Sans_Thai({
-  weight: ["400", "700"], // Choose font weights
-  subsets: ["thai", "latin"], // Ensure Thai characters load
-  display: "swap",
-});
 
 const DiaryPage = () => {
   const router = useRouter();
@@ -376,7 +369,7 @@ const DiaryPage = () => {
               fontSize:"14px",
             }}
           >
-            📸 Attach File
+            📸 แนบรูปภาพ
           </button>
 
           {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
@@ -518,7 +511,7 @@ const DiaryPage = () => {
               fontSize:"14px",
             }}
           >
-            📸 Attach File
+            📸 แนบรูปภาพ
           </button>
 
           <input
@@ -605,7 +598,7 @@ const DiaryPage = () => {
               fontSize:"14px",
             }}
           >
-            📸 Attach File
+            📸 แนบรูปภาพ
           </button>
 
           {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
@@ -693,7 +686,7 @@ const DiaryPage = () => {
               fontSize:"14px",
             }}
           >
-            📸 Attach File
+            📸 แนบรูปภาพ
           </button>
 
           {/* ซ่อน input file และเชื่อมกับปุ่มด้านบน */}
@@ -755,7 +748,7 @@ const DiaryPage = () => {
           
         }}
       >
-        Save
+        บันทึกข้อมูล
       </button>
     </div>
   );

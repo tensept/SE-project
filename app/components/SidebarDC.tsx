@@ -1,18 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import Link from "next/link";
-import { usePathname , useRouter } from "next/navigation";
-import { Home, BookOpen, MessagesSquare, ScrollText, Plus } from "lucide-react";
+import { usePathname } from "next/navigation";
+import {  MessagesSquare, ScrollText, } from "lucide-react";
 import Image from "next/image";
 
 
 const SidebarDC = () => {
   const pathname = usePathname();
-  const router = useRouter();
-
-const navigateToTodayDiary = () => {
-  const today = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
-  router.push(`/diary/${today}`);
-};
 
   return (
     <aside className="w-[17%] bg-white h-screen p-4 flex flex-col items-center">

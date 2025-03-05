@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatDate } from "@fullcalendar/core";
+import { IconTrash } from '@tabler/icons-react'
 
 type Event = {
   id: number;
@@ -10,9 +12,11 @@ type Event = {
 
 interface EventListProps {
   sortedEvents: Event[];
+  handleDelete: (eventId: number) => void;
 }
 
-const EventList: React.FC<EventListProps> = ({ sortedEvents }) => {
+
+const EventList: React.FC<EventListProps> = ({ sortedEvents ,handleDelete}) => {
   return (
     <div>
       <ul>
@@ -26,22 +30,15 @@ const EventList: React.FC<EventListProps> = ({ sortedEvents }) => {
               allDay: boolean;
             }) => (
               <li
-                className="border border-pink-200 shadow-lg hover:shadow-xl transition-shadow px-6 py-4 rounded-lg text-pink-800 bg-white hover:bg-pink-50 mb-4"
+                className="border border-pink-200 shadow-lg hover:shadow-xl transition-shadow px-6 py-4 rounded-lg text-pink-800 bg-white hover:bg-pink-50 mb-4 flex justify-between items-center"
                 key={event.id}
-              >
+              ><div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-xl font-semibold break-all">{event.title}</span>
+                  <span className="text-xl font-semibold break-all">
+                    {event.title}
+                  </span>
                 </div>
                 <div className="text-sm text-slate-600">
-                  <span>
-                    {formatDate(event.start, {
-                      weekday: "short",
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                  <br />
                   <label className="text-slate-950 text-sm">
                     {formatDate(event.end - 1, {
                       year: "numeric",
@@ -49,6 +46,10 @@ const EventList: React.FC<EventListProps> = ({ sortedEvents }) => {
                       day: "numeric",
                     })}
                   </label>
+                </div>
+                </div>
+                <div className="cursor-pointer" onClick={() => handleDelete(event.id)}>
+                  <IconTrash stroke={2} />
                 </div>
               </li>
             )

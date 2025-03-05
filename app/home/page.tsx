@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 
@@ -45,7 +46,7 @@ const HealthDiaryLandingPage = () => {
             ช่วยบันทึกข้อมูลสุขภาพของคุณ
             <span className="block mb-1 sm:mb-2"></span>
             ได้รับคำแนะนำจากผู้เชี่ยวชาญ
-          </div>
+          </p>
         </div>
       </div>
 

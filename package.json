@@ -17,6 +17,7 @@
     "@next/font": "^14.2.15",
     "@radix-ui/react-dialog": "^1.1.4",
     "@react-icons/all-files": "^4.1.0",
+    "@tabler/icons-react": "^3.31.0",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "framer-motion": "^12.4.7",
