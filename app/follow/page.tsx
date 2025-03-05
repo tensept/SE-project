@@ -43,7 +43,7 @@ const FlipBook: React.FC = () => {
   
   const fetchAllDiary = async () => {
     try {
-      const response = await fetch(`http://localhost:1234/diaries/1`, {
+      const response = await fetch(`http://localhost:1234/diaries/by-patient/2`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -160,10 +160,10 @@ const FlipBook: React.FC = () => {
   return (
     <div className="center">
       <div className="book-container">
-      <button className="clip-marker diary-marker" onClick={() => setCurrentPage(todayIndex)}>
+      <button className="clip-marker diary-marker bai-jamjuree-regular" onClick={() => setCurrentPage(todayIndex)}>
           <span>Diary</span>
         </button>
-        <button className="clip-marker followup-marker" onClick={() => setCurrentPage(chartPageIndex)}>
+        <button className="clip-marker followup-marker .bai-jamjuree-regular" onClick={() => setCurrentPage(chartPageIndex)}>
           <span>Follow-up</span>
         </button>
         <div className="book">

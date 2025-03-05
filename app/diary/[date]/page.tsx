@@ -3,6 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
+import { Noto_Sans_Thai } from "next/font/google";
+
+const notoSansThai = Noto_Sans_Thai({
+  weight: ["400", "700"], // Choose font weights
+  subsets: ["thai", "latin"], // Ensure Thai characters load
+  display: "swap",
+});
+
 const DiaryPage = () => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -395,7 +403,8 @@ const DiaryPage = () => {
               style={{
                 color: "#d81b60",
                 display: "flex",
-                alignItems: "center",
+                alignItems: "center",fontFamily: "Noto Sans Thai",
+                marginTop:"10px",
               }}
             >
               <input
@@ -466,7 +475,7 @@ const DiaryPage = () => {
           marginBottom: "20px",
         }}
       >
-        <h1 style={{ color: "#ff80ab", fontSize: "24px" }}>สมุดบันทึก</h1>
+        <h1 className="text-[#d81b60] text-[30px] noto-sans-thai text-lg" >สมุดบันทึก</h1>
         <div>
           <button
             onClick={() => router.push("/calendar")}
@@ -478,6 +487,8 @@ const DiaryPage = () => {
               padding: "10px",
               marginRight: "10px",
               cursor: "pointer",
+              fontFamily: "Noto Sans Thai",
+              fontWeight: "bold",
             }}
           >
             {/* 🗓 Back to Calendar */}
@@ -493,6 +504,8 @@ const DiaryPage = () => {
               padding: "10px",
               marginRight: "10px",
               cursor: "pointer",
+              fontFamily: "Noto Sans Thai",
+              fontWeight: "bold",
             }}
           >
             {/* ← Previous Day */}← วันก่อนหน้า
@@ -506,6 +519,8 @@ const DiaryPage = () => {
               borderRadius: "5px",
               padding: "10px",
               cursor: "pointer",
+              fontFamily: "Noto Sans Thai",
+              fontWeight: "bold",
             }}
           >
             {/* Next Day → */}
@@ -520,6 +535,8 @@ const DiaryPage = () => {
           textAlign: "center",
           marginBottom: "20px",
           color: "#d81b60",
+          fontFamily: "Noto Sans Thai",
+          fontSize: "24px",
           fontWeight: "bold",
         }}
       >
@@ -541,13 +558,13 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+        <h2 style={{ color: "#000000", fontSize: "18px" ,fontFamily: "Noto Sans Thai", }}>
           พฤติกรรมการใช้ชีวิต
         </h2>
         <textarea
           value={activity || ""}
           onChange={(e) => setActivity(e.target.value)}
-          placeholder="Describe your activity here..."
+          placeholder="อธิบายพฤติกรรมการใช้ชีวิต..."
           maxLength={250}
           style={{
             width: "100%",
@@ -557,6 +574,7 @@ const DiaryPage = () => {
             border: "1px solid #000000",
             borderRadius: "5px",
             color: "black",
+            fontFamily: "Noto Sans Thai",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -574,13 +592,13 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+        <h2 style={{ color: "#000000", fontSize: "18px", fontFamily: "Noto Sans Thai", }}>
           ลักษณะอาการหรือบาดแผล
         </h2>
         <textarea
           value={symptom}
           onChange={(e) => setSymptom(e.target.value)}
-          placeholder="Describe your symptom here..."
+          placeholder="อธิบายลักษณะอาการ บาดแผล..."
           maxLength={250}
           style={{
             width: "100%",
@@ -590,13 +608,14 @@ const DiaryPage = () => {
             border: "1px solid #000000",
             borderRadius: "5px",
             color: "black",
+            fontFamily: "Noto Sans Thai",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
           {symptom.length}/250
         </div>
         <div style={{ marginTop: "10px" }}>
-          <label style={{ color: "#000000", cursor: "pointer" }}>
+          <label style={{ color: "#000000", cursor: "pointer",fontFamily: "Noto Sans Thai", }}>
             แนบรูปบาดแผล *กรณีผู้ป่วยที่มีบาดแผล*
             <input
               type="file"
@@ -617,6 +636,9 @@ const DiaryPage = () => {
               padding: "10px",
               marginRight: "10px",
               cursor: "pointer",
+              fontFamily: "Noto Sans Thai",
+              fontWeight: "bold",
+              fontSize:"14px",
             }}
           >
             📸 Attach File
@@ -661,7 +683,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#000000", fontSize: "18px" }}>ระดับความเจ็บปวด</h2>
+        <h2 style={{ color: "#000000", fontSize: "18px",fontFamily: "Noto Sans Thai", }}>ระดับความเจ็บปวด</h2>
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >
@@ -705,7 +727,7 @@ const DiaryPage = () => {
       </section>
 
       <section>
-        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+        <h2 style={{ color: "#000000", fontSize: "18px" ,fontFamily: "Noto Sans Thai",}}>
           รายการอาหารที่รับประทานได้ : ปลามีเกล็ด ข้าว ลูกเดือย กล้วยน้ำว้า
           มะละกอสุก ผักปลอดสารพิษ น้ำนมจากพืช น้ำไม่เย็น
         </h2>
@@ -718,14 +740,16 @@ const DiaryPage = () => {
           borderRadius: "10px",
           padding: "20px",
           marginBottom: "20px",
+          marginTop: "20px",
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+          fontFamily: "Noto Sans Thai",
         }}
       >
         <h2 style={{ color: "#000000", fontSize: "18px" }}>มื้อเช้า</h2>
         <textarea
           value={breakfastNote}
           onChange={(e) => setBreakfastNote(e.target.value)}
-          placeholder="Describe your meals here..."
+          placeholder="อธิบายมื้อเช้าที่รับประทาน..."
           maxLength={250}
           style={{
             width: "100%",
@@ -734,7 +758,7 @@ const DiaryPage = () => {
             marginTop: "10px",
             border: "1px solid #000000",
             borderRadius: "5px",
-            color: "black",
+            color: "black",fontFamily: "Noto Sans Thai",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -764,6 +788,9 @@ const DiaryPage = () => {
               padding: "10px",
               marginRight: "10px",
               cursor: "pointer",
+              fontFamily: "Noto Sans Thai",
+              fontWeight: "bold",
+              fontSize:"14px",
             }}
           >
             📸 Attach File
@@ -806,11 +833,11 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#000000", fontSize: "18px" }}>มื้อกลางวัน</h2>
+        <h2 style={{ color: "#000000", fontSize: "18px" ,fontFamily: "Noto Sans Thai",}}>มื้อกลางวัน</h2>
         <textarea
           value={lunchNote}
           onChange={(e) => setLunchNote(e.target.value)}
-          placeholder="Describe your meals here..."
+          placeholder="อธิบายมื้อกลางวันที่รับประทาน..."
           maxLength={250}
           style={{
             width: "100%",
@@ -818,7 +845,7 @@ const DiaryPage = () => {
             padding: "10px",
             marginTop: "10px",
             border: "1px solid #000000",
-            borderRadius: "5px",
+            borderRadius: "5px",fontFamily: "Noto Sans Thai",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -826,7 +853,7 @@ const DiaryPage = () => {
         </div>
 
         <div style={{ marginTop: "10px" }}>
-          <label style={{ color: "#000000", cursor: "pointer" }}>
+          <label style={{ color: "#000000", cursor: "pointer" ,fontFamily: "Noto Sans Thai", }}>
             แนบรูปอาหารมื้อกลางวัน
             <input
               type="file"
@@ -848,6 +875,9 @@ const DiaryPage = () => {
               padding: "10px",
               marginRight: "10px",
               cursor: "pointer",
+              fontFamily: "Noto Sans Thai",
+              fontWeight: "bold",
+              fontSize:"14px",
             }}
           >
             📸 Attach File
@@ -891,11 +921,11 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#000000", fontSize: "18px" }}>มื้อเย็น</h2>
+        <h2 style={{ color: "#000000", fontSize: "18px",fontFamily: "Noto Sans Thai", }}>มื้อเย็น</h2>
         <textarea
           value={dinnerNote}
           onChange={(e) => setDinnerNote(e.target.value)}
-          placeholder="Describe your meals here..."
+          placeholder="อธิบายมื้อเย็นที่รับประทาน..."
           maxLength={250}
           style={{
             width: "100%",
@@ -903,7 +933,7 @@ const DiaryPage = () => {
             padding: "10px",
             marginTop: "10px",
             border: "1px solid #000000",
-            borderRadius: "5px",
+            borderRadius: "5px",fontFamily: "Noto Sans Thai",
           }}
         />
         <div style={{ textAlign: "right", marginTop: "5px", color: "#d81b60" }}>
@@ -911,7 +941,7 @@ const DiaryPage = () => {
         </div>
 
         <div style={{ marginTop: "10px" }}>
-          <label style={{ color: "#000000", cursor: "pointer" }}>
+          <label style={{ color: "#000000", cursor: "pointer",fontFamily: "Noto Sans Thai", }}>
             แนบรูปอาหารมื้อเย็น
             <input
               type="file"
@@ -933,6 +963,9 @@ const DiaryPage = () => {
               padding: "10px",
               marginRight: "10px",
               cursor: "pointer",
+              fontFamily: "Noto Sans Thai",
+              fontWeight: "bold",
+              fontSize:"14px",
             }}
           >
             📸 Attach File
@@ -976,7 +1009,7 @@ const DiaryPage = () => {
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h2 style={{ color: "#000000", fontSize: "18px" }}>
+        <h2 style={{ color: "#000000", fontSize: "18px" ,fontFamily: "Noto Sans Thai",}}>
           หากรับประทานอาหารที่แพทย์สั่งห้ามให้ ✅ ถูกที่หน้าข้อความ
         </h2>
         {/* check box */}
@@ -993,7 +1026,8 @@ const DiaryPage = () => {
           border: "none",
           borderRadius: "5px",
           cursor: "pointer",
-          fontSize: "16px",
+          fontSize: "16px",fontFamily: "Noto Sans Thai",fontWeight:"bold",
+          
         }}
       >
         Save

@@ -4,6 +4,13 @@
   import { Home, MessagesSquare, Plus,History, Calendar} from "lucide-react";
   import Image from "next/image";
 
+  import { Noto_Sans_Thai } from "next/font/google";
+  
+  const notoSansThai = Noto_Sans_Thai({
+    weight: ["400", "700"], // Choose font weights
+    subsets: ["thai", "latin"], // Ensure Thai characters load
+    display: "swap",
+  });
 
   const Sidebar = () => {
     const pathname = usePathname();

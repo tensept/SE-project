@@ -1,6 +1,14 @@
 "use client";
 import React from "react";
 
+import { Noto_Sans_Thai } from "next/font/google";
+
+const notoSansThai = Noto_Sans_Thai({
+  weight: ["400", "700"], // Choose font weights
+  subsets: ["thai", "latin"], // Ensure Thai characters load
+  display: "swap",
+});
+
 const HealthDiaryLandingPage = () => {
   return (
     <div className="min-h-screen bg-[#fef7ff]">
@@ -33,7 +41,7 @@ const HealthDiaryLandingPage = () => {
             <span className="block mb-1 sm:mb-4"></span> {/* ลดระยะห่าง */}
             สำหรับสุขภาพที่ดีขึ้น
           </h1>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-black mt-1 sm:mt-2 leading-snug sm:leading-normal">
+          <p className="text-sm sm:text-base noto-sans-thai md:text-lg lg:text-xl text-black mt-1 sm:mt-2 leading-snug sm:leading-normal">
             ช่วยบันทึกข้อมูลสุขภาพของคุณ
             <span className="block mb-1 sm:mb-2"></span>
             ได้รับคำแนะนำจากผู้เชี่ยวชาญ
@@ -69,17 +77,17 @@ const HealthDiaryLandingPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* คอลัมน์ซ้าย */}
               <div className="space-y-6">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4" data-noto="something">
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className="font-medium text-lg">บันทึกอาหารที่กิน</span>
+                  <span className={`${notoSansThai.className} text-lg`}>บันทึกอาหารที่กิน</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className="font-medium text-lg">
+                  <span className="noto-sans-thai text-lg">
                     บันทึกอาการแต่ละวัน
                   </span>
                 </div>
@@ -87,7 +95,7 @@ const HealthDiaryLandingPage = () => {
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className="font-medium text-lg">
+                  <span className="noto-sans-thai text-lg">
                     เตือนอาหารที่กินไม่ได้
                   </span>
                 </div>
@@ -95,7 +103,7 @@ const HealthDiaryLandingPage = () => {
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className="font-medium text-lg">
+                  <span className="noto-sans-thai text-lg">
                     ระบุระดับความเจ็บปวด
                   </span>
                 </div>
@@ -107,19 +115,19 @@ const HealthDiaryLandingPage = () => {
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className="font-medium text-lg">ปรึกษาคุณหมอ</span>
+                  <span className="noto-sans-thai text-lg">ปรึกษาคุณหมอ</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className="font-medium text-lg">ดูประวัติย้อนหลัง</span>
+                  <span className= "noto-sans-thai text-lg">ดูประวัติย้อนหลัง</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className="font-medium text-lg">
+                  <span className="noto-sans-thai text-lg">
                     เพิ่มเหตุการณ์สำคัญ
                   </span>
                 </div>
@@ -127,7 +135,7 @@ const HealthDiaryLandingPage = () => {
                   <div className="w-9 h-9 bg-[#ffc2d1] rounded-lg flex items-center justify-center">
                     <span className="text-black-800 text-lg">✓</span>
                   </div>
-                  <span className="font-medium text-lg">แจ้งเตือนนัดหมาย</span>
+                  <span className="noto-sans-thai text-lg">แจ้งเตือนนัดหมาย</span>
                 </div>
               </div>
             </div>
