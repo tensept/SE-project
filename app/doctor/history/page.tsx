@@ -1,68 +1,121 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/compat/router";
+import { useDoctorContext } from "../../contexts/DoctorContext";
 
 const SymptomTracker = () => {
-  const router = useRouter();
-  const { id } = router.query;
-  console.log(id);
-  const [painLevel, setPainLevel] = useState(2);
-  const [diaryID, setDiaryID] = useState(null);
+  const { diaryId } = useDoctorContext();
+  const [date, setDate] = useState("");
+  const [patient, setPatient] = useState("");
+  const [activity, setActivity] = useState("");
+  const [painLevel, setPainLevel] = useState(1);
   const [symptom, setSymptom] = useState("");
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [breakfastNote, setBreakfastNote] = useState("");
   const [lunchNote, setLunchNote] = useState("");
   const [dinnerNote, setDinnerNote] = useState("");
+  const [symptomImage, setSymptomImage] = useState<string>("");
+  const [breakfastImage, setBreakfastImage] = useState<string>("");
+  const [lunchImage, setLunchImage] = useState<string>("");
+  const [dinnerImage, setDinnerImage] = useState<string>("");
+  const [checkedFoods, setCheckedFoods] = useState([]);
 
-  const formatDate = (dateString: string | undefined): string => {
-    if (!dateString) return "Invalid date"; // หรือค่าดีฟอลต์ที่เหมาะสม
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  };
+  const getAuthToken = () => localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchDiary = async () => {
-      let path = process.env.BACK_END;
-
-      if (!path) {
-        path = "http://localhost:1234";
-      }
-
       try {
-        console.log("Fetching data from:", path);
-        //${dateFromPath}
-        console.log("patientId: ",patientId);
-        const response = await fetch(`${path}/diaries/${patientId}/${dateFromPath}`, {
-          method: "GET", // Explicitly specify the GET method
+        const authToken = getAuthToken();
+        const path = process.env.NEXT_PUBLIC_BACK_END;
+        const response = await fetch(`${path}/diaries/details/${diaryId}`, {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          return;
         }
         const result = await response.json();
         console.log("Data fetched:", result);
 
-        const { id, symptom, painScore, breakfast, lunch, dinner } = result;
-        setDiaryID(id);
+        const {
+          date,
+          patientName,
+          activity,
+          symptom,
+          painScore,
+          breakfast,
+          lunch,
+          dinner,
+          food,
+        } = result;
+
+        setDate(date);
+        setPatient(patientName);
+        setActivity(activity);
         setSymptom(symptom);
         setPainLevel(painScore);
         setBreakfastNote(breakfast);
         setLunchNote(lunch);
         setDinnerNote(dinner);
+        setCheckedFoods(food);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+
+    const fetchImage = async () => {
+      const path = process.env.NEXT_PUBLIC_BACK_END;
+      try {
+        console.log("Fetching data from:", path);
+
+        const authToken = getAuthToken();
+        const response = await fetch(`${path}/images/${diaryId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          return;
+        }
+        const result = await response.json();
+        console.log("Data fetched:", result);
+
+        for (const image of result) {
+          switch (image.label) {
+            case "symptom": {
+              setSymptomImage(image.url);
+              break;
+            }
+            case "breakfast": {
+              setBreakfastImage(image.url);
+              break;
+            }
+            case "lunch": {
+              setLunchImage(image.url);
+              break;
+            }
+            case "dinner": {
+              setDinnerImage(image.url);
+              break;
+            }
+            default: {
+              console.log(`Unknown label: ${image.label}`);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
     fetchDiary();
-  }, []);
+    fetchImage();
+  }, [diaryId]);
 
   return (
     <div className="flex flex-col min-h-screen bg-pink-50">
@@ -88,16 +141,19 @@ const SymptomTracker = () => {
             </svg>
           </div>
           <div>
-            <h1 className="font-medium text-lg">Guillermo Rauch</h1>
+            <h1 className="font-medium text-lg text-black">{patient}</h1>
             <p className="text-sm text-gray-500">
-              {formatDate(dateFromPath)}
+              {date}
               <br />
               5:48 PM
             </p>
           </div>
         </div>
         <div className="ml-auto">
-          <button className="px-4 py-2 bg-pink-200 text-gray-800 rounded-full flex items-center">
+            <button
+            className="px-4 py-2 bg-pink-200 text-gray-800 rounded-full flex items-center"
+            onClick={() => window.location.href = "/doctor"}
+            >
             <svg
               className="mr-2"
               width="16"
@@ -107,22 +163,22 @@ const SymptomTracker = () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M19 12H5"
-                stroke="#333"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              d="M19 12H5"
+              stroke="#333"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               />
               <path
-                d="M12 19L5 12L12 5"
-                stroke="#333"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              d="M12 19L5 12L12 5"
+              stroke="#333"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               />
             </svg>
             Back to List
-          </button>
+            </button>
         </div>
       </div>
 
@@ -132,9 +188,10 @@ const SymptomTracker = () => {
           <h2 className="text-lg font-medium mb-3">Symptom</h2>
           <div className="border border-blue-400 rounded-2xl p-4 focus-within:ring-2 focus-within:ring-blue-300">
             <textarea
-              className="w-full outline-none resize-none bg-transparent"
+              className="w-full outline-none resize-none bg-transparent text-black"
               rows={3}
-              defaultValue={symptom}
+              value={symptom}
+              readOnly={true}
             ></textarea>
           </div>
         </div>
@@ -154,7 +211,7 @@ const SymptomTracker = () => {
               <span
                 key={num}
                 className="cursor-pointer"
-                onClick={() => setPainLevel(num)}
+                // onClick={() => setPainLevel(num)}
               >
                 {num}
               </span>
@@ -166,9 +223,10 @@ const SymptomTracker = () => {
           <h2 className="text-lg font-medium mb-3">Breakfast</h2>
           <div className="border border-blue-400 rounded-2xl p-4 focus-within:ring-2 focus-within:ring-blue-300">
             <textarea
-              className="w-full outline-none resize-none bg-transparent"
+              className="w-full outline-none resize-none bg-transparent text-black"
               rows={3}
-              defaultValue={breakfastNote}
+              value={breakfastNote}
+              readOnly={true}
             ></textarea>
           </div>
         </div>
@@ -177,9 +235,10 @@ const SymptomTracker = () => {
           <h2 className="text-lg font-medium mb-3">Lunch</h2>
           <div className="border border-blue-400 rounded-2xl p-4 focus-within:ring-2 focus-within:ring-blue-300">
             <textarea
-              className="w-full outline-none resize-none bg-transparent"
+              className="w-full outline-none resize-none bg-transparent text-black"
               rows={3}
-              defaultValue={lunchNote}
+              value={lunchNote}
+              readOnly={true}
             ></textarea>
           </div>
         </div>
@@ -188,9 +247,10 @@ const SymptomTracker = () => {
           <h2 className="text-lg font-medium mb-3">Dinner</h2>
           <div className="border border-blue-400 rounded-2xl p-4 focus-within:ring-2 focus-within:ring-blue-300">
             <textarea
-              className="w-full outline-none resize-none bg-transparent"
+              className="w-full outline-none resize-none bg-transparent text-black"
               rows={3}
-              defaultValue={dinnerNote}
+              value={dinnerNote}
+              readOnly={true}
             ></textarea>
           </div>
         </div>

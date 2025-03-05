@@ -38,7 +38,9 @@
           <ul className="space-y-4">
             <NavItem href="/" icon={Home} label="Home" active={pathname === "/"} />
             <NavItem href="/calendar" icon={Calendar} label="Calendar" active={pathname === "/calendar"} />
-            <NavItem href="/consult" icon={MessagesSquare} label="Consult" active={pathname === "/consult"} />
+            <NavItem href="/#" icon={MessagesSquare} label="Consult" active={pathname === "/#"} style={{ pointerEvents: "none", opacity: 0.5 }}/>
+
+
             <NavItem href="/follow" icon={History} label="History" active={pathname === "/follow"} />
           </ul>
         </nav>
@@ -52,10 +54,11 @@
     );
   };
 
-  const NavItem = ({ href, icon: Icon, label, active }: { href: string; icon: any; label: string; active: boolean }) => (
+  const NavItem = ({ href, icon: Icon, label, active, style }: { href: string; icon: React.ElementType; label: string; active: boolean; style?: React.CSSProperties }) => (
     <li>
       <Link
         href={href}
+        style={style}
         className={`flex items-center space-x-3 px-4 py-3 rounded-md transition-all ${
           active ? "bg-pink-300 text-white font-bold" : "text-gray-700 hover:bg-pink-200"
         }`}
