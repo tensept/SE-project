@@ -400,7 +400,7 @@ const DiaryPage = () => {
         <div
           style={{ display: "flex", alignItems: "center", marginTop: "10px" }}
         >
-          <span style={{ marginRight: "10px", color: "#d81b60" }}>1</span>
+          {/* <span style={{ marginRight: "10px", color: "#d81b60" }}>1</span> */}
           <input
             type="range"
             min="1"
@@ -410,9 +410,10 @@ const DiaryPage = () => {
             style={{
               flex: 1,
               accentColor: getPainColor(painLevel),
+              width: "10%",
             }}
           />
-          <span style={{ marginLeft: "10px", color: "#d81b60" }}>10</span>
+          {/* <span style={{ marginLeft: "10px", color: "#d81b60" }}>10</span> */}
         </div>
         <div
           style={{
@@ -420,6 +421,7 @@ const DiaryPage = () => {
             justifyContent: "space-between",
             marginTop: "10px",
             fontSize: "16px",
+            width: "100%",
           }}
         >
           {Array.from({ length: 10 }, (_, i) => (
@@ -427,7 +429,6 @@ const DiaryPage = () => {
               key={i + 1}
               style={{
                 textAlign: "center",
-                width: "10%",
                 color: painLevel === i + 1 ? "#d81b60" : "#000",
               }}
             >

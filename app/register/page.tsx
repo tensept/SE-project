@@ -4,9 +4,10 @@ import React from "react";
 import GenericForm from "../components/GenericForm";
 
 const RegisterPatient = () => {
-  const handleSuccess = (data: {access_token: string}) => {
-    localStorage.setItem('authToken', data.access_token);
-  };
+  const handleSuccess = (data: { access_token: string }) => {
+    console.log(data.access_token);
+    document.cookie = `token=${data.access_token}; path=/; Secure; SameSite=Strict`;
+  };  
 
   const bodyArguments = {
     citizenID: "",

@@ -32,6 +32,11 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [messages, setMessages] = useState<Message[]>([]);
   const [diaryId, setDiaryId] = useState<number | null>(null);
 
+  const getToken = (): string | null => {
+    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
+    return match ? match[2] : null;
+  };
+
   // Load date and diaryId from localStorage on initial load
   useEffect(() => {
     const storedDiaryId = localStorage.getItem("diaryId");
@@ -67,7 +72,7 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       try {
         console.log("date: " + formattedDate);
         const path = process.env.NEXT_PUBLIC_BACK_END;
-        const authToken = localStorage.getItem("authToken");
+        const authToken = getToken();
         const response = await fetch(`${path}/diaries/by-date/${formattedDate}`, {
           method: "GET",
           headers: {

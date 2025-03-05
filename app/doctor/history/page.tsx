@@ -18,7 +18,10 @@ const SymptomTracker = () => {
   const [dinnerImage, setDinnerImage] = useState<string>("");
   const [checkedFoods, setCheckedFoods] = useState([]);
 
-  const getAuthToken = () => localStorage.getItem("authToken");
+  const getAuthToken = (): string | null => {
+    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
+    return match ? match[2] : null;
+  };
 
   useEffect(() => {
     const fetchDiary = async () => {

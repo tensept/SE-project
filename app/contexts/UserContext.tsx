@@ -49,10 +49,15 @@ export const useUser = () => {
   return context;
 };
 
+const getToken = (): string | null => {
+  const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
+  return match ? match[2] : null;
+};
+
 // Update UserProvider to accept children
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<PatientProfile | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem("authToken"));
+  const [token, setToken] = useState<string | null>(getToken());
 
   return (
     <UserContext.Provider value={{ user, setUser, token, setToken }}>
