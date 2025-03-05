@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { parseCookies } from "../utils/cookies";
 
 interface Message {
   sender: string;
@@ -28,17 +29,20 @@ export const useDoctorContext = () => {
 };
 
 export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const [date, setDate] = useState<Date|null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [diaryId, setDiaryId] = useState<number | null>(null);
 
-  const getToken = (): string | null => {
-    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
-    return match ? match[2] : null;
-  };
-
   // Load date and diaryId from localStorage on initial load
   useEffect(() => {
+    const cookies = parseCookies();
+    setUserInfo({
+      citizenID: cookies.citizenID || '',
+      token: cookies.token || '',
+      role: cookies.role || '',
+    });
+  
     const storedDiaryId = localStorage.getItem("diaryId");
     const storedDate = localStorage.getItem("date");
 
@@ -74,12 +78,13 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       try {
         console.log("date: " + formattedDate);
         const path = process.env.NEXT_PUBLIC_BACK_END;
-        const authToken = getToken();
         const response = await fetch(`${path}/diaries/by-date/${formattedDate}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
+            "X-Token": userInfo.token,
           },
         });
         console.log("result: " + response);

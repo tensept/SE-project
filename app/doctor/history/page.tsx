@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useDoctorContext } from "../../contexts/DoctorContext";
+import { parseCookies } from "@/app/utils/cookies";
 
 const SymptomTracker = () => {
+  const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const { diaryId } = useDoctorContext();
   const [date, setDate] = useState("");
   const [patient, setPatient] = useState("");
@@ -18,21 +20,26 @@ const SymptomTracker = () => {
   const [dinnerImage, setDinnerImage] = useState<string>("");
   const [checkedFoods, setCheckedFoods] = useState([]);
 
-  const getAuthToken = (): string | null => {
-    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
-    return match ? match[2] : null;
-  };
+  useEffect(() => {
+    const cookies = parseCookies();
+    setUserInfo({
+      citizenID: cookies.citizenID || '',
+      token: cookies.token || '',
+      role: cookies.role || '',
+    });
+  }, []);
 
   useEffect(() => {
     const fetchDiary = async () => {
       try {
-        const authToken = getAuthToken();
         const path = process.env.NEXT_PUBLIC_BACK_END;
         const response = await fetch(`${path}/diaries/details/${diaryId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
+            "X-Token": userInfo.token,
           },
         });
 
@@ -73,12 +80,13 @@ const SymptomTracker = () => {
       try {
         console.log("Fetching data from:", path);
 
-        const authToken = getAuthToken();
         const response = await fetch(`${path}/images/${diaryId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
+            "X-Token": userInfo.token,
           },
         });
 
