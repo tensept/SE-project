@@ -59,7 +59,10 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   const [checkedFoods, setCheckedFoods] = useState<boolean[]>(Array(21).fill(false));
   const path = process.env.NEXT_PUBLIC_BACK_END;
 
-  const getAuthToken = () => localStorage.getItem("authToken"); // Retrieve the token from localStorage
+  const getAuthToken = (): string | null => {
+    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
+    return match ? match[2] : null;
+  };
 
   useEffect(() => {
     const fetchDiary = async () => {

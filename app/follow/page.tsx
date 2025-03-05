@@ -45,7 +45,11 @@ const FlipBook: React.FC = () => {
   const fetchAllDiary = async () => {
 
     const path = process.env.NEXT_PUBLIC_BACK_END;
-    const authToken = localStorage.getItem("authToken");
+    const getToken = (): string | null => {
+      const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
+      return match ? match[2] : null;
+    };
+    const authToken = getToken();
 
     try {
       const response = await fetch(`${path}/diaries/by-patient`, {

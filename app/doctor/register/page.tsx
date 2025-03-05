@@ -14,9 +14,10 @@ const DoctorRegisterPage: React.FC = () => {
     phone: '',
   };
 
-  const handleSuccess = (data: {access_token: string}) => {
-    localStorage.setItem('authToken', data.access_token);
-  };
+  const handleSuccess = (data: { access_token: string }) => {
+    console.log(data.access_token);
+    document.cookie = `token=${data.access_token}; path=/; Secure; SameSite=Strict`;
+  };  
 
   return (
     <div className="flex justify-center items-center min-h-screen">

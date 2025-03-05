@@ -47,7 +47,10 @@ const Calendar: React.FC = () => {
 
   const router = useRouter();
 
-  const getAuthToken = () => localStorage.getItem("authToken"); // Retrieve the token from localStorage
+  const getAuthToken = (): string | null => {
+    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
+    return match ? match[2] : null;
+  };
 
   // Fetch events from the API
   const getEvent = async (month: number, year: number) => {
