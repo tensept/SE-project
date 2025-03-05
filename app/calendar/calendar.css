@@ -1,0 +1,26 @@
+.fc-daygrid-day {
+    position: relative;
+  }
+  
+  .marked-day .fc-daygrid-day-number {
+    position: relative;
+  }
+  
+  .marked-day .fc-daygrid-day-number::before {
+    content: "";
+    position: absolute;
+    width: 10px;  /* Adjust size */
+    height: 10px; /* Adjust size */
+    background-color: #DB2777; /* Yellow with transparency */
+    border-radius: 50%; /* Makes it a circle */
+    top: 230%;
+    right: center;
+    transform: translate(-50%, -50%);
+    z-index: 1; /* Keeps the circle above the background */
+  }
+  .disabled-button {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  

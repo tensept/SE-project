@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
   Legend,
-  ReferenceLine
+  ReferenceLine,
 } from "recharts";
 
 interface ChartCardProps {
@@ -16,13 +16,27 @@ interface ChartCardProps {
 }
 
 const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
-  const avgPain =
-    painData.reduce((sum, d) => sum + d.averagePain, 0) / painData.length || 0;
-  const isHealthy = avgPain < 50;
+  const [currentMonth, setCurrentMonth] = useState<number | null>(null);
+  const [avgPain, setAvgPain] = useState<number>(0);
+  const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
   const emoji = isHealthy ? "😊" : "😟";
   const message = isHealthy
     ? "สุขภาพดี! ทำต่อไปนะ!"
     : "ยังต้องดูแลตัวเองอีกนิด สู้ๆ นะ!";
+
+  useEffect(() => {
+    // This will run only on the client side after the component has mounted
+    const currentDate = new Date();
+    setCurrentMonth(currentDate.getMonth());
+  }, []);
+
+  useEffect(() => {
+    setAvgPain(painData[currentMonth!].averagePain);
+  }, [currentMonth, painData]);
+
+  useEffect(() => {
+    setIsHealthy(avgPain! < 50);
+  }, [avgPain]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 max-w-xl mx-auto">
@@ -30,43 +44,57 @@ const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
         <span>แผนภูมิระดับความเจ็บปวด</span>
         <span className="text-2xl">{emoji}</span>
       </h2>
-      <p className="text-sm text-gray-600 mb-4">คะแนนเฉลี่ย: {avgPain.toFixed(1)}%</p>
-      
+      <div className="text-sm text-gray-600 mb-4">
+        คะแนนเฉลี่ย: {avgPain.toFixed(1)}%
+      </div>
+
       <div className="bg-gray-50 p-3 rounded-lg mb-4">
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={painData} margin={{ top: 20, right: 20, left: 10, bottom: 10 }}>
+          <BarChart
+            data={painData}
+            margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-            <XAxis 
-              dataKey="month" 
-              tick={{ fill: '#6b7280' }} 
-              axisLine={{ stroke: '#9ca3af' }}
+            <XAxis
+              dataKey="month"
+              tick={{ fill: "#6b7280" }}
+              axisLine={{ stroke: "#9ca3af" }}
             />
-            <YAxis 
-              domain={[0, 100]} 
-              tick={{ fill: '#6b7280' }} 
-              axisLine={{ stroke: '#9ca3af' }}
-              label={{ 
-                value: 'ระดับความเจ็บปวด (%)', 
-                angle: -90, 
-                position: 'insideLeft', 
-                style: { textAnchor: 'middle', fill: '#6b7280' } 
+            <YAxis
+              domain={[0, 100]}
+              tick={{ fill: "#6b7280" }}
+              axisLine={{ stroke: "#9ca3af" }}
+              label={{
+                value: "ระดับความเจ็บปวด (%)",
+                angle: -90,
+                position: "insideLeft",
+                style: { textAnchor: "middle", fill: "#6b7280" },
               }}
             />
-            <Tooltip 
-              formatter={(value) => [`${value}%`, 'ระดับความเจ็บปวด']}
+            <Tooltip
+              formatter={(value) => [`${value}%`, "ระดับความเจ็บปวด"]}
               contentStyle={{
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                border: '1px solid #e0e0e0',
-                borderRadius: '4px',
-                boxShadow: '0 2px 5px rgba(0, 0, 0, 0.15)'
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                border: "1px solid #e0e0e0",
+                borderRadius: "4px",
+                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.15)",
               }}
             />
-            <Legend wrapperStyle={{ paddingTop: '10px' }} />
-            <ReferenceLine y={50} stroke="#ff9800" strokeDasharray="3 3" label={{ value: 'ระดับเฝ้าระวัง', position: 'right', fill: '#ff9800' }} />
-            <Bar 
-              dataKey="averagePain" 
-              name="ระดับความเจ็บปวด" 
-              fill={isHealthy ? "#4CAF50" : "#ff6666"} 
+            <Legend wrapperStyle={{ paddingTop: "10px" }} />
+            <ReferenceLine
+              y={50}
+              stroke="#ff9800"
+              strokeDasharray="3 3"
+              label={{
+                value: "ระดับเฝ้าระวัง",
+                position: "right",
+                fill: "#ff9800",
+              }}
+            />
+            <Bar
+              dataKey="averagePain"
+              name="ระดับความเจ็บปวด"
+              fill={isHealthy ? "#4CAF50" : "#ff6666"}
               radius={[4, 4, 0, 0]}
               barSize={30}
               animationDuration={1000}
@@ -75,14 +103,16 @@ const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      
+
       <div className="health-status bg-gray-50 p-4 rounded-lg text-center">
-        <p className="text-lg font-medium">{message}</p>
+        <div className="text-lg font-medium">{message}</div>
         <div className="mt-2 text-sm text-gray-600">
           {isHealthy ? (
-            <p>คุณกำลังทำได้ดี ระดับความเจ็บปวดอยู่ในเกณฑ์ที่ควบคุมได้</p>
+            <div>คุณกำลังทำได้ดี ระดับความเจ็บปวดอยู่ในเกณฑ์ที่ควบคุมได้</div>
           ) : (
-            <p>พยายามลดระดับความเจ็บปวดให้ต่ำกว่า 50% เพื่อสุขภาพที่ดีขึ้น</p>
+            <div>
+              พยายามลดระดับความเจ็บปวดให้ต่ำกว่า 50% เพื่อสุขภาพที่ดีขึ้น
+            </div>
           )}
         </div>
       </div>

@@ -44,7 +44,7 @@ interface DiaryProviderProps {
 
 export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   // State hooks
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [currentDate, setCurrentDate] = useState<Date|null  >(null);
   const [activity, setActivity] = useState<string>("");
   const [symptom, setSymptom] = useState<string>("");
   const [painLevel, setPainLevel] = useState<number>(1);

@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import "../follow/flipbook.css";
+import "./flipbook.css";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import DiaryCard from "../components/DiaryCard";
 import SummaryCard from "../components/SummaryCard";
@@ -40,6 +40,7 @@ interface DiaryEntry {
 
 const FlipBook: React.FC = () => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [painData, setPainData] = useState<{ month: string; averagePain: number }[]>([]);
   
   const fetchAllDiary = async () => {
 
@@ -74,8 +75,36 @@ const FlipBook: React.FC = () => {
     
   };
 
+  const fetchPainData = async () => {
+    const path = process.env.NEXT_PUBLIC_BACK_END;
+    const authToken = localStorage.getItem("authToken");
+
+    try {
+      const response = await fetch(`${path}/diaries/pain-data`, {
+        method: "GET",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
+        }
+      });
+
+      if (response.status === 404) {
+        console.log("No pain data found for the date");
+        setPainData([]);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("fetch pain data", data);
+      setPainData(data);
+    } catch (error) {
+      console.error("Error fetching pain data:", error);
+    }
+  };
+
   useEffect(() => {
       fetchAllDiary();
+      fetchPainData();
     }, []);
 
   console.log(messages);
@@ -149,34 +178,34 @@ const FlipBook: React.FC = () => {
   
   const canGoPrevious = currentPage > 1;
   const canGoNext = currentPage < chartPageIndex;
-  const calculatePainData = () => {
-    const monthlyData: { [key: string]: { total: number; days: number } } = {};
+  // const calculatePainData = () => {
+  //   const monthlyData: { [key: string]: { total: number; days: number } } = {};
   
-    entries.forEach((entry) => {
-      if (!entry) return;
-      const [, month] = entry.date.split(" "); // ดึงเฉพาะชื่อเดือน
-      if (!monthlyData[month]) monthlyData[month] = { total: 0, days: 0 };
+  //   entries.forEach((entry) => {
+  //     if (!entry) return;
+  //     const [, month] = entry.date.split(" "); // ดึงเฉพาะชื่อเดือน
+  //     if (!monthlyData[month]) monthlyData[month] = { total: 0, days: 0 };
   
-      monthlyData[month].total += entry.painLevel;
-      monthlyData[month].days += 1;
-    });
+  //     monthlyData[month].total += entry.painLevel;
+  //     monthlyData[month].days += 1;
+  //   });
   
-    return Object.keys(monthlyData).map((month) => ({
-      month,
-      averagePain:
-        (monthlyData[month].total / (monthlyData[month].days * 10)) * 100, // คำนวณเป็นเปอร์เซ็นต์
-    }));
-  };
+  //   return Object.keys(monthlyData).map((month) => ({
+  //     month,
+  //     averagePain:
+  //       (monthlyData[month].total / (monthlyData[month].days * 10)) * 100, // คำนวณเป็นเปอร์เซ็นต์
+  //   }));
+  // };
   
   
   
   return (
     <div className="center">
       <div className="book-container">
-      <button className="clip-marker diary-marker" onClick={() => setCurrentPage(todayIndex)}>
+      <button className="clip-marker diary-marker bai-jamjuree-regular" onClick={() => setCurrentPage(todayIndex)}>
           <span>Diary</span>
         </button>
-        <button className="clip-marker followup-marker" onClick={() => setCurrentPage(chartPageIndex)}>
+        <button className="clip-marker followup-marker .bai-jamjuree-regular" onClick={() => setCurrentPage(chartPageIndex)}>
           <span>Follow-up</span>
         </button>
         <div className="book">
@@ -209,7 +238,7 @@ const FlipBook: React.FC = () => {
                     {adjustedEntries[leftIndex] ? (
                       <DiaryCard key={`left-${leftIndex}`} {...adjustedEntries[leftIndex]} />
                     ) : (
-                      <div className="empty-page">Empty Page</div>
+                      <div className="empty-page"></div>
                     )}
                   </div>
   
@@ -228,7 +257,7 @@ const FlipBook: React.FC = () => {
                           bloodPressure: userInfo.bloodPressure,
                           profileImage: userInfo.profilePic,
                         }}
-                        painData={calculatePainData()}
+                        painData = {painData}
                       />
                     ) : (
                       <div className="empty-page">Empty Page</div>
@@ -242,7 +271,7 @@ const FlipBook: React.FC = () => {
             {currentPage >= chartPageIndex && (
               <div className="page active">
                 <div className="page-side front w-full h-full flex items-center justify-center">
-                <ChartCard painData={calculatePainData()} />
+                <ChartCard painData = {painData} />
                 </div>
               </div>
             )}

@@ -28,7 +28,7 @@ export const useDoctorContext = () => {
 };
 
 export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date|null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [diaryId, setDiaryId] = useState<number | null>(null);
 
@@ -48,6 +48,8 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     if (storedDate) {
       setDate(new Date(storedDate));
+    } else {
+      setDate(new Date()); 
     }
   }, []);
 
