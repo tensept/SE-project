@@ -3,6 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Sidebar from "./components/Sidebar";  // ✅ Import Sidebar
 // import SidebarDC from "./components/SidebarDC";  // ✅ Import Sidebar
 import "./globals.css";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +34,7 @@ export default function RootLayout({
         <div className="flex h-screen">
           <Sidebar/> {/* ✅ เพิ่ม Sidebar ตรงนี้ */}
           <main className="flex-1 p-6 bg-gray-50">{children}</main> {/* ✅ ส่วน Content */}
+
         </div>
       </body>
     </html>
