@@ -51,8 +51,10 @@ export const useUser = () => {
 
 // Update UserProvider to accept children
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<PatientProfile | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem("authToken"));
+  const [user, setUser] = useState<divatientProfile | null>(null);
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("authToken")
+  );
 
   return (
     <UserContext.Provider value={{ user, setUser, token, setToken }}>

@@ -13,9 +13,9 @@ interface DoctorConsult {
 
 interface Message {
   id: number;
-  user: string;       // "Doctor" หรือชื่อผู้ป่วย
+  user: string; // "Doctor" หรือชื่อผู้ป่วย
   text: string;
-  timestamp: string;  // เช่น "5:48 PM"
+  timestamp: string; // เช่น "5:48 PM"
   consultId: number;
   replies?: Message[];
 }
@@ -44,7 +44,10 @@ const DoctorChatBox: React.FC<DoctorChatBoxProps> = ({
       id: Date.now(),
       user: currentUser,
       text: message,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       consultId: consult.id,
       replies: [],
     };
@@ -81,12 +84,15 @@ const DoctorChatBox: React.FC<DoctorChatBoxProps> = ({
   // ฟังก์ชันแสดงข้อความ (ซ้อน replies)
   const renderMessages = (msgList: Message[]) => {
     return msgList.map((msg) => (
-      <div key={msg.id} className="p-3 bg-white rounded-lg mb-3 border border-gray-200">
+      <div
+        key={msg.id}
+        className="p-3 bg-white rounded-lg mb-3 border border-gray-200"
+      >
         <div className="flex justify-between">
-          <p className="font-semibold text-black">{msg.user}</p>
-          <p className="text-xs text-gray-500">{msg.timestamp}</p>
+          <div className="font-semibold text-black">{msg.user}</div>
+          <div className="text-xs text-gray-500">{msg.timestamp}</div>
         </div>
-        <p className="text-black mt-1">{msg.text}</p>
+        <div className="text-black mt-1">{msg.text}</div>
         {/* ปุ่ม reply */}
         <button
           className="mt-2 text-sm text-pink-500 hover:underline flex items-center gap-1"
@@ -112,7 +118,9 @@ const DoctorChatBox: React.FC<DoctorChatBoxProps> = ({
           <h2 className="font-bold text-lg text-pink-800">
             Question: Consult #{consult.id}
           </h2>
-          <p className="text-sm text-gray-500">Patient: {consult.patientName}</p>
+          <div className="text-sm text-gray-500">
+            Patient: {consult.patientName}
+          </div>
         </div>
         {/* ตัวอย่างแสดง Avatar ผู้ป่วย (ถ้ามี) */}
         {consult.patientAvatar && (
@@ -129,7 +137,7 @@ const DoctorChatBox: React.FC<DoctorChatBoxProps> = ({
         {messages.length > 0 ? (
           renderMessages(messages)
         ) : (
-          <p className="text-gray-500">No messages yet...</p>
+          <div className="text-gray-500">No messages yet...</div>
         )}
       </div>
 

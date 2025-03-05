@@ -33,11 +33,11 @@ const HealthDiaryLandingPage = () => {
             <span className="block mb-1 sm:mb-4"></span> {/* ลดระยะห่าง */}
             สำหรับสุขภาพที่ดีขึ้น
           </h1>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-black mt-1 sm:mt-2 leading-snug sm:leading-normal">
+          <div className="text-sm sm:text-base md:text-lg lg:text-xl text-black mt-1 sm:mt-2 leading-snug sm:leading-normal">
             ช่วยบันทึกข้อมูลสุขภาพของคุณ
             <span className="block mb-1 sm:mb-2"></span>
             ได้รับคำแนะนำจากผู้เชี่ยวชาญ
-          </p>
+          </div>
         </div>
       </div>
 
@@ -146,21 +146,21 @@ const HealthDiaryLandingPage = () => {
             <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
               <span className="font-medium">1</span>
             </div>
-            <p className="text-sm">Click on "Diary" if you want to record your meals.</p>
+            <div className="text-sm">Click on "Diary" if you want to record your meals.</div>
           </div>
           
           <div className="bg-white rounded-2xl p-6 flex items-center gap-4">
             <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
               <span className="font-medium">2</span>
             </div>
-            <p className="text-sm">You can watch "History" about your diary.</p>
+            <div className="text-sm">You can watch "History" about your diary.</div>
           </div>
           
           <div className="bg-white rounded-2xl p-6 flex items-center gap-4">
             <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
               <span className="font-medium">3</span>
             </div>
-            <p className="text-sm">Click on "Consult" when you need to ask the doctor a question.</p>
+            <div className="text-sm">Click on "Consult" when you need to ask the doctor a question.</div>
           </div>
         </div>
       </div> */}

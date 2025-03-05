@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { formatDate, EventClickArg, EventApi } from "@fullcalendar/core";
+import { formatDate, EventClickArg } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -11,18 +11,39 @@ import { DateSelectArg } from "@fullcalendar/core";
 import "./calendar.css";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/app/calendar/ui/dialog";
-import { get } from "http";
+import EventList from "../components/EventList";
 
 const Calendar: React.FC = () => {
-  const [currentEvents, setCurrentEvents] = useState<{ id: any; title: any; start: any; end: any; allDay: boolean; }[]>([]);
+  const [currentEvents, setCurrentEvents] = useState<
+    { id: any; title: any; start: any; end: any; allDay: boolean }[]
+  >([]);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [newEventTitle, setNewEventTitle] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<DateSelectArg | null>(null);
   const [markedDates1, setMarkedDates1] = useState<string[]>([]);
+  const [currentMonth, setCurrentMonth] = useState<number|null>(null);
+  const [currentYear, setCurrentYear] = useState<number|null>(null);
+
+  useEffect(() => {
+    // This will run only on the client side after the component has mounted
+    const currentDate = new Date();
+    setCurrentMonth(currentDate.getMonth());
+    setCurrentYear(currentDate.getFullYear());
+  }, []);
+
+  const sortedEvents = currentEvents.sort((a, b) => {
+    // Compare the 'start' dates of the events
+    const dateA = new Date(a.start);
+    const dateB = new Date(b.start);
+  
+    // Sorting in ascending order (earliest first)
+    return dateA.getTime() - dateB.getTime();
+  });
 
   const router = useRouter();
 
@@ -30,36 +51,38 @@ const Calendar: React.FC = () => {
 
   // Fetch events from the API
   const getEvent = async (month: number, year: number) => {
-
-  const path = process.env.NEXT_PUBLIC_BACK_END;
+    const path = process.env.NEXT_PUBLIC_BACK_END;
 
     try {
       const authToken = getAuthToken(); // Get the auth token
       const response = await fetch(
-        `${path}/events?month=${month+1}&year=${year}`,
+        `${path}/events?month=${month + 1}&year=${year}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`,
+            Authorization: `Bearer ${authToken}`,
           },
         }
       );
 
-      const res2 = await fetch(`${path}/diaries/by-month?month=${month+1}&year=${year}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${authToken}`,
-        },
-      });
+      const res2 = await fetch(
+        `${path}/diaries/by-month?month=${month + 1}&year=${year}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
       if (response.status === 404) {
         console.log("No diary found for the date");
         return;
       }
-      console.log("cm: ",month);
-      console.log("cy: ",year);
+      console.log("cm: ", month);
+      console.log("cy: ", year);
 
       const data = await response.json();
       const data2 = await res2.json();
@@ -78,18 +101,21 @@ const Calendar: React.FC = () => {
         })
       );
 
-      const formattedMarkedDates = data2.map((event: { date: string }) => event.date);
+      const safeData2 = Array.isArray(data2) ? data : [];
+
+      const formattedMarkedDates = safeData2.map(
+        (event: { date: string }) => event.date
+      );
 
       setCurrentEvents(formattedEvents); // Update state with the events
       setMarkedDates1(formattedMarkedDates);
-      console.log("CE: ",currentEvents);
+      console.log("CE: ", currentEvents);
     } catch (error) {
       console.error("Error fetching diary:", error);
     }
   };
 
   const postEvent = async (eventTitle: string, eventDate: string) => {
-
     const path = process.env.NEXT_PUBLIC_BACK_END;
     const authToken = getAuthToken();
 
@@ -97,15 +123,15 @@ const Calendar: React.FC = () => {
       const response = await fetch(`${path}/events`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`, 
-          },
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
         body: JSON.stringify({
           event: eventTitle,
           date: eventDate,
         }),
       });
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           console.log("No diary found for the date");
@@ -114,22 +140,13 @@ const Calendar: React.FC = () => {
         }
         return;
       }
-  
+
       console.log("cm: ", currentMonth);
       console.log("cy: ", currentYear);
-  
+
       const data = await response.json();
       console.log("Data:", data);
-  
-      // Format API data into FullCalendar format
-      const formattedEvent = {
-        id: data.id.toString(), // Ensure the ID is a string
-        title: data.event,
-        start: data.date, // FullCalendar expects an ISO8601 string
-        end: data.date, // Assuming it's an all-day event
-        allDay: true,
-      };
-  
+
       console.log("Updated Events: ", currentEvents);
     } catch (error) {
       console.error("Error posting event:", error);
@@ -138,7 +155,6 @@ const Calendar: React.FC = () => {
 
   // เหลือ Method Delete ที่ยีงใช้ไม่ได้
   const deleteEvent = async (eventId: number) => {
-
     const path = process.env.NEXT_PUBLIC_BACK_END;
     const authToken = getAuthToken();
 
@@ -146,18 +162,18 @@ const Calendar: React.FC = () => {
       const response = await fetch(`${path}/events/${eventId}`, {
         method: "DELETE",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`, 
-          },
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
       });
-  
+
       if (!response.ok) {
         console.error("Error deleting event:", response.statusText);
         return;
       }
-  
+
       console.log(`Event ${eventId} deleted successfully`);
-  
+
       // Remove event from state
       setCurrentEvents((prevEvents) =>
         prevEvents.filter((event) => event.id !== eventId.toString())
@@ -166,10 +182,10 @@ const Calendar: React.FC = () => {
       console.error("Error deleting event:", error);
     }
   };
-  
+
   useEffect(() => {
-    getEvent(currentMonth, currentYear); // Fetch events when component mounts
-  }, []);
+    getEvent(currentMonth, currentYear);
+  }, [currentMonth, currentYear]);
 
   const handleDateClick = (selected: DateSelectArg) => {
     setSelectedDate(selected);
@@ -216,78 +232,68 @@ const Calendar: React.FC = () => {
       };
       console.log("sent_event: ", sent_event);
       calendarApi.addEvent(newEvent); // Add event to FullCalendar
-      console.log('Event Start: ', newEvent.end.toISOString());
-      postEvent(newEvent.title,newEvent.end.toISOString());
+      console.log("Event Start: ", newEvent.end.toISOString());
+      postEvent(newEvent.title, newEvent.end.toISOString());
       handleCloseDialog();
     }
   };
 
-  const onChangeMonth = (dateInfo: any) => {
-    // Extracting the month and year
-    const month = dateInfo.view.currentStart.getMonth(); // Get the current month (0-11)
-    const year = dateInfo.view.currentStart.getFullYear(); // Get the current year
-
-    getEvent(month, year);
-  };
+  const [isCurrentMonth, setIsCurrentMonth] = useState(true);
 
   const navigateToDiary = () => {
-    if (selectedDate) {
+    if (selectedDate && isCurrentMonth) {
       const formattedDate = selectedDate.start.toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
       router.push(`/diary/${formattedDate}`);
     }
   };
 
-  const currentMonth = new Date().getMonth();
-  const currentYear = new Date().getFullYear();
-  const filteredEvents = currentEvents.filter((event: { id: any; title: any; start: any; end: any; allDay: boolean; }) => {
-    const eventMonth = new Date(event.start!).getMonth();
-    return eventMonth === currentMonth;
-  });
-  const sortedEvents = [...filteredEvents].sort(
-    (a, b) => new Date(a.start!).getTime() - new Date(b.start!).getTime()
-  );
+  useEffect(() => {
+    const today = new Date();
+    const previousMonth = (today.getMonth() - 1 + 12) % 12; // Handle the case when it's January
   
+    setIsCurrentMonth(
+      currentYear === today.getFullYear() && 
+      (currentMonth === today.getMonth() || currentMonth === previousMonth)
+    );
+  }, [currentMonth, currentYear]);
+
+  const [selectedEvent, setSelectedEvent] = React.useState<{ id: any; title: any; start: any; end: any; allDay: boolean } | null>(null);
+
+
   return (
     <div style={{ backgroundColor: "#F9F9F9", minHeight: "100vh" }}>
       <div className="flex w-full px-10 justify-start items-start gap-8 ">
         <div className="w-3/12">
           <div className="py-10 text-2xl font-extrabold px-7">
-            Calendar Events
+            กิจกรรมในปฏิทิน
           </div>
           <ul className="space-y-4">
-            {sortedEvents.length <= 0 && (
+            {currentEvents.length <= 0 && (
               <div className="italic text-center text-gray-400">
-                No Events Present
+                ยังไม่มีกิจกรรมในตอนนี้
               </div>
             )}
-            {sortedEvents.length > 0 &&
-              sortedEvents.map((event: { id: any; title: any; start: any; end: any; allDay: boolean }) => (
-                <li
-                  className="border border-pink-200 shadow px-4 py-2 rounded-md text-pink-800"
-                  key={event.id}
-                >
-                  {event.title}
-                  <br />
-                  <label className="text-slate-950">
-                    {formatDate(event.end - 1, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </label>
-                </li>
-            ))}
+            <EventList sortedEvents={sortedEvents} />
           </ul>
         </div>
 
         <div className="w-9/12 mt-8">
           <FullCalendar
+            locale={"th"} // ตั้งค่าภาษาไทย
             height={"85vh"}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
               left: "",
+              right: "today prev next",
               center: "title",
             }}
+            buttonText={{
+              today: "วันนี้",
+              month: "เดือน",
+              week: "สัปดาห์",
+              day: "วัน",
+            }}
+            titleFormat={{ year: "numeric", month: "long" }} // ใช้รูปแบบของ FullCalendar โดยตรง
             eventColor="#F472B6"
             initialView="dayGridMonth"
             editable={true}
@@ -296,15 +302,17 @@ const Calendar: React.FC = () => {
             dayMaxEvents={true}
             showNonCurrentDates={false}
             dayCellClassNames={(arg) => {
-              const localDate = arg.date.toLocaleDateString('en-CA');  // 'en-CA' ensures YYYY-MM-DD format
-              const markedDates = markedDates1;
-              return markedDates.includes(localDate) ? "marked-day" : "";
+              const localDate = arg.date.toLocaleDateString("en-CA");
+              return markedDates1.includes(localDate) ? "marked-day" : "";
             }}
             select={handleDateClick}
             eventClick={handleEventClick}
-            events={currentEvents} // Set events state as the source
-            datesSet={onChangeMonth} // Listen to month change
-            // buttonIcons=
+            events={currentEvents}
+            // Update month and year when calendar view changes
+            datesSet={(arg) => {
+              setCurrentMonth(arg.view.currentStart.getMonth());
+              setCurrentYear(arg.view.currentStart.getFullYear());
+            }}
           />
         </div>
       </div>
@@ -314,7 +322,7 @@ const Calendar: React.FC = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex justify-center">
-              Add New Event
+              เพิ่มกิจกรรมใหม่
             </DialogTitle>
           </DialogHeader>
           <form
@@ -356,14 +364,18 @@ const Calendar: React.FC = () => {
                 type="submit"
                 className="bg-pink-500 text-white px-4 py-2 rounded-md"
               >
-                Add Event
+                เพิ่มกิจกรรม
               </button>
               <button
                 type="button"
                 onClick={navigateToDiary}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                className={`px-4 py-2 rounded-md ${
+                  isCurrentMonth
+                    ? "bg-gray-500 text-white"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
               >
-                Go to Diary
+                ไปยังหน้าสมุดบันทึก
               </button>
             </div>
           </form>

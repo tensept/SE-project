@@ -38,7 +38,10 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       if (msg.id === parentId) {
         return { ...msg, replies: [...(msg.replies || []), newMessage] };
       } else if (msg.replies) {
-        return { ...msg, replies: addMessage(msg.replies, newMessage, parentId) };
+        return {
+          ...msg,
+          replies: addMessage(msg.replies, newMessage, parentId),
+        };
       }
       return msg;
     });
@@ -57,7 +60,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       };
 
       setMessages((prev) =>
-        replyTo ? addMessage(prev, newMessage, replyTo.id) : [...prev, newMessage]
+        replyTo
+          ? addMessage(prev, newMessage, replyTo.id)
+          : [...prev, newMessage]
       );
 
       setMessage("");
@@ -85,12 +90,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       .map((msg) => (
         <div
           key={msg.id}
-          className={`p-3 text-black bg-gray-${100 + depth * 50} rounded-lg mb-3 ml-${
-            depth * 4
-          } shadow-sm border border-gray-300`}
+          className={`p-3 text-black bg-gray-${
+            100 + depth * 50
+          } rounded-lg mb-3 ml-${depth * 4} shadow-sm border border-gray-300`}
         >
-          <p className="text-sm font-bold text-black">{msg.user}:</p>
-          <p>{msg.text}</p>
+          <div className="text-sm font-bold text-black">{msg.user}:</div>
+          <div>{msg.text}</div>
           <button
             className="mt-2 flex items-center gap-1 text-pink-500 text-sm font-semibold hover:bg-pink-100 px-2 py-1 rounded-md transition-all"
             onClick={() => handleReply(msg)}
@@ -110,31 +115,32 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     <div className="w-[60%] bg-pink-100 h-screen p-6 flex flex-col ml-[5%] rounded-xl shadow-lg">
       {/* Header ของผู้ใช้ */}
       <div className="flex justify-between items-center mb-4">
-        <div><h3 className="font-bold text-xl text-black">
-          Question: {selectedChat.title}
-        </h3></div>
+        <div>
+          <h3 className="font-bold text-xl text-black">
+            Question: {selectedChat.title}
+          </h3>
+        </div>
         <div className="flex items-center space-x-3">
           {/* name user */}
           <div>
             <h2 className="font-bold text-black text-lg">{currentUser}</h2>
-            <p className="text-sm text-gray-400">User</p>
+            <div className="text-sm text-gray-400">User</div>
           </div>
           {/* profile */}
           <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold">
             A
           </div>
-          
         </div>
-        
       </div>
-
 
       {/* ส่วนแสดงข้อความ */}
       <div className="flex-1 overflow-y-auto p-4 bg-white rounded-lg shadow-inner border border-black">
         {messages.length > 0 ? (
           renderMessages(messages)
         ) : (
-          <p className="text-gray-500 text-sm">Start typing your message...</p>
+          <div className="text-gray-500 text-sm">
+            Start typing your message...
+          </div>
         )}
       </div>
 

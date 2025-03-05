@@ -29,7 +29,7 @@ const SymptomTracker = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`,
+            Authorization: `Bearer ${authToken}`,
           },
         });
 
@@ -75,7 +75,7 @@ const SymptomTracker = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`,
+            Authorization: `Bearer ${authToken}`,
           },
         });
 
@@ -130,11 +130,11 @@ const SymptomTracker = () => {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path
+              <divath
                 d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z"
                 fill="#FF89A3"
               />
-              <path
+              <divath
                 d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z"
                 fill="#FF89A3"
               />
@@ -142,18 +142,18 @@ const SymptomTracker = () => {
           </div>
           <div>
             <h1 className="font-medium text-lg text-black">{patient}</h1>
-            <p className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500">
               {date}
               <br />
               5:48 PM
-            </p>
+            </div>
           </div>
         </div>
         <div className="ml-auto">
-            <button
+          <button
             className="px-4 py-2 bg-pink-200 text-gray-800 rounded-full flex items-center"
-            onClick={() => window.location.href = "/doctor"}
-            >
+            onClick={() => (window.location.href = "/doctor")}
+          >
             <svg
               className="mr-2"
               width="16"
@@ -162,23 +162,23 @@ const SymptomTracker = () => {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path
-              d="M19 12H5"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              <divath
+                d="M19 12H5"
+                stroke="#333"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
-              <path
-              d="M12 19L5 12L12 5"
-              stroke="#333"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              <divath
+                d="M12 19L5 12L12 5"
+                stroke="#333"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
             Back to List
-            </button>
+          </button>
         </div>
       </div>
 

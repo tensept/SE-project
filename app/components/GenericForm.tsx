@@ -1,14 +1,18 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect } from "react";
 
 interface GenericFormProps {
-  requestPath: string;  // Full request path for the API (e.g., "/auth/submit")
-  bodyArguments: { [key: string]: string };  // Key-value pairs for the body arguments in the POST request
-  onSuccess?: (result: any) => void;  // Callback function to execute on success
+  requestPath: string; // Full request path for the API (e.g., "/auth/submit")
+  bodyArguments: { [key: string]: string }; // Key-value pairs for the body arguments in the POST request
+  onSuccess?: (result: any) => void; // Callback function to execute on success
 }
 
-const GenericForm: React.FC<GenericFormProps> = ({ requestPath, bodyArguments, onSuccess }) => {
+const GenericForm: React.FC<GenericFormProps> = ({
+  requestPath,
+  bodyArguments,
+  onSuccess,
+}) => {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
@@ -41,7 +45,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ requestPath, bodyArguments, o
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),  // Send formData as body of the request
+        body: JSON.stringify(formData), // Send formData as body of the request
       });
 
       if (!response.ok) {
@@ -66,7 +70,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ requestPath, bodyArguments, o
   return (
     <div className="w-full max-w-md">
       <h2 className="text-2xl font-semibold text-center mb-4">
-        Form for {requestPath.split("/").pop()} 
+        Form for {requestPath.split("/").pop()}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {Object.keys(bodyArguments).map((key) => (
@@ -85,7 +89,7 @@ const GenericForm: React.FC<GenericFormProps> = ({ requestPath, bodyArguments, o
           </div>
         ))}
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <div className="text-red-500 text-sm">{error}</div>}
 
         <button
           type="submit"
