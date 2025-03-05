@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { parseCookies } from "../utils/cookies";
 
 interface MessageProps {
   sender: string;
@@ -17,14 +18,29 @@ const MessageItem: React.FC<
     onClick: React.Dispatch<React.SetStateAction<number | null>>;
   }
 > = ({ sender, time, isRead, id, date, patientId, markAsRead, onClick }) => {
+  const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const router = useRouter();
+  
+  useEffect(() => {
+    const cookies = parseCookies();
+    setUserInfo({
+      citizenID: cookies.citizenID || '',
+      token: cookies.token || '',
+      role: cookies.role || '',
+    });
+  }, []);
 
   const isReaded = async () => {
     try {
       const path = process.env.NEXT_PUBLIC_BACK_END;
       const response = await fetch(`${path}/diaries/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
+          "X-Token": userInfo.token,
+        },
         body: JSON.stringify({ isRead: true }),
       });
 

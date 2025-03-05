@@ -8,6 +8,7 @@ import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import DiaryCard from "../components/DiaryCard";
 import SummaryCard from "../components/SummaryCard";
 import ChartCard from "../components/ChartCard";
+import { parseCookies } from "../utils/cookies";
 
 interface MessageProps {
   date: string;
@@ -39,25 +40,32 @@ interface DiaryEntry {
 }
 
 const FlipBook: React.FC = () => {
+  const [_userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [painData, setPainData] = useState<{ month: string; averagePain: number }[]>([]);
   
+  useEffect(() => {
+    const cookies = parseCookies();
+    setUserInfo({
+      citizenID: cookies.citizenID || '',
+      token: cookies.token || '',
+      role: cookies.role || '',
+    });
+  }, []);
+
   const fetchAllDiary = async () => {
 
     const path = process.env.NEXT_PUBLIC_BACK_END;
-    const getToken = (): string | null => {
-      const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
-      return match ? match[2] : null;
-    };
-    const authToken = getToken();
 
     try {
       const response = await fetch(`${path}/diaries/by-patient`, {
         method: "GET",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${authToken}`,
-        }
+          "X-Citizen-ID": _userInfo.citizenID,
+          "X-Role": _userInfo.role,
+          "X-Token": _userInfo.token,
+        },
       });
   
       if (response.status === 404) {
@@ -77,15 +85,16 @@ const FlipBook: React.FC = () => {
 
   const fetchPainData = async () => {
     const path = process.env.NEXT_PUBLIC_BACK_END;
-    const authToken = localStorage.getItem("authToken");
 
     try {
       const response = await fetch(`${path}/diaries/pain-data`, {
         method: "GET",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${authToken}`,
-        }
+          "X-Citizen-ID": _userInfo.citizenID,
+          "X-Role": _userInfo.role,
+          "X-Token": _userInfo.token,
+        },
       });
 
       if (response.status === 404) {

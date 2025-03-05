@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from "react";
+import { parseCookies } from "../utils/cookies";
 
 // Define the DiaryContext Type
 interface DiaryContextType {
@@ -44,6 +45,7 @@ interface DiaryProviderProps {
 
 export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   // State hooks
+  const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const [currentDate, setCurrentDate] = useState<Date|null  >(null);
   const [activity, setActivity] = useState<string>("");
   const [symptom, setSymptom] = useState<string>("");
@@ -58,21 +60,25 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   const [diaryID, setDiaryID] = useState<number | null>(null);
   const [checkedFoods, setCheckedFoods] = useState<boolean[]>(Array(21).fill(false));
   const path = process.env.NEXT_PUBLIC_BACK_END;
-
-  const getAuthToken = (): string | null => {
-    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
-    return match ? match[2] : null;
-  };
+  
+  useEffect(() => {
+    const cookies = parseCookies();
+    setUserInfo({
+      citizenID: cookies.citizenID || '',
+      token: cookies.token || '',
+      role: cookies.role || '',
+    });
+  }, []);
 
   useEffect(() => {
     const fetchDiary = async () => {
       try {
-        const authToken = getAuthToken(); // Get the auth token
         const response = await fetch(`${path}/diaries/entry/${currentDate.toISOString().split("T")[0]}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
           },
         });
 
@@ -99,14 +105,15 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const authToken = getAuthToken(); // Get the auth token
       try {
         console.log("Fetching image from:", path);
         console.log("diaryID: ", diaryID);
         const response = await fetch(`${path}/images/${diaryID}`, {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+            "Content-Type": "application/json",
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
           },
         });
 
@@ -154,8 +161,6 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   // Upload images for the diary
   const uploadImage = useCallback(async () => {
     if (!diaryID) return;
-
-    const authToken = getAuthToken(); // Get the auth token
     const imageUrls = [
       { url: symptomImage, filename: "symptom" },
       { url: breakfastImage, filename: "breakfast" },
@@ -177,10 +182,14 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
       const response = await fetch(`${path}/images/${diaryID}`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+          "Content-Type": "application/json",
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
         },
         body: formData,
       });
+
+      console.log(formData);
 
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       alert("Images uploaded successfully!");
@@ -198,13 +207,13 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
 
   // Create a new diary entry
   const createDiary = useCallback(async () => {
-    const authToken = getAuthToken(); // Get the auth token
     try {
       const response = await fetch(`${path}/diaries/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
         },
         body: JSON.stringify({
           date: currentDate.toISOString().split("T")[0],
@@ -230,14 +239,14 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   // Update an existing diary entry
   const updateDiary = useCallback(async () => {
     if (!diaryID) return;
-    const authToken = getAuthToken(); // Get the auth token
 
     try {
       const response = await fetch(`${path}/diaries/update/${diaryID}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${authToken}`, // Add the token to the headers
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
         },
         body: JSON.stringify({
           date: currentDate.toISOString().split("T")[0],

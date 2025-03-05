@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { parseCookies } from "../utils/cookies";
 
 interface GenericFormProps {
   requestPath: string; // Full request path for the API (e.g., "/auth/submit")
@@ -13,9 +14,19 @@ const GenericForm: React.FC<GenericFormProps> = ({
   bodyArguments,
   onSuccess,
 }) => {
+  const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    const cookies = parseCookies();
+    setUserInfo({
+      citizenID: cookies.citizenID || '',
+      token: cookies.token || '',
+      role: cookies.role || '',
+    });
+  }, []);
 
   // Initialize form data fields based on bodyArguments keys
   useEffect(() => {
@@ -44,6 +55,9 @@ const GenericForm: React.FC<GenericFormProps> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
+          "X-Token": userInfo.token,
         },
         body: JSON.stringify(formData), // Send formData as body of the request
       });
