@@ -38,7 +38,7 @@ const HealthDiaryLandingPage = () => {
             ช่วยบันทึกข้อมูลสุขภาพของคุณ
             <span className="block mb-1 sm:mb-2"></span>
             ได้รับคำแนะนำจากผู้เชี่ยวชาญ
-          </p>
+          </div>
         </div>
       </div>
 

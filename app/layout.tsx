@@ -3,10 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Sidebar from "./components/Sidebar";  // ✅ Import Sidebar
 // import SidebarDC from "./components/SidebarDC";  // ✅ Import Sidebar
 import "./globals.css";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
