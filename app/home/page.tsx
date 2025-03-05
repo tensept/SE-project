@@ -34,7 +34,7 @@ const HealthDiaryLandingPage = () => {
             <span className="block mb-1 sm:mb-4"></span> {/* ลดระยะห่าง */}
             สำหรับสุขภาพที่ดีขึ้น
           </h1>
-          <p className="text-sm sm:text-base noto-sans-thai md:text-lg lg:text-xl text-black mt-1 sm:mt-2 leading-snug sm:leading-normal">
+          <div className="text-sm sm:text-base noto-sans-thai md:text-lg lg:text-xl text-black mt-1 sm:mt-2 leading-snug sm:leading-normal">
             ช่วยบันทึกข้อมูลสุขภาพของคุณ
             <span className="block mb-1 sm:mb-2"></span>
             ได้รับคำแนะนำจากผู้เชี่ยวชาญ

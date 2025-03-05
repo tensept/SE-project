@@ -19,8 +19,10 @@ import {
   DialogTitle,
 } from "@/app/calendar/ui/dialog";
 import EventList from "../components/EventList";
+import { parseCookies } from "../utils/cookies";
 
 const Calendar: React.FC = () => {
+  const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const [currentEvents, setCurrentEvents] = useState<
     { id: any; title: any; start: any; end: any; allDay: boolean }[]
   >([]);
@@ -36,7 +38,18 @@ const Calendar: React.FC = () => {
     const currentDate = new Date();
     setCurrentMonth(currentDate.getMonth());
     setCurrentYear(currentDate.getFullYear());
+    const cookies = parseCookies();
+    setUserInfo({
+      citizenID: cookies.citizenID || '',
+      token: cookies.token || '',
+      role: cookies.role || '',
+    });
   }, []);
+
+  useEffect(() => {
+    console.log(userInfo);
+    console.log(parseCookies());
+  }, [userInfo]);
 
   const sortedEvents = currentEvents.sort((a, b) => {
     // Compare the 'start' dates of the events
@@ -49,24 +62,20 @@ const Calendar: React.FC = () => {
 
   const router = useRouter();
 
-  const getAuthToken = (): string | null => {
-    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
-    return match ? match[2] : null;
-  };
-
   // Fetch events from the API
   const getEvent = async (month: number, year: number) => {
     const path = process.env.NEXT_PUBLIC_BACK_END;
 
     try {
-      const authToken = getAuthToken(); // Get the auth token
       const response = await fetch(
         `${path}/events?month=${month + 1}&year=${year}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
+            "X-Token": userInfo.token,
           },
         }
       );
@@ -77,7 +86,9 @@ const Calendar: React.FC = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
+            "X-Token": userInfo.token,
           },
         }
       );
@@ -117,14 +128,15 @@ const Calendar: React.FC = () => {
 
   const postEvent = async (eventTitle: string, eventDate: string) => {
     const path = process.env.NEXT_PUBLIC_BACK_END;
-    const authToken = getAuthToken();
 
     try {
       const response = await fetch(`${path}/events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
+          "X-Token": userInfo.token,
         },
         body: JSON.stringify({
           event: eventTitle,
@@ -150,14 +162,15 @@ const Calendar: React.FC = () => {
   // เหลือ Method Delete ที่ยีงใช้ไม่ได้
   const deleteEvent = async (eventId: number) => {
     const path = process.env.NEXT_PUBLIC_BACK_END;
-    const authToken = getAuthToken();
 
     try {
       const response = await fetch(`${path}/events/${eventId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
+          "X-Token": userInfo.token,
         },
       });
 
