@@ -31,7 +31,9 @@ const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
   }, []);
 
   useEffect(() => {
-    setAvgPain(painData[currentMonth!].averagePain);
+    if (currentMonth !== null && painData[currentMonth]) {
+      setAvgPain(painData[currentMonth].averagePain);
+    }
   }, [currentMonth, painData]);
 
   useEffect(() => {

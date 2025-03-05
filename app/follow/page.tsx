@@ -86,6 +86,7 @@ const FlipBook: React.FC = () => {
           "Authorization": `Bearer ${authToken}`,
         }
       });
+      console.log("response: ",response.json());
 
       if (response.status === 404) {
         console.log("No pain data found for the date");
@@ -177,26 +178,6 @@ const FlipBook: React.FC = () => {
   
   const canGoPrevious = currentPage > 1;
   const canGoNext = currentPage < chartPageIndex;
-  // const calculatePainData = () => {
-  //   const monthlyData: { [key: string]: { total: number; days: number } } = {};
-  
-  //   entries.forEach((entry) => {
-  //     if (!entry) return;
-  //     const [, month] = entry.date.split(" "); // ดึงเฉพาะชื่อเดือน
-  //     if (!monthlyData[month]) monthlyData[month] = { total: 0, days: 0 };
-  
-  //     monthlyData[month].total += entry.painLevel;
-  //     monthlyData[month].days += 1;
-  //   });
-  
-  //   return Object.keys(monthlyData).map((month) => ({
-  //     month,
-  //     averagePain:
-  //       (monthlyData[month].total / (monthlyData[month].days * 10)) * 100, // คำนวณเป็นเปอร์เซ็นต์
-  //   }));
-  // };
-  
-  
   
   return (
     <div className="center">
