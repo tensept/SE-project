@@ -19,11 +19,13 @@ import {
   DialogTitle,
 } from "@/app/calendar/ui/dialog";
 import EventList from "../components/EventList";
+import { parseCookies } from "../utils/cookies";
 
 const Calendar: React.FC = () => {
   const [currentEvents, setCurrentEvents] = useState<
     { id: any; title: any; start: any; end: any; allDay: boolean }[]
   >([]);
+  const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [newEventTitle, setNewEventTitle] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<DateSelectArg | null>(null);
@@ -33,6 +35,12 @@ const Calendar: React.FC = () => {
 
   useEffect(() => {
     // This will run only on the client side after the component has mounted
+    const cookies = parseCookies();
+    setUserInfo({
+      citizenID: cookies.citizenID || '',
+      token: cookies.token || '',
+      role: cookies.role || '',
+    });
     const currentDate = new Date();
     setCurrentMonth(currentDate.getMonth());
     setCurrentYear(currentDate.getFullYear());
@@ -66,7 +74,8 @@ const Calendar: React.FC = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
           },
         }
       );
@@ -77,7 +86,8 @@ const Calendar: React.FC = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            "X-Citizen-ID": userInfo.citizenID,
+            "X-Role": userInfo.role,
           },
         }
       );
@@ -124,7 +134,8 @@ const Calendar: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
         },
         body: JSON.stringify({
           event: eventTitle,
@@ -157,7 +168,8 @@ const Calendar: React.FC = () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
+          "X-Citizen-ID": userInfo.citizenID,
+          "X-Role": userInfo.role,
         },
       });
 

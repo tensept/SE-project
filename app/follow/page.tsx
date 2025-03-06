@@ -96,7 +96,6 @@ const FlipBook: React.FC = () => {
           "X-Token": _userInfo.token,
         },
       });
-      console.log("response: ",response.json());
 
       if (response.status === 404) {
         console.log("No pain data found for the date");
@@ -115,7 +114,7 @@ const FlipBook: React.FC = () => {
   useEffect(() => {
       fetchAllDiary();
       fetchPainData();
-    }, []);
+    }, [_userInfo]);
 
   console.log(messages);
 

@@ -16,7 +16,7 @@ RUN npm run build
 ENV NODE_ENV=production
 
 # Expose the port the app runs on
-ENV NEXT_PUBLIC_BACK_END=https://clinic.se.cpe.cmu.ac.th/diary/api
+ENV NEXT_PUBLIC_BACK_END=https://clinic.se.eng.cmu.ac.th/diary/api
 
 EXPOSE 3005
 
