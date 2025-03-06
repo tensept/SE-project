@@ -19,10 +19,8 @@ import {
   DialogTitle,
 } from "@/app/calendar/ui/dialog";
 import EventList from "../components/EventList";
-import { parseCookies } from "../utils/cookies";
 
 const Calendar: React.FC = () => {
-  const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const [currentEvents, setCurrentEvents] = useState<
     { id: any; title: any; start: any; end: any; allDay: boolean }[]
   >([]);
@@ -38,18 +36,7 @@ const Calendar: React.FC = () => {
     const currentDate = new Date();
     setCurrentMonth(currentDate.getMonth());
     setCurrentYear(currentDate.getFullYear());
-    const cookies = parseCookies();
-    setUserInfo({
-      citizenID: cookies.citizenID || '',
-      token: cookies.token || '',
-      role: cookies.role || '',
-    });
   }, []);
-
-  useEffect(() => {
-    console.log(userInfo);
-    console.log(parseCookies());
-  }, [userInfo]);
 
   const sortedEvents = currentEvents.sort((a, b) => {
     // Compare the 'start' dates of the events
@@ -62,20 +49,24 @@ const Calendar: React.FC = () => {
 
   const router = useRouter();
 
+  const getAuthToken = (): string | null => {
+    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
+    return match ? match[2] : null;
+  };
+
   // Fetch events from the API
   const getEvent = async (month: number, year: number) => {
     const path = process.env.NEXT_PUBLIC_BACK_END;
 
     try {
+      const authToken = getAuthToken(); // Get the auth token
       const response = await fetch(
         `${path}/events?month=${month + 1}&year=${year}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "X-Citizen-ID": userInfo.citizenID,
-            "X-Role": userInfo.role,
-            "X-Token": userInfo.token,
+            Authorization: `Bearer ${authToken}`,
           },
         }
       );
@@ -86,9 +77,7 @@ const Calendar: React.FC = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "X-Citizen-ID": userInfo.citizenID,
-            "X-Role": userInfo.role,
-            "X-Token": userInfo.token,
+            Authorization: `Bearer ${authToken}`,
           },
         }
       );
@@ -128,15 +117,14 @@ const Calendar: React.FC = () => {
 
   const postEvent = async (eventTitle: string, eventDate: string) => {
     const path = process.env.NEXT_PUBLIC_BACK_END;
+    const authToken = getAuthToken();
 
     try {
       const response = await fetch(`${path}/events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Citizen-ID": userInfo.citizenID,
-          "X-Role": userInfo.role,
-          "X-Token": userInfo.token,
+          Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({
           event: eventTitle,
@@ -162,15 +150,14 @@ const Calendar: React.FC = () => {
   // เหลือ Method Delete ที่ยีงใช้ไม่ได้
   const deleteEvent = async (eventId: number) => {
     const path = process.env.NEXT_PUBLIC_BACK_END;
+    const authToken = getAuthToken();
 
     try {
       const response = await fetch(`${path}/events/${eventId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "X-Citizen-ID": userInfo.citizenID,
-          "X-Role": userInfo.role,
-          "X-Token": userInfo.token,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
@@ -269,13 +256,13 @@ const Calendar: React.FC = () => {
   return (
     <div style={{ backgroundColor: "#F9F9F9", minHeight: "100vh" }}>
       <div className="flex w-full px-10 justify-start items-start gap-8 ">
-        <div className="w-3/12">
-          <div className="py-10 text-2xl font-extrabold px-7">
+        <div className="w-3/12 noto-sans-thai">
+          <div className="py-10 text-2xl px-7 noto-sans-thai-extrabold">
             กิจกรรมในปฏิทิน
           </div>
           <ul className="space-y-4">
             {currentEvents.length <= 0 && (
-              <div className="italic text-center text-gray-400">
+              <div className="italic text-center text-gray-400 noto-sans-thai">
                 ยังไม่มีกิจกรรมในตอนนี้
               </div>
             )}
@@ -289,7 +276,7 @@ const Calendar: React.FC = () => {
           </ul>
         </div>
 
-        <div className="w-9/12 mt-8">
+        <div className="w-9/12 mt-8 noto-sans-thai">
           <FullCalendar
             locale={"th"} // ตั้งค่าภาษาไทย
             height={"85vh"}
@@ -349,21 +336,21 @@ const Calendar: React.FC = () => {
               required
               className="border border-pink-200 p-3 rounded-md text-lg text-center"
             />
-            <div className="mt-2 text-sm text-black font-bold text-center">
+            <div className="mt-2 text-sm text-black noto-sans-thai-bold text-center">
               📌 ข้อควรปฏิบัติ
             </div>
-            <div className="mt-2 text-sm text-black-500 font-bold">
-              <div className="mt-2 text-sm text-black-500 font-bold">
+            <div className="mt-2 text-sm text-black-500 noto-sans-thai-bold">
+              <div className="mt-2 text-sm text-black-500 noto-sans-thai-bold">
                 ✔️อาหารที่ทานได้ : ปลามีเกล็ด ข้าว ลูกเดือย กล้วยน้ำว้า
                 มะละกอสุก ผักปลอดสารพิษ น้ำนมจากพืช น้ำไม่เย็น
               </div>
-              <div className="mt-5 text-sm text-black-500 font-bold">
+              <div className="mt-5 text-sm text-black-500 noto-sans-thai-bold">
                 ❌อาหารแสลง : ชา กาแฟ น้ำเย็น น้ำแข็ง บุหรี่ เหล้า เบียร์
                 ข้าวเหนียว ไก่ ไข่ไก่ หมู วัว ปลาไม่มีเกล็ด อาหารหมักดอง ปลาเค็ม
                 ปลาร้า มาม่า อาหารทะเล เครื่องในสัตว์ เส้นก๋วยเตี๋ยว อาหารแปรรูป
                 ปลากระป๋อง
               </div>
-              <div className="mt-5 text-sm text-black-100 font-bold">
+              <div className="mt-5 text-sm text-black-100 noto-sans-thai-bold">
                 🧘ไหว้พระ สวดมนต์ ทำสมาธิ กรวดน้ำให้เจ้ากรรมนายเวร
                 ใส่บาตรทุกวันพระ ข้าว 1 ถ้วย กล้วย 1 ทวี
                 และเงินตามกำลังวันเกิด จันทร์ 15 บาท, อังคาร 8 บาท,
@@ -374,7 +361,7 @@ const Calendar: React.FC = () => {
             <div className="flex justify-center space-x-4 mt-4">
               <button
                 type="submit"
-                className="bg-pink-500 text-white px-4 py-2 rounded-md"
+                className="bg-pink-500 text-white px-4 py-2 rounded-md noto-sans-thai"
               >
                 เพิ่มกิจกรรม
               </button>
@@ -383,8 +370,8 @@ const Calendar: React.FC = () => {
                 onClick={navigateToDiary}
                 className={`px-4 py-2 rounded-md ${
                   isCurrentMonth
-                    ? "bg-gray-500 text-white"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    ? "bg-gray-500 text-white noto-sans-thai"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed noto-sans-thai"
                 }`}
               >
                 ไปยังหน้าสมุดบันทึก

@@ -31,10 +31,11 @@ const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
   }, []);
 
   useEffect(() => {
-    if (currentMonth !== null && painData[currentMonth]) {
+    if (currentMonth !== null && painData.length > currentMonth) {
       setAvgPain(painData[currentMonth].averagePain);
     }
   }, [currentMonth, painData]);
+  console.log("painData: ", painData);
 
   useEffect(() => {
     setIsHealthy(avgPain! < 50);
@@ -42,15 +43,15 @@ const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 max-w-xl mx-auto">
-      <h2 className="text-xl font-bold mb-1 text-gray-800 flex items-center justify-between">
-        <span>แผนภูมิระดับความเจ็บปวด</span>
+      <h2 className="text-xl mb-1 text-gray-800 flex items-center justify-between noto-sans-thai-bold">
+        <span className="noto-sans-thai">แผนภูมิระดับความเจ็บปวด</span>
         <span className="text-2xl">{emoji}</span>
       </h2>
-      <div className="text-sm text-gray-600 mb-4">
+      <div className="noto-sans-thai text-gray-600 mb-4">
         คะแนนเฉลี่ย: {avgPain.toFixed(1)}%
       </div>
 
-      <div className="bg-gray-50 p-3 rounded-lg mb-4">
+      <div className="bg-gray-50 p-3 rounded-lg mb-4 noto-sans-thai">
         <ResponsiveContainer width="100%" height={250}>
           <BarChart
             data={painData}
@@ -70,7 +71,7 @@ const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
                 value: "ระดับความเจ็บปวด (%)",
                 angle: -90,
                 position: "insideLeft",
-                style: { textAnchor: "middle", fill: "#6b7280" },
+                style: { textAnchor: "middle", fill: "#6b7280" , fontFamily: "Noto Sans Thai"},
               }}
             />
             <Tooltip
@@ -107,8 +108,8 @@ const ChartCard: React.FC<ChartCardProps> = ({ painData }) => {
       </div>
 
       <div className="health-status bg-gray-50 p-4 rounded-lg text-center">
-        <div className="text-lg font-medium">{message}</div>
-        <div className="mt-2 text-sm text-gray-600">
+        <div className="text-lg  noto-sans-thai">{message}</div>
+        <div className="mt-2 text-sm text-gray-600 noto-sans-thai">
           {isHealthy ? (
             <div>คุณกำลังทำได้ดี ระดับความเจ็บปวดอยู่ในเกณฑ์ที่ควบคุมได้</div>
           ) : (

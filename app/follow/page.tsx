@@ -123,7 +123,7 @@ const FlipBook: React.FC = () => {
     profilePic: "/Jud.jpg",
     name: messages.length > 0 ? messages[0].patientName : "Unknown",
     age: messages.length > 0 ? messages[0].patientAge : -1,
-    gender: "Male",
+    gender: "ชาย",
     weight: "70 kg",
     height: "175 cm",
     bloodPressure: messages.length > 0 ? messages[0].patientHN : 0,
@@ -177,31 +177,53 @@ const FlipBook: React.FC = () => {
     adjustedEntries.unshift(null);
   }
   
-  const today = "26 February 2025";
+  const today = (() => {
+    const now = new Date();
+    const yyyy = now.getFullYear(); // ปี ค.ศ. 4 หลัก
+    const mm = String(now.getMonth() + 1).padStart(2, "0"); // เดือน 2 หลัก
+    const dd = String(now.getDate()).padStart(2, "0"); // วันที่ 2 หลัก
+    return `${yyyy}-${mm}-${dd}`;
+  })();  
   const todayIndex = adjustedEntries.findIndex(entry => entry?.date === today);
   const summaryPageIndex = adjustedEntries.length;  // Summary หลังหน้าสุดท้ายของ entries
   const chartPageIndex = adjustedEntries.length + 1; // Chart เป็นหน้าสุดท้าย
   
   const [currentPage, setCurrentPage] = useState(
-    todayIndex % 2 === 0 ? todayIndex : Math.max(todayIndex - 1, 0)
+    todayIndex !== -1
+      ? todayIndex % 2 === 0
+        ? todayIndex
+        : Math.max(todayIndex - 1, 0)
+      : 0 // Default to first page if today is not found
   );
   
   const canGoPrevious = currentPage > 1;
+
+const handleGoPrevious = () => {
+  // ไปหน้าก่อนหน้า (ถ้ามี)
+  if (canGoPrevious) {
+    setCurrentPage(prev => prev - 2);
+  }
+};
+
+const handleGoToday = () => {
+  // ไปหน้าที่เป็น "วันนี้"
+  setCurrentPage(todayIndex % 2 === 0 ? todayIndex : Math.max(todayIndex + 1, 0));
+};
   const canGoNext = currentPage < chartPageIndex;
   
   return (
     <div className="center">
       <div className="book-container">
-      <button className="clip-marker diary-marker bai-jamjuree-regular" onClick={() => setCurrentPage(todayIndex)}>
-          <span>Diary</span>
+      <button className="clip-marker diary-marker" onClick={handleGoToday}>
+          <span className="noto-sans-thai">บันทึกวันนี้</span>
         </button>
-        <button className="clip-marker followup-marker .bai-jamjuree-regular" onClick={() => setCurrentPage(chartPageIndex)}>
-          <span>Follow-up</span>
+        <button className="clip-marker followup-marker" onClick={() => setCurrentPage(chartPageIndex)}>
+          <span className="noto-sans-thai">สรุปผล</span>
         </button>
         <div className="book">
           <button
             className="nav-button left"
-            onClick={() => setCurrentPage((prev) => prev - 2)}
+            onClick={handleGoPrevious}
             disabled={!canGoPrevious}
           >
             <SlArrowLeft />
@@ -212,6 +234,8 @@ const FlipBook: React.FC = () => {
               if (index % 2 !== 0) return null;
               const leftIndex = index;
               const rightIndex = index + 1;
+              console.log("leftIndex: ", leftIndex);
+              console.log("rightIndex: ", rightIndex);
   
               return (
                 <div
