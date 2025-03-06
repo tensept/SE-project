@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -76,15 +77,19 @@ const DiaryPage = () => {
   };
 
   const handlePreviousDay = () => {
-    const previousDay = new Date(currentDate);
-    previousDay.setDate(previousDay.getDate() - 1);
-    setCurrentDate(previousDay);
+    if (currentDate) {
+      const previousDay = new Date(currentDate);
+      previousDay.setDate(previousDay.getDate() - 1);
+      setCurrentDate(previousDay);
+    }
   };
 
   const handleNextDay = () => {
-    const nextDay = new Date(currentDate);
-    nextDay.setDate(nextDay.getDate() + 1);
-    setCurrentDate(nextDay);
+    if (currentDate) {
+      const nextDay = new Date(currentDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+      setCurrentDate(nextDay);
+    }
   };
 
   const foods = [
@@ -167,23 +172,6 @@ const DiaryPage = () => {
     "😰",
     "😭",
   ];
-  const painColors = [
-    "#76c7c0",
-    "#99d9ea",
-    "#ffd54f",
-    "#ffa726",
-    "#ff8a65",
-    "#ff5252",
-  ];
-
-  const getPainColor = (level: number): string => {
-    if (level <= 2) return painColors[0]; // Green
-    if (level <= 4) return painColors[1]; // Light Blue
-    if (level <= 6) return painColors[2]; // Yellow
-    if (level <= 8) return painColors[3]; // Orange
-    if (level <= 9) return painColors[4]; // Light Red
-    return painColors[5]; // Red
-  };
 
   return (
     <div
@@ -355,7 +343,12 @@ const DiaryPage = () => {
         </div>
         <div style={{ marginTop: "10px" }}>
           <button
-            onClick={() => document.getElementById("meal-upload").click()} // กดแล้วเปิด input file
+            onClick={() => {
+              const mealUploadElement = document.getElementById("meal-upload");
+              if (mealUploadElement) {
+                mealUploadElement.click();
+              }
+            }} // กดแล้วเปิด input file
             style={{
               backgroundColor: "#ff80ab",
               color: "white",
@@ -497,7 +490,12 @@ const DiaryPage = () => {
 
         <div style={{ marginTop: "10px" }}>
           <button
-            onClick={() => document.getElementById("breakfast-upload").click()} // กดแล้วเปิด input file
+            onClick={() => {
+              const breakfastUploadElement = document.getElementById("breakfast-upload");
+              if (breakfastUploadElement) {
+                breakfastUploadElement.click();
+              }
+            }} // กดแล้วเปิด input file
             style={{
               backgroundColor: "#ff80ab",
               color: "white",
@@ -584,7 +582,12 @@ const DiaryPage = () => {
 
         <div style={{ marginTop: "10px" }}>
           <button
-            onClick={() => document.getElementById("lunch-upload").click()} // กดแล้วเปิด input file
+            onClick={() => {
+              const lunchUploadElement = document.getElementById("lunch-upload");
+              if (lunchUploadElement) {
+                lunchUploadElement.click();
+              }
+            }} // กดแล้วเปิด input file
             style={{
               backgroundColor: "#ff80ab",
               color: "white",
@@ -672,7 +675,12 @@ const DiaryPage = () => {
 
         <div style={{ marginTop: "10px" }}>
           <button
-            onClick={() => document.getElementById("dinner-upload").click()} // กดแล้วเปิด input file
+            onClick={() => {
+              const dinnerUploadElement = document.getElementById("dinner-upload");
+              if (dinnerUploadElement) {
+                dinnerUploadElement.click();
+              }
+            }} // กดแล้วเปิด input file
             style={{
               backgroundColor: "#ff80ab",
               color: "white",

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -8,22 +9,26 @@ const Page: React.FC = () => {
   const { messages, date, setDate, markMessageAsRead, setDiaryId } = useDoctorContext();
   const [isDateChanged, setIsDateChanged] = useState(false);
 
-  const formattedDate = `${date.getFullYear()}-${
+  const formattedDate = date?`${date.getFullYear()}-${
     date.getMonth() + 1
-  }-${date.getDate()}`;
+  }-${date.getDate()}`:null;
 
   const handlePreviousDate = () => {
-    const newDate = new Date(date);
-    newDate.setDate(date.getDate() - 1);
-    setDate(newDate);
-    setIsDateChanged(true);
+    if (date) {
+      const newDate = new Date(date);
+      newDate.setDate(date.getDate() - 1);
+      setDate(newDate);
+      setIsDateChanged(true);
+    }
   };
 
   const handleNextDate = () => {
-    const newDate = new Date(date);
-    newDate.setDate(date.getDate() + 1);
-    setDate(newDate);
-    setIsDateChanged(true);
+    if (date) {
+      const newDate = new Date(date);
+      newDate.setDate(date.getDate() + 1);
+      setDate(newDate);
+      setIsDateChanged(true);
+    }
   };
 
   useEffect(() => {

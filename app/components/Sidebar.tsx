@@ -17,7 +17,7 @@ import Image from "next/image";
     <aside className="w-[17%] bg-white h-screen p-4 flex flex-col items-center">
       {/* Logo */}
       <Image
-        src="/logo.jpg"
+        src="/diary/logo.jpg"
         alt="Next.js logo"
         width={180}
         height={38}
@@ -29,7 +29,7 @@ import Image from "next/image";
       <nav className="w-full">
         <ul className="space-y-4">
           <NavItem
-            href="/home"
+            href="/diary/home"
             icon={Home}
             label="หน้าหลัก"
             active={pathname === "/home"}

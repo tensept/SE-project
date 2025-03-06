@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // (03:46) เหลือดึง CheckedBox กับแผนภูมิมาแสดง
 
 "use client";
@@ -15,7 +16,7 @@ interface MessageProps {
   time: string;
   activity: string;
   symptom: string;
-  painLevel: number;
+  painScore: number;
   breakfast: string;
   lunch: string;
   dinner: string;
@@ -128,29 +129,29 @@ const FlipBook: React.FC = () => {
     bloodPressure: messages.length > 0 ? messages[0].patientHN : 0,
   };
 
-  const foods = [
-    "ชา",
-    "กาแฟ",
-    "น้ำเย็น",
-    "บุหรี่",
-    "เหล้า",
-    "เบียร์",
-    "ข้าวเหนียว",
-    "อาหารหมักดอง",
-    "ไข่ไก่",
-    "ปลาเค็ม",
-    "ปลาร้า",
-    "ไก่",
-    "หมู",
-    "วัว",
-    "ปลาไม่มีเกล็ด",
-    "เครื่องในสัตว์",
-    "อาหารทะเล",
-    "เส้นก๋วยเตี๋ยว",
-    "อาหารแปรรูป",
-    "มาม่า",
-    "ปลากระป๋อง",
-  ];
+  // const foods = [
+  //   "ชา",
+  //   "กาแฟ",
+  //   "น้ำเย็น",
+  //   "บุหรี่",
+  //   "เหล้า",
+  //   "เบียร์",
+  //   "ข้าวเหนียว",
+  //   "อาหารหมักดอง",
+  //   "ไข่ไก่",
+  //   "ปลาเค็ม",
+  //   "ปลาร้า",
+  //   "ไก่",
+  //   "หมู",
+  //   "วัว",
+  //   "ปลาไม่มีเกล็ด",
+  //   "เครื่องในสัตว์",
+  //   "อาหารทะเล",
+  //   "เส้นก๋วยเตี๋ยว",
+  //   "อาหารแปรรูป",
+  //   "มาม่า",
+  //   "ปลากระป๋อง",
+  // ];
 
   const entries: (DiaryEntry | null)[] = Array.isArray(messages) ? messages.map((message) => ({
     date: message.date,

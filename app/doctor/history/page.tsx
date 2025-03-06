@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useState, useEffect } from "react";
 import { useDoctorContext } from "../../contexts/DoctorContext";
@@ -8,17 +9,17 @@ const SymptomTracker = () => {
   const { diaryId } = useDoctorContext();
   const [date, setDate] = useState("");
   const [patient, setPatient] = useState("");
-  const [activity, setActivity] = useState("");
+  // const [activity, setActivity] = useState("");
   const [painLevel, setPainLevel] = useState(1);
   const [symptom, setSymptom] = useState("");
   const [breakfastNote, setBreakfastNote] = useState("");
   const [lunchNote, setLunchNote] = useState("");
   const [dinnerNote, setDinnerNote] = useState("");
-  const [symptomImage, setSymptomImage] = useState<string>("");
-  const [breakfastImage, setBreakfastImage] = useState<string>("");
-  const [lunchImage, setLunchImage] = useState<string>("");
-  const [dinnerImage, setDinnerImage] = useState<string>("");
-  const [checkedFoods, setCheckedFoods] = useState([]);
+  // const [symptomImage, setSymptomImage] = useState<string>("");
+  // const [breakfastImage, setBreakfastImage] = useState<string>("");
+  // const [lunchImage, setLunchImage] = useState<string>("");
+  // const [dinnerImage, setDinnerImage] = useState<string>("");
+  // const [checkedFoods, setCheckedFoods] = useState([]);
 
   useEffect(() => {
     const cookies = parseCookies();
@@ -52,24 +53,24 @@ const SymptomTracker = () => {
         const {
           date,
           patientName,
-          activity,
+          // activity,
           symptom,
           painScore,
           breakfast,
           lunch,
           dinner,
-          food,
+          // food,
         } = result;
 
         setDate(date);
         setPatient(patientName);
-        setActivity(activity);
+        // setActivity(activity);
         setSymptom(symptom);
         setPainLevel(painScore);
         setBreakfastNote(breakfast);
         setLunchNote(lunch);
         setDinnerNote(dinner);
-        setCheckedFoods(food);
+        // setCheckedFoods(food);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -99,19 +100,19 @@ const SymptomTracker = () => {
         for (const image of result) {
           switch (image.label) {
             case "symptom": {
-              setSymptomImage(image.url);
+              // setSymptomImage(image.url);
               break;
             }
             case "breakfast": {
-              setBreakfastImage(image.url);
+              // setBreakfastImage(image.url);
               break;
             }
             case "lunch": {
-              setLunchImage(image.url);
+              // setLunchImage(image.url);
               break;
             }
             case "dinner": {
-              setDinnerImage(image.url);
+              // setDinnerImage(image.url);
               break;
             }
             default: {
@@ -141,11 +142,11 @@ const SymptomTracker = () => {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <divath
+              <path
                 d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z"
                 fill="#FF89A3"
               />
-              <divath
+              <path
                 d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z"
                 fill="#FF89A3"
               />
@@ -173,14 +174,14 @@ const SymptomTracker = () => {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <divath
+              <path
                 d="M19 12H5"
                 stroke="#333"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <divath
+              <path
                 d="M12 19L5 12L12 5"
                 stroke="#333"
                 strokeWidth="2"

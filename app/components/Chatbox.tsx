@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { Bell, MoreVertical, CornerDownLeft, Plus } from "lucide-react";
+import { useState, JSX } from "react";
+import { CornerDownLeft } from "lucide-react";
 
 interface Message {
   id: number;

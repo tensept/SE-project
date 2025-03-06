@@ -35,7 +35,7 @@ const HealthDiaryLandingPage = () => {
 
       {/* Hero Section */}
       <div className="relative flex justify-center">
-        <img src="/12.png" alt="Health Diary" className="object-cover" />
+        <img src="/diary/12.png" alt="Health Diary" className="object-cover" />
         <div className="absolute left-6 sm:left-10 md:left-12 top-1/2 transform -translate-y-1/2 p-4 sm:p-6">
           <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-black leading-snug sm:leading-tight">
             ยินดีต้อนรับสู่สมุดบันทึก
@@ -46,7 +46,7 @@ const HealthDiaryLandingPage = () => {
             ช่วยบันทึกข้อมูลสุขภาพของคุณ
             <span className="block mb-1 sm:mb-2"></span>
             ได้รับคำแนะนำจากผู้เชี่ยวชาญ
-          </p>
+          </div>
         </div>
       </div>
 
@@ -61,7 +61,7 @@ const HealthDiaryLandingPage = () => {
             <div className="border-t border-gray-400 mb-6"></div>
             <div className="rounded-3xl overflow-hidden">
               <img
-                src="/14.png"
+                src="/diary/14.png"
                 alt="Medical notebook"
                 className="w-full h-auto object-cover"
               />

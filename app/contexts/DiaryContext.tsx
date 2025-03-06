@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from "react";
@@ -5,8 +6,8 @@ import { parseCookies } from "../utils/cookies";
 
 // Define the DiaryContext Type
 interface DiaryContextType {
-  currentDate: Date;
-  setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+  currentDate: Date | null;
+  setCurrentDate: React.Dispatch<React.SetStateAction<Date | null>>;
   activity: string;
   setActivity: React.Dispatch<React.SetStateAction<string>>;
   symptom: string;
@@ -19,14 +20,14 @@ interface DiaryContextType {
   setLunchNote: React.Dispatch<React.SetStateAction<string>>;
   dinnerNote: string;
   setDinnerNote: React.Dispatch<React.SetStateAction<string>>;
-  symptomImage: string;
-  setSymptomImage: React.Dispatch<React.SetStateAction<string>>;
-  breakfastImage: string;
-  setBreakfastImage: React.Dispatch<React.SetStateAction<string>>;
-  lunchImage: string;
-  setLunchImage: React.Dispatch<React.SetStateAction<string>>;
-  dinnerImage: string;
-  setDinnerImage: React.Dispatch<React.SetStateAction<string>>;
+  symptomImage: string | null;
+  setSymptomImage: React.Dispatch<React.SetStateAction<string | null>>;
+  breakfastImage: string | null;
+  setBreakfastImage: React.Dispatch<React.SetStateAction<string | null>>;
+  lunchImage: string | null;
+  setLunchImage: React.Dispatch<React.SetStateAction<string | null>>;
+  dinnerImage: string | null;
+  setDinnerImage: React.Dispatch<React.SetStateAction<string | null>>;
   diaryID: number | null;
   setDiaryID: React.Dispatch<React.SetStateAction<number | null>>;
   checkedFoods: boolean[];
@@ -52,11 +53,11 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   const [painLevel, setPainLevel] = useState<number>(1);
   const [breakfastNote, setBreakfastNote] = useState<string>("");
   const [lunchNote, setLunchNote] = useState<string>("");
-  const [dinnerNote, setDinnerNote] = useState<string>("");
-  const [symptomImage, setSymptomImage] = useState<string>("");
-  const [breakfastImage, setBreakfastImage] = useState<string>("");
-  const [lunchImage, setLunchImage] = useState<string>("");
-  const [dinnerImage, setDinnerImage] = useState<string>("");
+  const [dinnerNote, setDinnerNote] = useState<string >("");
+  const [symptomImage, setSymptomImage] = useState<string | null>("");
+  const [breakfastImage, setBreakfastImage] = useState<string | null>("");
+  const [lunchImage, setLunchImage] = useState<string | null>("");
+  const [dinnerImage, setDinnerImage] = useState<string | null>("");
   const [diaryID, setDiaryID] = useState<number | null>(null);
   const [checkedFoods, setCheckedFoods] = useState<boolean[]>(Array(21).fill(false));
   const path = process.env.NEXT_PUBLIC_BACK_END;
@@ -73,7 +74,7 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
   useEffect(() => {
     const fetchDiary = async () => {
       try {
-        const response = await fetch(`${path}/diaries/entry/${currentDate.toISOString().split("T")[0]}`, {
+        const response = await fetch(`${path}/diaries/entry/${currentDate?.toISOString().split("T")[0]}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -182,7 +183,6 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
       const response = await fetch(`${path}/images/${diaryID}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "X-Citizen-ID": userInfo.citizenID,
           "X-Role": userInfo.role,
         },
@@ -216,7 +216,7 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
           "X-Role": userInfo.role,
         },
         body: JSON.stringify({
-          date: currentDate.toISOString().split("T")[0],
+          date: currentDate?.toISOString().split("T")[0],
           activity,
           symptom,
           painScore: painLevel,
@@ -249,7 +249,7 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
           "X-Role": userInfo.role,
         },
         body: JSON.stringify({
-          date: currentDate.toISOString().split("T")[0],
+          date: currentDate?.toISOString().split("T")[0],
           activity,
           symptom,
           painScore: painLevel,
@@ -272,7 +272,7 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
 
   return (
     <DiaryContext.Provider value={{
-      currentDate,
+      currentDate: currentDate || new Date(),
       setCurrentDate,
       activity,
       setActivity,

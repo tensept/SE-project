@@ -9,7 +9,6 @@ interface MessageProps {
   isRead: boolean;
   id: number;
   date: string;
-  patientId: number;
 }
 
 const MessageItem: React.FC<
@@ -17,7 +16,7 @@ const MessageItem: React.FC<
     markAsRead: (id: number) => void;
     onClick: React.Dispatch<React.SetStateAction<number | null>>;
   }
-> = ({ sender, time, isRead, id, date, patientId, markAsRead, onClick }) => {
+> = ({ sender, time, isRead, id, markAsRead, onClick }) => {
   const [userInfo, setUserInfo] = useState({ citizenID: '', token: '', role: '' });
   const router = useRouter();
   
@@ -83,11 +82,11 @@ const MessageItem: React.FC<
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <divath
+          <path
             d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z"
             fill="#FFFFFF"
           />
-          <divath
+          <path
             d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z"
             fill="#FFFFFF"
           />

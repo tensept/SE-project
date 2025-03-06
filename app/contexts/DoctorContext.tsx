@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { parseCookies } from "../utils/cookies";
 
@@ -11,8 +12,8 @@ interface Message {
 
 interface DoctorContextProps {
   messages: Message[];
-  date: Date;
-  setDate: React.Dispatch<React.SetStateAction<Date>>;
+  date: Date | null;
+  setDate: React.Dispatch<React.SetStateAction<Date | null>>;
   markMessageAsRead: (id: number) => void;
   diaryId: number | null;
   setDiaryId: React.Dispatch<React.SetStateAction<number | null>>;
@@ -74,6 +75,7 @@ export const DoctorProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   useEffect(() => {
     const fetchDiary = async () => {
       // Format the date only when useEffect is triggered
+      if (!date) return;
       const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
       try {
         console.log("date: " + formattedDate);
