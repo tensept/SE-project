@@ -29,7 +29,7 @@ import Image from "next/image";
       <nav className="w-full">
         <ul className="space-y-4">
           <NavItem
-            href="/diary/home"
+            href="/home"
             icon={Home}
             label="หน้าหลัก"
             active={pathname === "/home"}
